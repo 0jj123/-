@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 1 學習摘要 — Welcome to the Cloud</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+  header { background: linear-gradient(135deg, #1e40af, #0891b2); padding: 28px 32px 22px; }
+  header h1 { font-size: 1.6rem; font-weight: 700; color: #fff; }
+  header p { font-size: 0.85rem; color: #bae6fd; margin-top: 4px; }
+
+  nav { display: flex; gap: 6px; flex-wrap: wrap; padding: 16px 32px; background: #1e293b; border-bottom: 1px solid #334155; }
+  nav button { background: #334155; border: none; color: #94a3b8; border-radius: 20px; padding: 6px 16px; font-size: 0.8rem; cursor: pointer; transition: all .2s; }
+  nav button.active, nav button:hover { background: #0891b2; color: #fff; }
+
+  .content { padding: 24px 32px; max-width: 960px; margin: 0 auto; }
+
+  .section { display: none; animation: fadeIn .3s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  h2 { font-size: 1.2rem; color: #38bdf8; margin-bottom: 16px; border-left: 4px solid #0891b2; padding-left: 12px; }
+  h3 { font-size: 0.95rem; color: #7dd3fc; margin: 18px 0 8px; }
+
+  .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px 20px; margin-bottom: 14px; }
+  .card p { font-size: 0.88rem; line-height: 1.7; color: #cbd5e1; }
+  .tag { display: inline-block; background: #0c4a6e; color: #7dd3fc; border-radius: 6px; padding: 2px 8px; font-size: 0.72rem; margin-right: 6px; margin-bottom: 4px; }
+  .tag.green { background: #064e3b; color: #6ee7b7; }
+  .tag.purple { background: #4c1d95; color: #c4b5fd; }
+  .tag.red { background: #7f1d1d; color: #fca5a5; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { background: #0c4a6e; color: #7dd3fc; padding: 10px 14px; text-align: left; }
+  td { padding: 9px 14px; border-bottom: 1px solid #1e293b; color: #cbd5e1; background: #1e293b; }
+  tr:hover td { background: #263548; }
+
+  /* Flashcard */
+  .fc-wrap { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .fc { perspective: 600px; height: 140px; cursor: pointer; }
+  .fc-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .45s; }
+  .fc.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-front, .fc-back { position: absolute; inset: 0; border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 16px; backface-visibility: hidden; text-align: center; }
+  .fc-front { background: #1e3a5f; border: 1px solid #0891b2; color: #93c5fd; font-weight: 600; font-size: 0.9rem; }
+  .fc-back { background: #1e293b; border: 1px solid #334155; color: #cbd5e1; font-size: 0.82rem; line-height: 1.6; transform: rotateY(180deg); }
+  .fc-hint { font-size: 0.7rem; color: #475569; text-align: center; margin-bottom: 12px; }
+
+  /* Quiz */
+  .quiz-q { font-size: 0.95rem; color: #e2e8f0; margin-bottom: 14px; font-weight: 600; }
+  .quiz-opts button { display: block; width: 100%; text-align: left; background: #1e293b; border: 1px solid #334155; color: #cbd5e1; border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; font-size: 0.85rem; cursor: pointer; transition: all .2s; }
+  .quiz-opts button:hover { border-color: #0891b2; color: #7dd3fc; }
+  .quiz-opts button.correct { background: #064e3b; border-color: #10b981; color: #6ee7b7; }
+  .quiz-opts button.wrong { background: #7f1d1d; border-color: #ef4444; color: #fca5a5; }
+  .quiz-nav { display: flex; gap: 10px; margin-top: 16px; align-items: center; }
+  .quiz-nav button { background: #0891b2; border: none; color: #fff; border-radius: 8px; padding: 8px 18px; cursor: pointer; font-size: 0.85rem; }
+  .quiz-nav button:disabled { background: #334155; color: #64748b; cursor: default; }
+  .quiz-score { font-size: 0.8rem; color: #64748b; margin-left: auto; }
+  .feedback { font-size: 0.83rem; margin-top: 10px; padding: 8px 12px; border-radius: 8px; }
+  .feedback.ok { background: #064e3b; color: #6ee7b7; }
+  .feedback.no { background: #7f1d1d; color: #fca5a5; }
+
+  .layers-chart { display: flex; flex-direction: column; gap: 4px; }
+  .layer-row { display: flex; align-items: center; gap: 12px; }
+  .layer-num { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+  .layer-bar { flex: 1; border-radius: 8px; padding: 10px 16px; font-size: 0.82rem; }
+  .layer-bar strong { display: block; font-size: 0.9rem; margin-bottom: 2px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>📡 Chapter 1 — Welcome to the Cloud</h1>
+  <p>Business Data Networks and Security, 10th Ed. ｜ 互動學習摘要</p>
+</header>
+
+<nav>
+  <button class="active" onclick="show('overview',this)">📋 章節概覽</button>
+  <button onclick="show('cloud',this)">☁️ 雲端服務</button>
+  <button onclick="show('network',this)">🌐 網路基礎</button>
+  <button onclick="show('layers',this)">🔢 網路分層</button>
+  <button onclick="show('flash',this)">🃏 Flashcard</button>
+  <button onclick="show('quiz',this)">✏️ 小測驗</button>
+</nav>
+
+<div class="content">
+
+<!-- 概覽 -->
+<div id="overview" class="section active">
+  <h2>章節架構</h2>
+  <div class="card">
+    <p>本章圍繞四大主題展開：</p>
+    <br>
+    <p>① <strong style="color:#38bdf8">Netflix & Amazon</strong>（雲端商業案例）</p>
+    <p>② <strong style="color:#38bdf8">Messages</strong>（訊息、IP 位址、HTTP）</p>
+    <p>③ <strong style="color:#38bdf8">Single Networks</strong>（單一網路：有線 / Wi-Fi）</p>
+    <p>④ <strong style="color:#38bdf8">Internets & Standards Layers</strong>（路由器、IP 封包、DNS、OSI/TCP-IP）</p>
+  </div>
+
+  <h2>關鍵術語速查</h2>
+  <div class="card">
+    <span class="tag">Host 主機</span>
+    <span class="tag">IP Address</span>
+    <span class="tag">ISP</span>
+    <span class="tag green">IaaS</span>
+    <span class="tag green">SaaS</span>
+    <span class="tag green">CSP 雲端服務供應商</span>
+    <span class="tag purple">Frame 訊框</span>
+    <span class="tag purple">Packet 封包</span>
+    <span class="tag purple">EUI-48 / MAC</span>
+    <span class="tag purple">Fragmentation 分段</span>
+    <span class="tag red">Router 路由器</span>
+    <span class="tag red">Switch 交換器</span>
+    <span class="tag red">DNS</span>
+    <span class="tag red">DHCP</span>
+    <span class="tag red">NAT</span>
+  </div>
+</div>
+
+<!-- 雲端服務 -->
+<div id="cloud" class="section">
+  <h2>☁️ 雲端服務</h2>
+
+  <h3>1.3 — 網際網路架構</h3>
+  <div class="card">
+    <p>網際網路由多個 <strong>ISP（Internet Service Provider）</strong> 互相連接組成，核心稱為 <strong>Internet Core</strong>。組織（如 MIT、Amazon）透過 ISP 接入網際網路，家庭也可透過小型網路連接。</p>
+  </div>
+
+  <h3>1.4 — Netflix & AWS</h3>
+  <div class="card">
+    <p>Netflix 不自建伺服器，而是租用 <strong>Amazon Web Services (AWS)</strong> 的伺服器農場（Server Farm）。AWS 提供多個區域伺服器農場，並以冗餘（Redundancy）設計確保容錯能力（Fail-Over）。</p>
+  </div>
+
+  <h3>1.6 — 伺服器虛擬化</h3>
+  <div class="card">
+    <p>虛擬化讓一台實體伺服器可同時執行多個 <strong>虛擬機器（VM）</strong>，每個 VM 都像獨立伺服器。優點：</p>
+    <br>
+    <p>• 可在數秒內透過自助工具建立新 VM</p>
+    <p>• VM 可輕鬆搬移到其他實體伺服器（整個 VM 是一個檔案）</p>
+    <p>• 暫時新增更多 VM 來因應流量高峰</p>
+    <p>• 提升組織的 <strong>Agility（敏捷性）</strong>——快速調整的能力</p>
+  </div>
+
+  <h3>1.7 — 雲端服務模型比較</h3>
+  <table>
+    <tr><th></th><th>Server Owner（伺服器擁有者）</th><th>Application Owner（應用擁有者）</th></tr>
+    <tr><td><strong>Corporate Data Center（自建機房）</strong></td><td>用戶組織</td><td>用戶組織</td></tr>
+    <tr><td><strong>IaaS（基礎設施即服務）</strong></td><td>IaaS CSP</td><td>用戶組織</td></tr>
+    <tr><td><strong>SaaS（軟體即服務）</strong></td><td>SaaS CSP</td><td>SaaS CSP</td></tr>
+  </table>
+  <div class="card" style="margin-top:12px">
+    <p>傳統模式：組織自行購買並維護伺服器和軟體（<em>as a product</em>）<br>
+    雲端模式：不買斷，按使用量付費（<em>as a service</em>），如同水電費</p>
+  </div>
+</div>
+
+<!-- 網路基礎 -->
+<div id="network" class="section">
+  <h2>🌐 網路基礎概念</h2>
+
+  <h3>1.1 — 網路通訊基本模型</h3>
+  <div class="card">
+    <p>任何連接到網路的電腦都是 <strong>Host（主機）</strong>，包括伺服器、PC、手機、智慧手錶等。隨著萬物互聯，這個概念延伸為 <strong>IoT（Internet of Things）</strong>。</p>
+    <p style="margin-top:8px">基本通訊模型：<strong>Client Host</strong>（瀏覽器）→ 網際網路 → <strong>Server Host</strong>（Web 伺服器程式）</p>
+  </div>
+
+  <h3>1.2 — 點分十進位記法（Dotted Decimal Notation）</h3>
+  <div class="card">
+    <p>IP 位址為 32 bits，分成四個 8-bit 段，每段轉換為十進位後以「.」分隔。</p>
+    <br>
+    <p>例：<code style="color:#7dd3fc">00000001.00000010.00000011.00000100</code> → <strong style="color:#38bdf8">1.2.3.4</strong></p>
+  </div>
+
+  <h3>1.10 — 速度單位</h3>
+  <table>
+    <tr><th>縮寫</th><th>意義</th><th>倍率</th></tr>
+    <tr><td>kbps</td><td>千位元/秒</td><td>1,000 bps</td></tr>
+    <tr><td>Mbps</td><td>百萬位元/秒</td><td>1,000 kbps</td></tr>
+    <tr><td>Gbps</td><td>十億位元/秒</td><td>1,000 Mbps</td></tr>
+    <tr><td>Tbps</td><td>兆位元/秒</td><td>1,000 Gbps</td></tr>
+  </table>
+
+  <h3>1.11–1.14 — 訊息、分段與多工</h3>
+  <div class="card">
+    <p><strong>HTTP Request-Response Cycle：</strong>瀏覽器送出 HTTP Request，伺服器回應 HTTP Response。</p>
+    <br>
+    <p><strong>Fragmentation（分段）：</strong>長訊息切成小段（Segment），加上標頭（Header）後形成 Frame 或 Packet。好處：出錯時只需重傳出錯的那個 Frame，不需重傳整個訊息。</p>
+    <br>
+    <p><strong>Multiplexing（多工）：</strong>多個主機的 Frame 混合共用同一條傳輸線路，降低每位使用者的成本。</p>
+  </div>
+
+  <h3>1.15 — EUI-48 位址（MAC 位址）</h3>
+  <div class="card">
+    <p>EUI-48 (Extended Unique Identifier) = 舊稱 <strong>MAC Address</strong>，長度 48 bits，以 6 對十六進位數字表示，用破折號分隔。</p>
+    <p style="margin-top:8px">範例：<code style="color:#7dd3fc">A1-B2-CC-92-FF-00</code></p>
+    <p style="margin-top:8px">使用於：Ethernet 802.3、Wi-Fi 802.11、Bluetooth</p>
+  </div>
+
+  <h3>1.22–1.23 — 跨網路連線與路由器</h3>
+  <div class="card">
+    <p>直接連接兩個不同的單一網路面臨三大問題：標準不同、位址重疊、連線媒介不一致。</p>
+    <p style="margin-top:8px">解決方案：<strong>Router（路由器）</strong>，舊稱 <strong>Gateway（閘道器）</strong>。路由器在不同網路間扮演目的主機或來源主機，將封包從一個 Frame 取出後放入另一個 Frame 繼續傳送。</p>
+  </div>
+
+  <h3>小型家庭網路元件</h3>
+  <div class="card">
+    <p><strong>Wireless Access Router（無線存取路由器）</strong> 包含：路由器 + 乙太網路交換器 + 無線存取點 + DHCP 伺服器 + NAT 功能</p>
+    <br>
+    <p><strong>DHCP：</strong>動態分配 IP 位址。ISP 的 DHCP 給家庭一個對外 IP；家中路由器的 DHCP 再給各設備不同的內部 IP（如 192.168.0.x）。</p>
+    <br>
+    <p><strong>NAT（網路位址轉換）：</strong>將家庭內部 IP（如 192.168.0.6）轉換為對外公共 IP（如 60.47.243.112），讓多台設備共用一個公共 IP 上網。</p>
+  </div>
+
+  <h3>1.31 — DNS</h3>
+  <div class="card">
+    <p>Domain Name System：將網域名稱（如 voyager.shidler.hawaii.edu）轉換為 IP 位址（如 128.171.17.13）。步驟：</p>
+    <br>
+    <p>① 來源主機想傳送封包給某網域名稱</p>
+    <p>② 向 DNS 伺服器查詢該名稱的 IP 位址</p>
+    <p>③ DNS 伺服器回傳對應 IP</p>
+    <p>④ 來源主機再以此 IP 傳送封包</p>
+  </div>
+</div>
+
+<!-- 分層 -->
+<div id="layers" class="section">
+  <h2>🔢 標準分層架構</h2>
+
+  <div class="layers-chart">
+    <div class="layer-row">
+      <div class="layer-num" style="background:#7c3aed;color:#fff">5</div>
+      <div class="layer-bar" style="background:#2e1065;border:1px solid #7c3aed">
+        <strong style="color:#c4b5fd">Application Layer（應用層）</strong>
+        <span style="color:#a78bfa">規範兩端應用程式的通訊格式（如 HTTP、DNS）</span>
+      </div>
+    </div>
+    <div class="layer-row">
+      <div class="layer-num" style="background:#0891b2;color:#fff">4</div>
+      <div class="layer-bar" style="background:#0c4a6e;border:1px solid #0891b2">
+        <strong style="color:#7dd3fc">Transport Layer（傳輸層）</strong>
+        <span style="color:#bae6fd">分段（Fragmentation）及其他功能（如 TCP）</span>
+      </div>
+    </div>
+    <div class="layer-row">
+      <div class="layer-num" style="background:#0d9488;color:#fff">3</div>
+      <div class="layer-bar" style="background:#042f2e;border:1px solid #0d9488">
+        <strong style="color:#5eead4">Internet Layer（網際網路層）</strong>
+        <span style="color:#99f6e4">封包跨網路傳輸，路由器運作，主標準：IP（Layer 3 / L3）</span>
+      </div>
+    </div>
+    <div class="layer-row">
+      <div class="layer-num" style="background:#2563eb;color:#fff">2</div>
+      <div class="layer-bar" style="background:#1e3a5f;border:1px solid #2563eb">
+        <strong style="color:#93c5fd">Data Link Layer（資料連結層）</strong>
+        <span style="color:#bfdbfe">Frame 在單一網路傳輸，交換器/AP 運作，標準：Ethernet 802.3、Wi-Fi 802.11、PPP（Layer 2 / L2）</span>
+      </div>
+    </div>
+    <div class="layer-row">
+      <div class="layer-num" style="background:#64748b;color:#fff">1</div>
+      <div class="layer-bar" style="background:#1e293b;border:1px solid #64748b">
+        <strong style="color:#cbd5e1">Physical Layer（實體層）</strong>
+        <span style="color:#94a3b8">傳輸媒介、接頭、訊號（Layer 1 / L1）</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:24px">Data Link vs. Internet Layer 對比</h3>
+  <table>
+    <tr><th>概念</th><th>Data Link Layer（L2）</th><th>Internet Layer（L3）</th></tr>
+    <tr><td>主要標準</td><td>Ethernet、Wi-Fi、PPP 等</td><td>IP</td></tr>
+    <tr><td>位址</td><td>EUI-48（MAC）位址</td><td>IP 位址</td></tr>
+    <tr><td>訊息單位</td><td>Frame（訊框）</td><td>Packet（封包）</td></tr>
+    <tr><td>轉發設備</td><td>Switch、Access Point</td><td>Router</td></tr>
+    <tr><td>路徑</td><td>Data Link（資料連結）</td><td>Route（路由）</td></tr>
+  </table>
+
+  <h3 style="margin-top:20px">OSI vs. TCP/IP 標準架構</h3>
+  <table>
+    <tr><th>項目</th><th>OSI</th><th>TCP/IP</th></tr>
+    <tr><td>制定機構</td><td>ISO / ITU-T</td><td>IETF</td></tr>
+    <tr><td>主導層</td><td>Physical (1)、Data Link (2)</td><td>Internet (3)、Transport (4)</td></tr>
+    <tr><td>代表標準</td><td>802.3 Ethernet、802.11 Wi-Fi、光纖</td><td>TCP、IP、DNS</td></tr>
+  </table>
+</div>
+
+<!-- Flashcard -->
+<div id="flash" class="section">
+  <h2>🃏 Flashcard — 點擊翻面</h2>
+  <p class="fc-hint">👆 點擊卡片查看答案，再次點擊翻回正面</p>
+  <div class="fc-wrap" id="fcContainer"></div>
+</div>
+
+<!-- Quiz -->
+<div id="quiz" class="section">
+  <h2>✏️ 小測驗</h2>
+  <div id="quizBox"></div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+// --- Navigation ---
+function show(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// --- Flashcards ---
+const cards = [
+  { q: 'Host（主機）', a: '任何連接到網路的電腦，包括伺服器、PC、手機、智慧手錶等' },
+  { q: 'IoT / IoE', a: 'Internet of Things / Internet of Everything — 萬物連網，任何裝置都可成為 Host' },
+  { q: 'Dotted Decimal Notation', a: 'IP 位址的表示法：32 bits 分四段，各轉為十進位，以點分隔，例 1.2.3.4' },
+  { q: 'ISP', a: 'Internet Service Provider（網際網路服務提供商），連接用戶與網際網路核心' },
+  { q: 'IaaS', a: 'Infrastructure as a Service：伺服器由 CSP 擁有，應用程式由用戶組織自行管理（如 AWS）' },
+  { q: 'SaaS', a: 'Software as a Service：伺服器和應用程式都由 CSP 擁有（如 Google Mail）' },
+  { q: 'Server Virtualization', a: '一台實體伺服器可跑多個 VM，提升 Agility（敏捷性），VM 可秒建、秒搬' },
+  { q: 'EUI-48 / MAC Address', a: 'Extended Unique Identifier，48 bits，6 對十六進位數字，用於 Ethernet/Wi-Fi/Bluetooth' },
+  { q: 'Fragmentation（分段）', a: '長訊息切成小 Segment，加 Header 成 Frame/Packet，出錯只需重傳一個 Frame' },
+  { q: 'Multiplexing（多工）', a: '多個主機的 Frame 共享同一傳輸線路，降低每人的頻寬成本' },
+  { q: 'Router（路由器）', a: '連接不同單一網路的設備，舊名 Gateway（閘道器），操作於 L3 Internet Layer' },
+  { q: 'Switch（交換器）', a: '在同一單一網路內根據 Switching Table 轉發 Frame 的設備，操作於 L2' },
+  { q: 'DNS', a: 'Domain Name System：將網域名稱轉換為 IP 位址的查詢服務（應用層協定）' },
+  { q: 'DHCP', a: 'Dynamic Host Configuration Protocol：動態分配 IP 位址給裝置' },
+  { q: 'NAT', a: 'Network Address Translation：將內部私有 IP 轉換為外部公共 IP（讓多台設備共用一個公共 IP）' },
+  { q: 'IP Packet vs Frame', a: 'Packet = IP 層訊息（跨網路傳輸）；Frame = DLL 層訊息（單一網路傳輸），Packet 封裝在 Frame 內' },
+  { q: 'PPP', a: 'Point-to-Point Protocol：點對點網路最常用的資料連結層標準' },
+  { q: 'TCP/IP 主制定機構', a: 'IETF（Internet Engineering Task Force），主導 L3/L4 標準如 TCP、IP、DNS' },
+];
+
+const fc = document.getElementById('fcContainer');
+cards.forEach(c => {
+  const el = document.createElement('div');
+  el.className = 'fc';
+  el.innerHTML = `<div class="fc-inner"><div class="fc-front">${c.q}</div><div class="fc-back">${c.a}</div></div>`;
+  el.addEventListener('click', () => el.classList.toggle('flipped'));
+  fc.appendChild(el);
+});
+
+// --- Quiz ---
+const questions = [
+  { q: '任何連接到網路的電腦稱為？', opts: ['Router','Host','Switch','Server'], ans: 1 },
+  { q: 'IP 位址總共有幾個 bits？', opts: ['8','16','32','64'], ans: 2 },
+  { q: 'IaaS 中，應用程式由誰擁有？', opts: ['CSP','用戶組織','ISP','Router'], ans: 1 },
+  { q: 'EUI-48 位址又稱為？', opts: ['IP Address','Port Number','MAC Address','DNS Name'], ans: 2 },
+  { q: '下列哪個速度最快？', opts: ['kbps','Mbps','Gbps','Tbps'], ans: 3 },
+  { q: '訊框（Frame）在哪一層傳輸？', opts: ['Physical L1','Data Link L2','Internet L3','Transport L4'], ans: 1 },
+  { q: '路由器（Router）舊名稱為？', opts: ['Switch','Hub','Gateway','Access Point'], ans: 2 },
+  { q: '「分段」(Fragmentation)的主要好處是？', opts: ['增加速度','出錯只需重傳一個 Frame','減少設備數量','提升安全性'], ans: 1 },
+  { q: 'DNS 的主要功能是？', opts: ['分配 IP 位址','網域名稱轉換為 IP','加密傳輸','切割封包'], ans: 1 },
+  { q: 'TCP/IP 架構的主要制定機構為？', opts: ['ISO','ITU-T','IETF','IEEE'], ans: 2 },
+];
+
+let qi = 0, score = 0, answered = false;
+
+function renderQuiz() {
+  const q = questions[qi];
+  document.getElementById('quizBox').innerHTML = `
+    <div class="card">
+      <p style="font-size:0.75rem;color:#64748b;margin-bottom:8px">第 ${qi+1} / ${questions.length} 題</p>
+      <p class="quiz-q">${q.q}</p>
+      <div class="quiz-opts">${q.opts.map((o,i)=>`<button onclick="pick(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
+      <div id="feedback"></div>
+      <div class="quiz-nav">
+        <button onclick="prev()" ${qi===0?'disabled':''}>← 上一題</button>
+        <button onclick="next()" ${qi===questions.length-1?'disabled':''}>下一題 →</button>
+        <span class="quiz-score">得分：${score} / ${questions.length}</span>
+      </div>
+    </div>`;
+  answered = false;
+}
+
+function pick(i) {
+  if (answered) return;
+  answered = true;
+  const q = questions[qi];
+  const btns = document.querySelectorAll('.quiz-opts button');
+  btns.forEach((b,idx) => {
+    if (idx === q.ans) b.classList.add('correct');
+    else if (idx === i) b.classList.add('wrong');
+    b.disabled = true;
+  });
+  const fb = document.getElementById('feedback');
+  if (i === q.ans) { score++; fb.className='feedback ok'; fb.textContent='✅ 正確！'; }
+  else { fb.className='feedback no'; fb.textContent=`❌ 正確答案：${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}`; }
+  document.querySelector('.quiz-score').textContent = `得分：${score} / ${questions.length}`;
+}
+
+function next() { if (qi < questions.length-1) { qi++; renderQuiz(); } }
+function prev() { if (qi > 0) { qi--; renderQuiz(); } }
+
+renderQuiz();
+</script>
+</body>
+</html>

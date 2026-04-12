@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch04 網路與安全管理 — Study Summary</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700;900&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --border: #252a38;
+    --accent: #5b8fff;
+    --accent2: #ff6b6b;
+    --accent3: #43d9ad;
+    --accent4: #ffd166;
+    --text: #e2e8f0;
+    --text-muted: #7a8499;
+    --text-dim: #4a5366;
+    --tag-bg: rgba(91,143,255,0.12);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    background: linear-gradient(135deg, #0d0f14 0%, #101828 60%, #0d1520 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 40px 48px 32px;
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .site-header .meta { font-size: 11px; letter-spacing: .14em; color: var(--text-muted); text-transform:uppercase; margin-bottom:8px; }
+  .site-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(22px,4vw,36px); font-weight:900; color:#fff; line-height:1.2; }
+  .site-header h1 span { color: var(--accent); }
+
+  /* ── TABS ── */
+  .tab-bar {
+    display: flex; gap: 4px; padding: 16px 48px 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky; top: 93px; z-index: 99;
+    overflow-x: auto; scrollbar-width: none;
+    flex-wrap: nowrap;
+  }
+  .tab-bar::-webkit-scrollbar { display:none; }
+  .tab-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 10px 18px; font-size: 13px; font-weight:500;
+    color: var(--text-muted); border-bottom: 2px solid transparent;
+    white-space: nowrap; transition: color .2s, border-color .2s;
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── LAYOUT ── */
+  .content { padding: 40px 48px 80px; max-width: 1100px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px; font-weight:700;
+    color: #fff; margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-title .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight:600;
+    background: var(--tag-bg); color: var(--accent);
+    padding: 3px 10px; border-radius: 4px;
+    border: 1px solid rgba(91,143,255,.25);
+    letter-spacing: .05em;
+  }
+
+  /* ── CARDS ── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 22px 24px;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card-icon { font-size: 22px; margin-bottom: 10px; }
+  .card-title { font-size:14px; font-weight:700; color:#fff; margin-bottom:8px; letter-spacing:.03em; }
+  .card-body { font-size:13.5px; color: var(--text-muted); line-height:1.7; }
+
+  /* ── DEFINITION LIST ── */
+  .def-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+  .def-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 20px;
+    display: grid; grid-template-columns: 160px 1fr; gap: 16px; align-items: start;
+  }
+  .def-term {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; font-weight:600; color: var(--accent);
+    padding-top: 2px;
+  }
+  .def-desc { font-size: 14px; color: var(--text-muted); }
+  .def-desc strong { color: var(--text); font-weight:600; }
+
+  /* ── TABLE ── */
+  .styled-table { width:100%; border-collapse: collapse; margin-bottom:28px; font-size:14px; }
+  .styled-table th {
+    background: var(--surface2); color: var(--accent);
+    padding: 12px 16px; text-align:left; font-weight:600;
+    border: 1px solid var(--border); font-size:12.5px; letter-spacing:.05em;
+  }
+  .styled-table td {
+    padding: 11px 16px; border: 1px solid var(--border);
+    color: var(--text-muted); vertical-align:top;
+  }
+  .styled-table tr:hover td { background: var(--surface); color: var(--text); }
+  .styled-table td strong { color: var(--text); font-weight:600; }
+  .green { color: var(--accent3) !important; font-weight:600 !important; }
+  .red { color: var(--accent2) !important; font-weight:600 !important; }
+  .yellow { color: var(--accent4) !important; font-weight:600 !important; }
+
+  /* ── FLOW CHART ── */
+  .flow { display:flex; align-items:center; gap:0; flex-wrap:wrap; margin-bottom:20px; }
+  .flow-box {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 16px; font-size:13px; font-weight:600;
+    color: var(--text); white-space:nowrap;
+  }
+  .flow-box.accent { background: rgba(91,143,255,.15); border-color: var(--accent); color: var(--accent); }
+  .flow-box.green { background: rgba(67,217,173,.1); border-color: var(--accent3); color: var(--accent3) !important; }
+  .flow-box.red-box { background: rgba(255,107,107,.1); border-color: var(--accent2); color: var(--accent2); }
+  .flow-arrow { color: var(--text-dim); font-size:18px; padding: 0 8px; }
+
+  /* ── HIGHLIGHT BOX ── */
+  .highlight-box {
+    border-radius: 10px; padding: 18px 22px;
+    margin-bottom: 20px; border-left: 3px solid;
+    font-size: 14px; line-height:1.75;
+  }
+  .highlight-box.info { background: rgba(91,143,255,.08); border-color: var(--accent); }
+  .highlight-box.warn { background: rgba(255,209,102,.08); border-color: var(--accent4); }
+  .highlight-box.success { background: rgba(67,217,173,.08); border-color: var(--accent3); }
+  .highlight-box.danger { background: rgba(255,107,107,.08); border-color: var(--accent2); }
+  .highlight-box .label { font-weight:700; font-size:12px; letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
+  .highlight-box.info .label { color: var(--accent); }
+  .highlight-box.warn .label { color: var(--accent4); }
+  .highlight-box.success .label { color: var(--accent3); }
+  .highlight-box.danger .label { color: var(--accent2); }
+
+  /* ── FORMULA / CALC BOX ── */
+  .calc-box {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px 24px; margin-bottom: 20px;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+  }
+  .calc-box .calc-title { color: var(--accent4); font-weight:600; margin-bottom:12px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; }
+  .calc-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+  .calc-row:last-child { border-bottom: none; color: var(--text); font-weight:600; }
+  .calc-row span:last-child { color: var(--accent3); }
+  .calc-row.red-val span:last-child { color: var(--accent2); }
+  .calc-row.total { color: var(--accent4); font-weight:700; font-size:14px; margin-top:6px; }
+
+  /* ── LIST ── */
+  .styled-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom:24px; }
+  .styled-list li {
+    padding: 10px 14px 10px 38px; position: relative;
+    background: var(--surface); border: 1px solid var(--border); border-radius:8px;
+    font-size: 14px; color: var(--text-muted);
+  }
+  .styled-list li::before {
+    content: attr(data-n);
+    position:absolute; left:12px; top:10px;
+    font-family: 'JetBrains Mono', monospace; font-size:11px;
+    color: var(--accent); font-weight:700;
+  }
+  .styled-list li strong { color: var(--text); }
+
+  /* ── FLASHCARD ── */
+  .fc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-bottom:32px; }
+  .flashcard {
+    perspective: 800px; height: 160px; cursor: pointer;
+  }
+  .flashcard-inner {
+    position: relative; width:100%; height:100%;
+    transform-style: preserve-3d; transition: transform .5s;
+  }
+  .flashcard:hover .flashcard-inner,
+  .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+  .flashcard-front, .flashcard-back {
+    position: absolute; inset:0; border-radius:10px;
+    backface-visibility: hidden; padding: 20px 24px;
+    display: flex; flex-direction:column; justify-content:center;
+    border: 1px solid var(--border);
+  }
+  .flashcard-front {
+    background: var(--surface);
+    font-size: 14px; font-weight:600; color: var(--text);
+  }
+  .flashcard-back {
+    background: var(--surface2);
+    transform: rotateY(180deg);
+    font-size: 13px; color: var(--text-muted);
+  }
+  .flashcard-front .q-label { font-size:10px; letter-spacing:.1em; color: var(--accent); text-transform:uppercase; margin-bottom:8px; font-weight:700; }
+  .flashcard-back .a-label { font-size:10px; letter-spacing:.1em; color: var(--accent3); text-transform:uppercase; margin-bottom:8px; font-weight:700; }
+  .flashcard-hint { font-size:11px; color: var(--text-dim); margin-top:auto; padding-top:8px; }
+
+  /* ── QUIZ ── */
+  .quiz-container { display: flex; flex-direction:column; gap: 28px; margin-bottom:40px; }
+  .quiz-item { background: var(--surface); border: 1px solid var(--border); border-radius:10px; padding: 22px 24px; }
+  .quiz-q { font-size:14.5px; font-weight:600; color:#fff; margin-bottom:16px; line-height:1.6; }
+  .quiz-q .qnum { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size:12px; display:block; margin-bottom:4px; }
+  .quiz-options { display: flex; flex-direction:column; gap:8px; }
+  .quiz-opt {
+    background: none; border: 1px solid var(--border);
+    border-radius:7px; padding: 10px 14px;
+    font-size:14px; color: var(--text-muted);
+    cursor:pointer; text-align:left;
+    font-family: 'Noto Sans TC', sans-serif;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .quiz-opt:hover { border-color: var(--accent); color: var(--text); background: rgba(91,143,255,.07); }
+  .quiz-opt.correct { border-color: var(--accent3); color: var(--accent3); background: rgba(67,217,173,.08); }
+  .quiz-opt.wrong { border-color: var(--accent2); color: var(--accent2); background: rgba(255,107,107,.08); }
+  .quiz-feedback { margin-top:12px; font-size:13px; display:none; padding: 10px 14px; border-radius:6px; }
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.ok { background: rgba(67,217,173,.08); color: var(--accent3); border: 1px solid rgba(67,217,173,.25); }
+  .quiz-feedback.bad { background: rgba(255,107,107,.08); color: var(--accent2); border: 1px solid rgba(255,107,107,.25); }
+  .quiz-score { font-size:14px; color: var(--text-muted); margin-bottom:16px; }
+  .quiz-score span { color: var(--accent4); font-weight:700; font-family:'JetBrains Mono',monospace; }
+
+  /* ── OVERVIEW TREE ── */
+  .overview { display: flex; flex-direction:column; gap:8px; margin-bottom:28px; }
+  .ov-section {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius:8px; overflow: hidden;
+  }
+  .ov-header {
+    padding: 12px 18px; cursor: pointer;
+    display: flex; justify-content:space-between; align-items:center;
+    font-weight:600; font-size:14px; color: var(--text);
+    user-select:none; transition: background .15s;
+  }
+  .ov-header:hover { background: var(--surface2); }
+  .ov-header .ov-tag { font-size:11px; color: var(--accent); font-family:'JetBrains Mono',monospace; }
+  .ov-body { padding: 0 18px 14px; display:none; }
+  .ov-body.open { display:block; }
+  .ov-body ul { list-style:none; display:flex; flex-direction:column; gap:5px; margin-top:10px; }
+  .ov-body li { font-size:13px; color: var(--text-muted); padding-left:18px; position:relative; }
+  .ov-body li::before { content:'→'; position:absolute; left:0; color: var(--text-dim); }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="meta">Business Data Networks and Security · Chapter 4</div>
+  <h1>Network and <span>Security Management</span></h1>
+</header>
+
+<nav class="tab-bar" id="tabBar">
+  <button class="tab-btn active" onclick="switchTab('overview',this)">📋 章節概覽</button>
+  <button class="tab-btn" onclick="switchTab('qos',this)">📶 QoS 指標</button>
+  <button class="tab-btn" onclick="switchTab('netdesign',this)">🔗 網路設計</button>
+  <button class="tab-btn" onclick="switchTab('security',this)">🛡️ 安全規劃</button>
+  <button class="tab-btn" onclick="switchTab('central',this)">🖥️ 集中管理</button>
+  <button class="tab-btn" onclick="switchTab('glossary',this)">📖 術語表</button>
+  <button class="tab-btn" onclick="switchTab('flashcard',this)">🃏 Flashcard</button>
+  <button class="tab-btn" onclick="switchTab('quiz',this)">✏️ 小測驗</button>
+</nav>
+
+<div class="content">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- TAB: OVERVIEW -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="tab-panel active" id="tab-overview">
+  <div class="section-title">章節概覽 <span class="badge">Ch04</span></div>
+
+  <div class="overview">
+
+    <div class="ov-section">
+      <div class="ov-header" onclick="toggleOv(this)">
+        <span>📶 Network Quality of Service (QoS)</span>
+        <span class="ov-tag">§4.2 – 4.5 ▾</span>
+      </div>
+      <div class="ov-body">
+        <ul>
+          <li>QoS 四大指標：Speed、Errors、Availability、Latency</li>
+          <li>Rated Speed vs Throughput（額定速率 vs 實際吞吐量）</li>
+          <li>Aggregate Throughput vs Individual Throughput</li>
+          <li>Jitter：延遲的變異性，影響 VoIP/視訊</li>
+          <li>Service Level Agreements (SLAs)：最壞情形保證 + 百分比時間規格</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ov-section">
+      <div class="ov-header" onclick="toggleOv(this)">
+        <span>🔗 Network Design</span>
+        <span class="ov-tag">§4.6 – 4.8 ▾</span>
+      </div>
+      <div class="ov-body">
+        <ul>
+          <li>Two-Site Traffic Analysis：對稱線路取高速方向</li>
+          <li>Three-Site Traffic Analysis：Link Q-R 需承載 Q↔R + Q↔S 流量</li>
+          <li>Three-Site with Redundancy：每對站點直連，各 Link 只需負責對應對</li>
+          <li>Momentary Traffic Peaks → Congestion / Latency / Packet Loss</li>
+          <li>解法：Overprovisioning、Priority、Reserved Capacity</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ov-section">
+      <div class="ov-header" onclick="toggleOv(this)">
+        <span>🛡️ Security Planning Principles</span>
+        <span class="ov-tag">§4.9 – 4.17 ▾</span>
+      </div>
+      <div class="ov-body">
+        <ul>
+          <li>安全是管理問題，非純技術問題</li>
+          <li>Plan-Protect-Respond Cycle</li>
+          <li>六大安全規劃原則（詳見安全規劃頁）</li>
+          <li>Target Breach Kill Chain 案例</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ov-section">
+      <div class="ov-header" onclick="toggleOv(this)">
+        <span>🖥️ Centralized Management</span>
+        <span class="ov-tag">§4.18 – 4.22 ▾</span>
+      </div>
+      <div class="ov-body">
+        <ul>
+          <li>Ping：測試主機可達性</li>
+          <li>SNMP：Manager ↔ Agent，MIB 儲存資訊，Trap 發送告警</li>
+          <li>Network Visualization Program：分析 MIB 做視覺化與 troubleshooting</li>
+          <li>SDN (Software-Defined Networking)：控制平面集中化，OpenFlow 指令</li>
+          <li>Centralized Firewall Management：Policy Server → Firewall-Specific Rules</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="highlight-box danger">
+    <div class="label">⚠️ Target Breach 案例重點</div>
+    Target 資料洩漏的四大失敗：① 承包商安全薄弱（Fazio Mechanical）② 魚叉式網路釣魚 ③ 免費防毒軟體 ④ 忽視明確警告（FireEye 系統發出 Kill Chain 早期警示但被忽略）。
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- TAB: QoS -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-qos">
+  <div class="section-title">QoS 指標 <span class="badge">§4.2–4.5</span></div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">Speed（速度）</div>
+      <div class="card-body">以 <strong>bps</strong> 衡量的傳輸速率。分為 <strong>Rated Speed</strong>（廠商聲稱或標準定義）與 <strong>Throughput</strong>（實際使用者可得速率）。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">Errors（錯誤率）</div>
+      <div class="card-body">不正確的 bits 或 packets 佔總數的百分比。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🟢</div>
+      <div class="card-title">Availability（可用性）</div>
+      <div class="card-body">網路對使用者可用的時間百分比。<br>PSTN ≈ <strong>99.999%</strong>（Five Nines）。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⏱️</div>
+      <div class="card-title">Latency（延遲）</div>
+      <div class="card-body">封包傳遞的時間延遲，以 <strong>ms</strong> 衡量。<br>1 ms = 0.001 s；1 µs = 10⁻⁶ s。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📉</div>
+      <div class="card-title">Jitter（抖動）</div>
+      <div class="card-body">延遲的<strong>變異性</strong>（variability in latency）。對 VoIP、視訊、互動應用影響巨大；對 e-mail 等傳統應用影響不大。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📋</div>
+      <div class="card-title">SLA</div>
+      <div class="card-body">服務等級協議，以<strong>最壞情形</strong>規格（worst-case）表示，例如「不低於 100 Mbps，99.5% 的時間」。企業用戶比家用用戶更需要高保證。</div>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:18px;">Throughput 層次關係</div>
+  <div class="def-list">
+    <div class="def-item">
+      <div class="def-term">Rated Speed</div>
+      <div class="def-desc">最外圈 — 技術標準或廠商宣稱值（最大值）</div>
+    </div>
+    <div class="def-item">
+      <div class="def-term">Aggregate Throughput</div>
+      <div class="def-desc">網路區段<strong>所有使用者共享</strong>的總實際吞吐量</div>
+    </div>
+    <div class="def-item">
+      <div class="def-term">Individual Throughput</div>
+      <div class="def-desc">最內圈 — 單一使用者從 Aggregate 中分得的份額</div>
+    </div>
+  </div>
+
+  <div class="highlight-box warn">
+    <div class="label">📝 計算範例（Speed Knowledge Check）</div>
+    AP 額定 300 Mbps，Throughput ≈ 50% → Aggregate = <strong>150 Mbps</strong><br>
+    5 人同時使用（含自己）→ Individual = 150 ÷ 5 = <strong>30 Mbps</strong>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- TAB: NETWORK DESIGN -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-netdesign">
+  <div class="section-title">網路設計 <span class="badge">§4.6–4.8</span></div>
+
+  <div class="section-title" style="font-size:18px;">Two-Site 流量分析</div>
+  <div class="highlight-box info">
+    <div class="label">原則</div>
+    大多數傳輸線為<strong>對稱</strong>（symmetric）速率。若兩方向需求不同，以<strong>較高速率</strong>決定線路規格。<br>
+    例：A→B 需 100 Mbps、B→A 需 1 Gbps → 選 <strong>1 Gbps</strong> 線路。
+  </div>
+
+  <div class="section-title" style="font-size:18px;">Three-Site 流量分析（串聯 Q→R→S）</div>
+  <table class="styled-table">
+    <thead>
+      <tr><th>流量對</th><th>需求頻寬</th><th>影響的 Link</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Q ↔ R</td><td>45 Mbps</td><td>Link Q-R 直接承載</td></tr>
+      <tr><td>R ↔ S</td><td>2 Gbps</td><td>Link R-S 直接承載</td></tr>
+      <tr><td>Q ↔ S</td><td>300 Mbps</td><td>必須<strong>穿越 Link Q-R 與 Link R-S</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="calc-box">
+    <div class="calc-title">Link 頻寬計算</div>
+    <div class="calc-row"><span>Link Q-R 所需頻寬</span><span>45 + 300 = 345 Mbps</span></div>
+    <div class="calc-row"><span>Link R-S 所需頻寬</span><span>2000 + 300 = 2300 Mbps（2.3 Gbps）</span></div>
+  </div>
+
+  <div class="section-title" style="font-size:18px;">Three-Site with Redundancy（全互連）</div>
+  <div class="highlight-box success">
+    <div class="label">優點</div>
+    每對站點有<strong>直連線路</strong>，各條 Link 只承載該對的流量 → 不需疊加轉送流量，但需要更多線路。
+    <br><br>Line 1 (Q-S): 300 Mbps / Line 2 (Q-R): 45 Mbps / Line 3 (R-S): 2 Gbps
+  </div>
+
+  <div class="section-title" style="font-size:18px;">Momentary Traffic Peaks 應對策略</div>
+  <table class="styled-table">
+    <thead>
+      <tr><th>方法</th><th>說明</th><th>評價</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong class="yellow">Overprovisioning</strong></td>
+        <td>提供遠超正常需求的容量</td>
+        <td>簡單有效，但<span class="red">浪費頻寬成本</span></td>
+      </tr>
+      <tr>
+        <td><strong class="yellow">Priority</strong></td>
+        <td>延遲敏感流量（VoIP）優先；容忍延遲流量（e-mail）等待</td>
+        <td>更有效率，但<span class="red">需大量人工設定</span></td>
+      </tr>
+      <tr>
+        <td><strong class="yellow">Reserved Capacity</strong></td>
+        <td>為特定流量保留固定容量，其他流量競用剩餘</td>
+        <td>保證關鍵流量，其他流量可能受限</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- TAB: SECURITY -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-security">
+  <div class="section-title">安全規劃原則 <span class="badge">§4.9–4.17</span></div>
+
+  <div class="highlight-box info">
+    <div class="label">核心觀念</div>
+    安全是<strong>管理</strong>問題，不是純技術問題。公司應遵循 <strong>Plan → Protect → Respond</strong> 循環，並持續了解威脅環境（Threat Environment）。
+  </div>
+
+  <div class="flow" style="margin-bottom:24px;">
+    <div class="flow-box">Threat Environment</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box accent">Plan</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box green">Protect</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box red-box">Respond</div>
+    <div class="flow-arrow">↻</div>
+  </div>
+
+  <div class="section-title" style="font-size:18px;">六大安全規劃原則</div>
+
+  <ul class="styled-list">
+    <li data-n="1"><strong>Risk Analysis（風險分析）</strong>：目標不是消除所有風險，而是將風險降至<strong>經濟合理</strong>的水準。需比較對策效益與對策成本（Annual Value = 無對策支出 − 有對策支出 − 對策年費）。</li>
+    <li data-n="2"><strong>Comprehensive Security（全面安全）</strong>：封閉<strong>所有</strong>攻擊管道（Avenues of Attack），一個開口就足以讓攻擊者得逞。</li>
+    <li data-n="3"><strong>Defense in Depth（縱深防禦）</strong>：多道對策串聯，<strong>任一</strong>對策成功即可阻擋攻擊。邊境防火牆失守 → Host 防火牆接手 → 漏洞修補 → 加密資料。</li>
+    <li data-n="4"><strong>Weakest Link Analysis（最弱環節分析）</strong>：單一對策由多元件組成，<strong>全部</strong>元件必須正常才能有效。攻擊者只需找到最弱環節即可突破。</li>
+    <li data-n="5"><strong>Single Points of Takeover（保護單一接管點）</strong>：集中控制伺服器（如防火牆控制服務器）若被攻陷，可控制所有下游設備 → 應特別加強保護。</li>
+    <li data-n="6"><strong>Least Permissions（最小權限）</strong>：每位已驗證使用者<strong>只</strong>授予完成工作所需的最低權限，防止越權操作。Authentication（身份驗證）≠ Authorization（授權）。</li>
+  </ul>
+
+  <div class="section-title" style="font-size:18px;">Defense in Depth vs Weakest Link 比較</div>
+  <table class="styled-table">
+    <thead><tr><th>面向</th><th>Defense in Depth（縱深防禦）</th><th>Weakest Link（最弱環節）</th></tr></thead>
+    <tbody>
+      <tr><td>對策數量</td><td class="green">多個（Several）</td><td class="red">單一（One）</td></tr>
+      <tr><td>成功條件</td><td class="green">任一成功即可阻擋攻擊</td><td class="red">所有元件必須成功</td></tr>
+      <tr><td>攻防立場</td><td>防守者角度</td><td>攻擊者尋找突破口角度</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title" style="font-size:18px;">Risk Analysis 計算範例</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div>
+      <div class="calc-box">
+        <div class="calc-title">對策 A — 建議採用 ✅</div>
+        <div class="calc-row"><span>每次損害</span><span>$500,000（原$1M，減半）</span></div>
+        <div class="calc-row"><span>年攻擊成功機率</span><span>20%</span></div>
+        <div class="calc-row"><span>年預期損害</span><span>$100,000</span></div>
+        <div class="calc-row"><span>對策年費</span><span>$20,000</span></div>
+        <div class="calc-row"><span>年總支出</span><span>$120,000</span></div>
+        <div class="calc-row total"><span>年節省（Value）</span><span>$80,000</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="calc-box">
+        <div class="calc-title">對策 B — 不建議 ❌</div>
+        <div class="calc-row"><span>每次損害</span><span>$1,000,000（不變）</span></div>
+        <div class="calc-row"><span>年攻擊成功機率</span><span>15%（原20%，降低）</span></div>
+        <div class="calc-row"><span>年預期損害</span><span>$150,000</span></div>
+        <div class="calc-row"><span>對策年費</span><span>$60,000</span></div>
+        <div class="calc-row"><span>年總支出</span><span>$210,000</span></div>
+        <div class="calc-row total red-val"><span>年損失（Value）</span><span>−$10,000</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- TAB: CENTRALIZED MANAGEMENT -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-central">
+  <div class="section-title">集中管理 <span class="badge">§4.18–4.22</span></div>
+
+  <div class="section-title" style="font-size:18px;">Ping</div>
+  <div class="highlight-box info">
+    <div class="label">用途</div>
+    測試主機或路由器是否可達（reachable）。傳送 ICMP Echo Request，等待 Echo Reply。<br>
+    範例：<code style="color:var(--accent3);font-family:'JetBrains Mono',monospace">ping -n 20 -4 www.ibm.com</code>　→ 顯示 RTT 最小/最大/平均值。
+  </div>
+
+  <div class="section-title" style="font-size:18px;">SNMP (Simple Network Management Protocol)</div>
+  <div class="def-list">
+    <div class="def-item">
+      <div class="def-term">Manager</div>
+      <div class="def-desc">網路管理軟體，發送 <strong>Get/Set</strong> 等 SNMP 指令，接收 Response 與 Trap。</div>
+    </div>
+    <div class="def-item">
+      <div class="def-term">Agent</div>
+      <div class="def-desc">裝置上的管理代理程式，存取本機 MIB，回覆指令，並在異常時主動送出 <strong>Trap（告警）</strong>。</div>
+    </div>
+    <div class="def-item">
+      <div class="def-term">MIB</div>
+      <div class="def-desc">Management Information Base — 儲存裝置管理資訊的資料庫，位於<strong>被管理裝置端</strong>（非 Manager 端）。</div>
+    </div>
+    <div class="def-item">
+      <div class="def-term">Trap</div>
+      <div class="def-desc">Agent <strong>主動</strong>向 Manager 發出的告警訊息（非 polling）。</div>
+    </div>
+    <div class="def-item">
+      <div class="def-term">Network Visualization</div>
+      <div class="def-desc">分析 MIB 資料，圖形化呈現網路拓樸、進行故障排除。SNMP 互動已標準化，但視覺化程式功能<strong>不標準化</strong>（保留開發彈性）。</div>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:18px;">SDN vs 傳統網路管理</div>
+  <table class="styled-table">
+    <thead><tr><th>面向</th><th>Traditional</th><th>SDN</th></tr></thead>
+    <tbody>
+      <tr><td>控制方式</td><td>各裝置<strong>手動個別設定</strong></td><td>透過 <strong>SDN Controller</strong> 集中設定</td></tr>
+      <tr><td>控制協定</td><td>廠商專屬 CLI / SNMP</td><td><strong>OpenFlow</strong>（標準化）</td></tr>
+      <tr><td>靈活性</td><td>低（需逐台操作）</td><td>高（程式化控制）</td></tr>
+      <tr><td>適用裝置</td><td>Switch / Router / AP</td><td>SDN Switch / Router / AP</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title" style="font-size:18px;">Centralized Firewall Management</div>
+  <div class="highlight-box success">
+    <div class="label">架構</div>
+    <strong>Firewall Policy Server</strong> 持有統一 Policy Database → 自動轉換為各防火牆專屬規則（Firewall-Specific Rules）下發。<br><br>
+    好處：降低人工成本、加快部署速度，確保政策一致性。<br>
+    風險：Policy Server 本身成為 <strong>Single Point of Takeover</strong>，需特別保護。
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- TAB: GLOSSARY -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-glossary">
+  <div class="section-title">術語表 <span class="badge">Glossary</span></div>
+  <div class="def-list">
+    <div class="def-item"><div class="def-term">QoS</div><div class="def-desc">Quality of Service — 量化的網路效能指標集合</div></div>
+    <div class="def-item"><div class="def-term">Rated Speed</div><div class="def-desc">技術標準或廠商聲稱的速率上限</div></div>
+    <div class="def-item"><div class="def-term">Throughput</div><div class="def-desc">使用者實際可獲得的資料傳輸速率</div></div>
+    <div class="def-item"><div class="def-term">Aggregate T/P</div><div class="def-desc">網路區段中所有使用者可共享的總吞吐量</div></div>
+    <div class="def-item"><div class="def-term">Individual T/P</div><div class="def-desc">單一使用者從 Aggregate Throughput 分得的份額</div></div>
+    <div class="def-item"><div class="def-term">Latency</div><div class="def-desc">封包從來源到目的端的傳遞時間延遲（ms）</div></div>
+    <div class="def-item"><div class="def-term">Jitter</div><div class="def-desc">延遲的不穩定性（variability）；VoIP/視訊的主要敵人</div></div>
+    <div class="def-item"><div class="def-term">SLA</div><div class="def-desc">Service Level Agreement — 服務等級協議，以最壞情形保證品質</div></div>
+    <div class="def-item"><div class="def-term">Overprovisioning</div><div class="def-desc">提供遠超正常需求的容量以吸收瞬間流量高峰</div></div>
+    <div class="def-item"><div class="def-term">Kill Chain</div><div class="def-desc">攻擊成功所需的連鎖步驟；打斷任一環節即可防禦</div></div>
+    <div class="def-item"><div class="def-term">Risk Analysis</div><div class="def-desc">比較對策效益與成本，決定是否採用對策</div></div>
+    <div class="def-item"><div class="def-term">Defense in Depth</div><div class="def-desc">多道對策串聯，任一成功即阻擋攻擊</div></div>
+    <div class="def-item"><div class="def-term">Weakest Link</div><div class="def-desc">單一對策中最脆弱的環節；攻擊者的突破點</div></div>
+    <div class="def-item"><div class="def-term">Single Point of Takeover</div><div class="def-desc">被攻陷後可控制其他所有裝置的集中控制點</div></div>
+    <div class="def-item"><div class="def-term">Least Permissions</div><div class="def-desc">每位使用者僅獲得完成工作所需的最小授權</div></div>
+    <div class="def-item"><div class="def-term">Authentication</div><div class="def-desc">身份驗證 — 確認「你是誰」</div></div>
+    <div class="def-item"><div class="def-term">Authorization</div><div class="def-desc">授權 — 確認「你可以做什麼」</div></div>
+    <div class="def-item"><div class="def-term">SNMP</div><div class="def-desc">Simple Network Management Protocol — 收集裝置管理資訊的標準協定</div></div>
+    <div class="def-item"><div class="def-term">MIB</div><div class="def-desc">Management Information Base — 儲存於被管理裝置的資訊資料庫</div></div>
+    <div class="def-item"><div class="def-term">SNMP Trap</div><div class="def-desc">Agent 主動向 Manager 發出的異常告警</div></div>
+    <div class="def-item"><div class="def-term">SDN</div><div class="def-desc">Software-Defined Networking — 控制平面集中化，以 OpenFlow 指令管理轉送平面</div></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- TAB: FLASHCARD -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-flashcard">
+  <div class="section-title">Flashcard <span class="badge">Hover to flip</span></div>
+  <div class="fc-grid">
+
+    <div class="flashcard">
+      <div class="flashcard-inner">
+        <div class="flashcard-front"><div class="q-label">Q</div>Jitter 的定義是什麼？</div>
+        <div class="flashcard-back"><div class="a-label">A</div>Jitter 是<strong>延遲的變異性</strong>（variability in latency）。封包間隔不一致，使 VoIP/視訊呈現「抖動」感。</div>
+      </div>
+    </div>
+
+    <div class="flashcard">
+      <div class="flashcard-inner">
+        <div class="flashcard-front"><div class="q-label">Q</div>SLA 的保證是以什麼形式表達？</div>
+        <div class="flashcard-back"><div class="a-label">A</div><strong>最壞情形規格</strong>（Worst-case）：如最低 100 Mbps 的 99.5% 時間保證。100% 合規成本過高，不實際。</div>
+      </div>
+    </div>
+
+    <div class="flashcard">
+      <div class="flashcard-inner">
+        <div class="flashcard-front"><div class="q-label">Q</div>Three-Site 串聯中，Link Q-R 需承載哪些流量？</div>
+        <div class="flashcard-back"><div class="a-label">A</div>① Q↔R 直接流量 + ② Q↔S 轉送流量。兩者相加為 Link Q-R 所需頻寬（例：45 + 300 = 345 Mbps）。</div>
+      </div>
+    </div>
+
+    <div class="flashcard">
+      <div class="flashcard-inner">
+        <div class="flashcard-front"><div class="q-label">Q</div>Defense in Depth vs Weakest Link 的成功條件？</div>
+        <div class="flashcard-back"><div class="a-label">A</div>• Defense in Depth：<strong>任一</strong>對策成功即阻擋攻擊<br>• Weakest Link：<strong>所有</strong>元件必須正常，攻擊者只需突破最弱點</div>
+      </div>
+    </div>
+
+    <div class="flashcard">
+      <div class="flashcard-inner">
+        <div class="flashcard-front"><div class="q-label">Q</div>SNMP 中 MIB 儲存在哪裡？</div>
+        <div class="flashcard-back"><div class="a-label">A</div>MIB 儲存在<strong>被管理裝置（Agent 端）</strong>，不是在 Manager 端。Manager 透過 Get/Set 指令讀寫 MIB。</div>
+      </div>
+    </div>
+
+    <div class="flashcard">
+      <div class="flashcard-inner">
+        <div class="flashcard-front"><div class="q-label">Q</div>Overprovisioning 的缺點是什麼？</div>
+        <div class="flashcard-back"><div class="a-label">A</div>浪費傳輸線路容量（wasteful of transmission line capacity），需付出多餘的頻寬費用。</div>
+      </div>
+    </div>
+
+    <div class="flashcard">
+      <div class="flashcard-inner">
+        <div class="flashcard-front"><div class="q-label">Q</div>最小權限原則（Least Permissions）的核心概念？</div>
+        <div class="flashcard-back"><div class="a-label">A</div>每位已驗證使用者<strong>只授予完成工作所需的最低權限</strong>，防止越權操作危害安全。</div>
+      </div>
+    </div>
+
+    <div class="flashcard">
+      <div class="flashcard-inner">
+        <div class="flashcard-front"><div class="q-label">Q</div>SDN 使用什麼協定控制轉送裝置？</div>
+        <div class="flashcard-back"><div class="a-label">A</div><strong>OpenFlow</strong>。SDN Controller 透過 OpenFlow 指令集中控制 SDN Switch / Router / Access Point 的轉送行為。</div>
+      </div>
+    </div>
+
+    <div class="flashcard">
+      <div class="flashcard-inner">
+        <div class="flashcard-front"><div class="q-label">Q</div>Risk Analysis：何時應採用對策？</div>
+        <div class="flashcard-back"><div class="a-label">A</div>當對策的<strong>年節省金額（Annual Value）> 0</strong> 時採用。<br>計算：無對策年損 − 有對策年損 − 對策年費 &gt; 0。</div>
+      </div>
+    </div>
+
+    <div class="flashcard">
+      <div class="flashcard-inner">
+        <div class="flashcard-front"><div class="q-label">Q</div>Comprehensive Security 的意義？</div>
+        <div class="flashcard-back"><div class="a-label">A</div>封閉<strong>所有</strong>攻擊管道（All Avenues of Attack）。攻擊者只需找到一個未防禦的入口即可入侵。</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- TAB: QUIZ -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-quiz">
+  <div class="section-title">小測驗 <span class="badge">10 題</span></div>
+  <div class="quiz-score">得分：<span id="scoreDisplay">0</span> / <span id="totalDisplay">0</span></div>
+
+  <div class="quiz-container" id="quizContainer">
+
+    <div class="quiz-item" data-correct="B">
+      <div class="quiz-q"><span class="qnum">Q1</span>Wi-Fi AP 額定 300 Mbps，Throughput 約 50%，目前有 5 人同時傳輸。你的個人吞吐量約為？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'A')">A. 60 Mbps</button>
+        <button class="quiz-opt" onclick="answer(this,'B')">B. 30 Mbps</button>
+        <button class="quiz-opt" onclick="answer(this,'C')">C. 150 Mbps</button>
+        <button class="quiz-opt" onclick="answer(this,'D')">D. 15 Mbps</button>
+      </div>
+      <div class="quiz-feedback">300×50%=150 Mbps (Aggregate)，5人平分 = <strong>30 Mbps</strong>。</div>
+    </div>
+
+    <div class="quiz-item" data-correct="C">
+      <div class="quiz-q"><span class="qnum">Q2</span>下列哪項是 Jitter 的定義？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'A')">A. 封包遺失率</button>
+        <button class="quiz-opt" onclick="answer(this,'B')">B. 平均延遲時間</button>
+        <button class="quiz-opt" onclick="answer(this,'C')">C. 延遲的變異性</button>
+        <button class="quiz-opt" onclick="answer(this,'D')">D. 頻寬使用率</button>
+      </div>
+      <div class="quiz-feedback">Jitter = <strong>variability in latency</strong>（延遲的變異性）。</div>
+    </div>
+
+    <div class="quiz-item" data-correct="A">
+      <div class="quiz-q"><span class="qnum">Q3</span>Three-Site 串聯（Q-R-S）中，Q↔S 流量需求 300 Mbps，Q↔R 直接需求 45 Mbps。Link Q-R 需要多少頻寬？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'A')">A. 345 Mbps</button>
+        <button class="quiz-opt" onclick="answer(this,'B')">B. 300 Mbps</button>
+        <button class="quiz-opt" onclick="answer(this,'C')">C. 45 Mbps</button>
+        <button class="quiz-opt" onclick="answer(this,'D')">D. 2045 Mbps</button>
+      </div>
+      <div class="quiz-feedback">Link Q-R 需承載 Q↔R(45) + Q↔S(300) = <strong>345 Mbps</strong>。</div>
+    </div>
+
+    <div class="quiz-item" data-correct="D">
+      <div class="quiz-q"><span class="qnum">Q4</span>SLA 通常以哪種方式表達保證？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'A')">A. 平均速率保證</button>
+        <button class="quiz-opt" onclick="answer(this,'B')">B. 最佳情形保證</button>
+        <button class="quiz-opt" onclick="answer(this,'C')">C. 100% 時間保證</button>
+        <button class="quiz-opt" onclick="answer(this,'D')">D. 最壞情形規格（Worst-case）</button>
+      </div>
+      <div class="quiz-feedback">SLA 以 <strong>Worst-case specification</strong> 表達，例如「99.5% 的時間不低於 100 Mbps」。</div>
+    </div>
+
+    <div class="quiz-item" data-correct="B">
+      <div class="quiz-q"><span class="qnum">Q5</span>下列哪個說法正確描述 Defense in Depth？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'A')">A. 所有對策都必須成功才能阻擋攻擊</button>
+        <button class="quiz-opt" onclick="answer(this,'B')">B. 多道對策串聯，任一成功即可阻擋攻擊</button>
+        <button class="quiz-opt" onclick="answer(this,'C')">C. 只需一個最強的對策</button>
+        <button class="quiz-opt" onclick="answer(this,'D')">D. 攻擊者只需突破最弱環節</button>
+      </div>
+      <div class="quiz-feedback">Defense in Depth：多對策串聯，<strong>任一成功</strong>即阻擋（選項D是 Weakest Link 的描述）。</div>
+    </div>
+
+    <div class="quiz-item" data-correct="C">
+      <div class="quiz-q"><span class="qnum">Q6</span>SNMP 中，MIB（Management Information Base）位於？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'A')">A. SNMP Manager 的資料庫伺服器</button>
+        <button class="quiz-opt" onclick="answer(this,'B')">B. Network Visualization Program</button>
+        <button class="quiz-opt" onclick="answer(this,'C')">C. 被管理裝置（Agent 端）</button>
+        <button class="quiz-opt" onclick="answer(this,'D')">D. 防火牆控制伺服器</button>
+      </div>
+      <div class="quiz-feedback">MIB 位於<strong>被管理裝置端</strong>，由 Agent 維護，Manager 透過指令存取。</div>
+    </div>
+
+    <div class="quiz-item" data-correct="A">
+      <div class="quiz-q"><span class="qnum">Q7</span>Risk Analysis 中，對策年節省值（Annual Value）如何計算？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'A')">A. 無對策年損 − 有對策年損 − 對策年費</button>
+        <button class="quiz-opt" onclick="answer(this,'B')">B. 損害金額 × 攻擊機率</button>
+        <button class="quiz-opt" onclick="answer(this,'C')">C. 對策年費 − 損害金額</button>
+        <button class="quiz-opt" onclick="answer(this,'D')">D. 有對策年損 − 無對策年損</button>
+      </div>
+      <div class="quiz-feedback">Annual Value = (無對策Net outlay) − (有對策Net outlay) = <strong>$200K − $120K = $80K</strong>（對策A範例）。</div>
+    </div>
+
+    <div class="quiz-item" data-correct="D">
+      <div class="quiz-q"><span class="qnum">Q8</span>SDN 使用哪種標準協定從 Controller 控制轉送裝置？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'A')">A. SNMP</button>
+        <button class="quiz-opt" onclick="answer(this,'B')">B. ICMP</button>
+        <button class="quiz-opt" onclick="answer(this,'C')">C. SLA</button>
+        <button class="quiz-opt" onclick="answer(this,'D')">D. OpenFlow</button>
+      </div>
+      <div class="quiz-feedback">SDN Controller 透過 <strong>OpenFlow</strong> 指令集中控制 SDN Switch / Router / AP。</div>
+    </div>
+
+    <div class="quiz-item" data-correct="B">
+      <div class="quiz-q"><span class="qnum">Q9</span>Protecting Single Points of Takeover 的安全意義是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'A')">A. 讓所有防火牆各自獨立運作</button>
+        <button class="quiz-opt" onclick="answer(this,'B')">B. 集中控制伺服器若被攻陷，攻擊者可控制所有下游裝置，須特別保護</button>
+        <button class="quiz-opt" onclick="answer(this,'C')">C. 降低防火牆數量以節省成本</button>
+        <button class="quiz-opt" onclick="answer(this,'D')">D. 消除所有單點故障</button>
+      </div>
+      <div class="quiz-feedback">集中控制點（如 Firewall Control Server）是 <strong>Single Point of Takeover</strong>，被攻陷即影響所有下游，需重點保護。</div>
+    </div>
+
+    <div class="quiz-item" data-correct="C">
+      <div class="quiz-q"><span class="qnum">Q10</span>以下哪項不屬於 SNMP Agent 的功能？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'A')">A. 回覆 Manager 的 Get 指令</button>
+        <button class="quiz-opt" onclick="answer(this,'B')">B. 主動發送 Trap（告警）</button>
+        <button class="quiz-opt" onclick="answer(this,'C')">C. 產生網路視覺化拓樸圖</button>
+        <button class="quiz-opt" onclick="answer(this,'D')">D. 維護本機 MIB 資料</button>
+      </div>
+      <div class="quiz-feedback">網路視覺化（Network Visualization）是獨立程式，分析 MIB 資料後呈現；不是 Agent 的功能。</div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+// Tabs
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Overview accordion
+function toggleOv(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+  const tag = header.querySelector('.ov-tag');
+  tag.textContent = tag.textContent.includes('▾')
+    ? tag.textContent.replace('▾','▸')
+    : tag.textContent.replace('▸','▾');
+}
+
+// Flashcard click
+document.querySelectorAll('.flashcard').forEach(fc => {
+  fc.addEventListener('click', () => fc.classList.toggle('flipped'));
+});
+
+// Quiz
+let score = 0, answered = 0;
+const total = document.querySelectorAll('.quiz-item').length;
+document.getElementById('totalDisplay').textContent = total;
+
+function answer(btn, chosen) {
+  const item = btn.closest('.quiz-item');
+  if (item.dataset.done) return;
+  item.dataset.done = 'true';
+  const correct = item.dataset.correct;
+  const opts = item.querySelectorAll('.quiz-opt');
+  const fb = item.querySelector('.quiz-feedback');
+  opts.forEach(o => { o.disabled = true; });
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    fb.classList.add('show','ok');
+    fb.innerHTML = '✅ 正確！ ' + fb.innerHTML;
+    score++;
+  } else {
+    btn.classList.add('wrong');
+    opts.forEach(o => {
+      if (o.textContent.startsWith(correct)) o.classList.add('correct');
+    });
+    fb.classList.add('show','bad');
+    fb.innerHTML = '❌ 錯誤。正確答案是 ' + correct + '。<br>' + fb.innerHTML;
+  }
+  answered++;
+  document.getElementById('scoreDisplay').textContent = score;
+}
+</script>
+</body>
+</html>

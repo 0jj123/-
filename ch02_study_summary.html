@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch02 — Network Standards｜互動學習摘要</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0f14;
+  --surface: #161921;
+  --surface2: #1e2230;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #e8eaf0;
+  --muted: #7a8099;
+  --accent: #4f8ef7;
+  --accent2: #34d4a0;
+  --accent3: #f7a24f;
+  --accent4: #c97af7;
+  --red: #f75f5f;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* Header */
+.hero{
+  background: linear-gradient(135deg, #0d1829 0%, #0d1420 40%, #0f1a1a 100%);
+  border-bottom:1px solid var(--border2);
+  padding:2.5rem 2rem 2rem;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:300px;height:300px;
+  background:radial-gradient(circle, rgba(79,142,247,0.12) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem}
+.hero-title{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;line-height:1.2;margin-bottom:.5rem}
+.hero-title span{color:var(--accent)}
+.hero-sub{font-size:13px;color:var(--muted);margin-top:.4rem}
+
+/* Tab Bar */
+.tab-bar{
+  display:flex;gap:2px;padding:.75rem 2rem 0;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  overflow-x:auto;scrollbar-width:none;
+}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab{
+  padding:.6rem 1.1rem;font-size:13px;font-family:'Syne',sans-serif;font-weight:600;
+  border:none;background:none;cursor:pointer;color:var(--muted);
+  border-bottom:2px solid transparent;white-space:nowrap;
+  transition:all .15s;border-radius:var(--radius-sm) var(--radius-sm) 0 0;
+}
+.tab:hover{color:var(--text);background:var(--surface2)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* Main */
+.main{max-width:900px;margin:0 auto;padding:2rem}
+.pane{display:none}.pane.active{display:block}
+
+/* Cards */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;
+}
+.card-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.card p{font-size:13.5px;line-height:1.8;color:rgba(232,234,240,.75)}
+.card p+p{margin-top:.5rem}
+strong{color:var(--text);font-weight:500}
+
+/* Badge */
+.badge{display:inline-block;font-size:11px;padding:2px 9px;border-radius:20px;font-weight:600;margin:2px}
+.b-blue{background:rgba(79,142,247,.15);color:#7ab4f9;border:1px solid rgba(79,142,247,.25)}
+.b-teal{background:rgba(52,212,160,.12);color:#3fd9a8;border:1px solid rgba(52,212,160,.2)}
+.b-orange{background:rgba(247,162,79,.12);color:#f9b86a;border:1px solid rgba(247,162,79,.2)}
+.b-purple{background:rgba(201,122,247,.12);color:#d49bf9;border:1px solid rgba(201,122,247,.2)}
+.b-red{background:rgba(247,95,95,.12);color:#f98888;border:1px solid rgba(247,95,95,.2)}
+
+/* Table */
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:rgba(232,234,240,.75);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+
+/* Section heading */
+.sec-h{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text);margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:.5rem}
+.sec-h::before{content:'';display:block;width:4px;height:18px;background:var(--accent);border-radius:2px;flex-shrink:0}
+
+/* Encap */
+.encap{display:flex;flex-direction:column;gap:6px;margin:1rem 0}
+.encap-row{display:flex;align-items:center;gap:6px;font-size:12px;flex-wrap:wrap}
+.encap-row .layer-label{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;color:var(--muted);width:90px;flex-shrink:0}
+.e-piece{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;white-space:nowrap}
+.e-http{background:rgba(201,122,247,.15);color:#d49bf9;border:1px solid rgba(201,122,247,.2)}
+.e-tcp{background:rgba(52,212,160,.12);color:#3fd9a8;border:1px solid rgba(52,212,160,.2)}
+.e-ip{background:rgba(79,142,247,.15);color:#7ab4f9;border:1px solid rgba(79,142,247,.25)}
+.e-eth{background:rgba(247,162,79,.12);color:#f9b86a;border:1px solid rgba(247,162,79,.2)}
+.e-sig{background:rgba(120,120,120,.1);color:var(--muted);border:1px solid var(--border)}
+.encap-arrow{color:var(--muted);font-size:11px;padding-left:94px}
+
+/* Term Grid */
+.term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem}
+.term-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.9rem 1rem;transition:.15s}
+.term-card:hover{border-color:var(--border2);background:var(--surface2)}
+.term-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--accent);margin-bottom:.35rem}
+.term-def{font-size:12px;color:var(--muted);line-height:1.65}
+
+/* Flashcard */
+.fc-progress{height:3px;background:var(--surface2);border-radius:2px;margin-bottom:1.5rem}
+.fc-bar{height:100%;background:var(--accent);border-radius:2px;transition:width .3s}
+.fc-card{
+  background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);
+  padding:1.75rem 2rem;min-height:160px;margin-bottom:1rem;cursor:pointer;
+  transition:.2s;position:relative;overflow:hidden;
+}
+.fc-card:hover{border-color:rgba(79,142,247,.3);background:var(--surface2)}
+.fc-card::after{content:'點擊翻面';position:absolute;bottom:1rem;right:1.25rem;font-size:11px;color:var(--muted)}
+.fc-question{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:1rem;line-height:1.4}
+.fc-answer{font-size:13.5px;color:var(--accent2);line-height:1.75;display:none;border-top:1px solid var(--border);padding-top:1rem;margin-top:.5rem}
+.fc-count{font-size:12px;color:var(--muted);margin-bottom:.75rem;text-align:right;font-family:'Syne',sans-serif}
+.fc-nav{display:flex;gap:.5rem;flex-wrap:wrap}
+.btn{
+  padding:.55rem 1.1rem;font-size:12px;font-family:'Syne',sans-serif;font-weight:700;
+  border:1px solid var(--border2);background:none;color:var(--muted);border-radius:var(--radius-sm);
+  cursor:pointer;transition:.15s;
+}
+.btn:hover{background:var(--surface2);color:var(--text);border-color:rgba(255,255,255,.2)}
+.btn.primary{background:rgba(79,142,247,.12);border-color:rgba(79,142,247,.3);color:var(--accent)}
+.btn.primary:hover{background:rgba(79,142,247,.2)}
+
+/* Quiz */
+.quiz-q{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:1.25rem;line-height:1.5}
+.quiz-opt{
+  display:block;width:100%;text-align:left;padding:.8rem 1.1rem;margin-bottom:.5rem;
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  background:var(--surface);cursor:pointer;font-size:13px;color:rgba(232,234,240,.8);
+  transition:.15s;font-family:'Noto Sans TC',sans-serif;
+}
+.quiz-opt:hover:not(:disabled){background:var(--surface2);border-color:var(--border2);color:var(--text)}
+.quiz-opt.correct{background:rgba(52,212,160,.1);border-color:rgba(52,212,160,.4);color:#3fd9a8}
+.quiz-opt.wrong{background:rgba(247,95,95,.1);border-color:rgba(247,95,95,.3);color:#f98888}
+.quiz-result{font-size:13px;font-weight:600;margin-top:.75rem;padding:.6rem 1rem;border-radius:var(--radius-sm)}
+.quiz-result.ok{background:rgba(52,212,160,.1);color:#3fd9a8}
+.quiz-result.no{background:rgba(247,95,95,.08);color:#f98888}
+.score-display{text-align:center;padding:2rem;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius)}
+.score-big{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">Business Data Networks and Security, 10th Ed.</div>
+  <div class="hero-title">Chapter 2 — <span>Network Standards</span></div>
+  <div class="hero-sub">互動學習摘要｜章節概覽 · 協定分層 · 術語 · 封裝 · Flashcard · 小測驗</div>
+</div>
+
+<div style="background:var(--surface);border-bottom:1px solid var(--border)">
+<div class="tab-bar">
+  <button class="tab active" onclick="switchTab('overview',this)">📋 章節概覽</button>
+  <button class="tab" onclick="switchTab('layers',this)">🔢 協定分層</button>
+  <button class="tab" onclick="switchTab('terms',this)">📖 術語表</button>
+  <button class="tab" onclick="switchTab('encap',this)">📦 封裝流程</button>
+  <button class="tab" onclick="switchTab('flashcard',this)">🃏 Flashcard</button>
+  <button class="tab" onclick="switchTab('quiz',this)">✏️ 小測驗</button>
+</div>
+</div>
+
+<div class="main">
+
+<!-- OVERVIEW -->
+<div id="pane-overview" class="pane active">
+  <div class="sec-h">章節概覽</div>
+
+  <div class="card">
+    <div class="card-title">🌐 網際網路的起源 — ARPANET & NWG</div>
+    <p>ARPANET 由四個大學節點組成，透過 50 kbps 線路與 <strong>IMP（Interface Message Processor）</strong>連接。</p>
+    <p>NWG（Network Working Group）制定規範，稱為 <strong>RFC（Requests For Comments）</strong>，採<strong>平等主義（egalitarian）</strong>、rough consensus 原則，後演變為 IETF。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚖️ Standard = Protocol</div>
+    <p>網路標準（協定）規範訊息的語意（semantics）、語法（syntax）、順序（order）、可靠性（reliability）與連線導向性（connection orientation）。</p>
+    <p>標準促進<strong>互通性（Interoperability）</strong>→ 競爭 → 降低價格 → 提升功能。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📨 訊息排序 — HTTP Request/Response Cycle</div>
+    <p><span class="badge b-blue">HTTP</span> 伺服器在收到 HTTP Request 之前<strong>不得</strong>傳送 Response。</p>
+    <p><span class="badge b-teal">TCP</span> 三向交握開啟連線（SYN → SYN/ACK → ACK），四向交握關閉（FIN/ACK 雙向），遺失時逾時重傳。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🧱 訊息語法（Message Syntax）</div>
+    <p>訊息由 <strong>Header + Data Field（+ Trailer）</strong> 組成。Header/Trailer 含多個 Fields。</p>
+    <p>Ethernet 用固定 octet 長度分隔欄位；HTTP 用 <strong>CRLF</strong> 分隔欄位、空白行分隔 Header 與 Body。</p>
+    <p><span class="badge b-orange">octet</span> = 8 bits = 1 byte。網路協定以 octet 計算欄位長度。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💡 編碼（Encoding）</div>
+    <p><span class="badge b-purple">ASCII</span> 7-bit 編碼英數字與控制字元（CR = 0x0D, LF = 0x0A），第 8 bit 閒置。</p>
+    <p><span class="badge b-blue">二進位</span> n bits → 2ⁿ 種狀態。IPv4 = 32 bits → 約 43 億個地址。</p>
+    <p><span class="badge b-orange">語音</span> 麥克風 → 類比訊號（analog） → Codec → 數位訊號 → 傳輸電路。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📦 封裝（Encapsulation）</div>
+    <p>來源主機從上到下逐層包裹：HTTP Message → TCP Segment → IP Packet → Ethernet Frame → 實體訊號。目的主機反向<strong>解封裝（Decapsulation）</strong>。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔌 連線導向性 vs 可靠性對比</div>
+    <div class="tbl-wrap" style="margin-top:.75rem">
+    <table>
+      <thead><tr><th>協定</th><th>連線導向</th><th>可靠性</th><th>特點</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge b-purple">HTTP</span></td><td>Connectionless</td><td>Unreliable</td><td>輕量，無 ACK</td></tr>
+        <tr><td><span class="badge b-teal">TCP</span></td><td>Connection-oriented</td><td>Reliable</td><td>有 ACK、重傳、開關連線</td></tr>
+        <tr><td><span class="badge b-blue">UDP</span></td><td>Connectionless</td><td>Unreliable</td><td>快速，適合即時串流</td></tr>
+        <tr><td><span class="badge b-blue">IP</span></td><td>Connectionless</td><td>Unreliable</td><td>best-effort，錯誤封包直接丟棄</td></tr>
+        <tr><td><span class="badge b-orange">Ethernet</span></td><td>Connectionless</td><td>Unreliable</td><td>Data Link 層，FCS 偵錯</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- LAYERS -->
+<div id="pane-layers" class="pane">
+  <div class="sec-h">協定分層詳覽</div>
+
+  <div class="tbl-wrap" style="margin-bottom:1rem">
+  <table>
+    <thead><tr><th>層</th><th>名稱</th><th>協定</th><th>傳輸單位</th><th>廣域功能</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge b-purple">5</span></td><td>Application</td><td>HTTP, SMTP, FTP</td><td>Message</td><td>應用程式互通</td></tr>
+      <tr><td><span class="badge b-teal">4</span></td><td>Transport</td><td>TCP / UDP</td><td>Segment / Datagram</td><td>端對端傳輸可靠性</td></tr>
+      <tr><td><span class="badge b-blue">3</span></td><td>Internet</td><td>IP</td><td>Packet</td><td>跨網路路由傳輸</td></tr>
+      <tr><td><span class="badge b-orange">2</span></td><td>Data Link</td><td>Ethernet</td><td>Frame</td><td>單一網路內傳輸</td></tr>
+      <tr><td><span class="badge b-red">1</span></td><td>Physical</td><td>—</td><td>Bits / Signal</td><td>相鄰設備訊號傳輸</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🤝 TCP 三向交握（Three-Way Open）</div>
+    <p>① A → B：<strong>SYN</strong>（同步請求連線）<br>② B → A：<strong>SYN/ACK</strong>（確認 A 的 SYN，同時發自己的 SYN）<br>③ A → B：<strong>ACK</strong>（確認 B 的 SYN）→ 連線建立完成</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">👋 TCP 四向關閉（Four-Way Close）</div>
+    <p>A 送 FIN → B 回 ACK → B 可繼續送 Data → B 送 FIN → A 回 ACK → 連線關閉。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔢 Port Numbers</div>
+    <p><span class="badge b-teal">Well-Known Port（0–1023）</span> 伺服器使用：HTTP=80、HTTPS=443、SMTP=25、FTP=20/21</p>
+    <p><span class="badge b-blue">Ephemeral Port（1024–4999）</span> 客戶端每次連線隨機指派，用完即棄</p>
+    <p style="margin-top:.5rem"><strong>Socket = IP Address : Port Number</strong>（例如 60.171.18.22:2707）</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🖧 Ethernet Frame 欄位</div>
+    <p>Dest EUI-48 (48 bits) → Src EUI-48 (48 bits) → Tag Protocol ID（選，2B）→ Tag Control（選，2B）→ Length (2B) → LLC Subheader (8B) → <em>Packet（Data Field）</em> → PAD → <strong>FCS / Frame Check Sequence (4B)</strong></p>
+    <p style="margin-top:.5rem"><span class="badge b-red">FCS</span> 位於 Trailer，用於錯誤偵測。EUI-48 舊稱 MAC Address。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🌐 IPv4 Packet 重點欄位</div>
+    <p>Version(4b) · Header Length(4b) · Diff-Serv(8b) · Total Length(16b) · Identification(16b) · Flags(3b) · Fragment Offset(13b) · TTL(8b) · <strong>Protocol(8b)</strong> · <strong>Header Checksum(16b)</strong> · Src IP(32b) · Dest IP(32b)</p>
+    <p style="margin-top:.5rem"><span class="badge b-red">Unreliable</span> Header Checksum 偵測到錯誤 → 封包直接丟棄，不重傳。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📡 TCP Segment Flag Fields</div>
+    <p>Flag Fields 共 6 個，各佔 1 bit，值 1 = set，值 0 = not set。<br>包含：<span class="badge b-teal">SYN</span> <span class="badge b-teal">ACK</span> <span class="badge b-teal">FIN</span> 以及其他三個控制旗標。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 UDP Datagram 欄位</div>
+    <p>Source Port(16b) · Dest Port(16b) · UDP Length(16b) · UDP Checksum(16b) · Data Field</p>
+    <p style="margin-top:.4rem">比 TCP 簡單許多，無連線建立、無 ACK、無重傳。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔤 HTTP Request 格式</div>
+    <p><code style="font-size:12px;color:var(--accent2)">GET /path HTTP/1.1[CRLF]<br>Host: hostname[CRLF]<br>Connection: Keep-Alive[CRLF]<br>[CRLF]（空白行，結束 Header）</code></p>
+    <p style="margin-top:.5rem">HTTP 用 <strong>CRLF（CR=0x0D, LF=0x0A）</strong>分隔欄位，空白行後為 Body。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📥 HTTP Response 格式</div>
+    <p><code style="font-size:12px;color:var(--accent2)">HTTP/1.1 200 OK[CRLF]<br>Date: ...[CRLF]<br>Content-type: text/plain[CRLF]<br>[CRLF]<br>（File content）</code></p>
+  </div>
+</div>
+
+<!-- TERMS -->
+<div id="pane-terms" class="pane">
+  <div class="sec-h">核心術語表</div>
+  <div class="term-grid">
+    <div class="term-card"><div class="term-name">RFC</div><div class="term-def">Requests For Comments，IETF 網路標準文件，平等主義 + rough consensus 制定</div></div>
+    <div class="term-card"><div class="term-name">IETF</div><div class="term-def">Internet Engineering Task Force，由 NWG 演變而來的網路標準組織</div></div>
+    <div class="term-card"><div class="term-name">Interoperability</div><div class="term-def">不同廠商設備依相同協定能互相運作的能力（互通性）</div></div>
+    <div class="term-card"><div class="term-name">Protocol / Standard</div><div class="term-def">規範訊息語意、語法、順序、可靠性與連線性的規則集合</div></div>
+    <div class="term-card"><div class="term-name">Segment</div><div class="term-def">TCP 的訊息單位；應用層訊息被分段後的片段</div></div>
+    <div class="term-card"><div class="term-name">Datagram</div><div class="term-def">UDP 的訊息單位</div></div>
+    <div class="term-card"><div class="term-name">Packet</div><div class="term-def">IP 層的訊息單位，含 IP Header + TCP Segment（Data Field）</div></div>
+    <div class="term-card"><div class="term-name">Frame</div><div class="term-def">Data Link 層（Ethernet）的訊息單位，含 Eth Header + Packet + FCS Trailer</div></div>
+    <div class="term-card"><div class="term-name">Encapsulation</div><div class="term-def">將一個訊息放入另一個訊息的 Data Field 中（逐層包裹）</div></div>
+    <div class="term-card"><div class="term-name">SYN / ACK / FIN</div><div class="term-def">TCP Flag Fields（各 1 bit）：SYN=同步、ACK=確認、FIN=結束連線</div></div>
+    <div class="term-card"><div class="term-name">Socket</div><div class="term-def">IP Address : Port Number 的組合，唯一識別一個通訊端點</div></div>
+    <div class="term-card"><div class="term-name">Well-Known Port</div><div class="term-def">0–1023，伺服器使用。HTTP=80、SMTP=25、FTP=20/21</div></div>
+    <div class="term-card"><div class="term-name">Ephemeral Port</div><div class="term-def">1024–4999，客戶端每次連線隨機指派（短暫的）</div></div>
+    <div class="term-card"><div class="term-name">EUI-48 / MAC Address</div><div class="term-def">48-bit Data Link 層位址，用於 Ethernet Frame 識別設備</div></div>
+    <div class="term-card"><div class="term-name">Octet</div><div class="term-def">8 bits = 1 byte；網路協定常以 octet 計算欄位長度</div></div>
+    <div class="term-card"><div class="term-name">CRLF</div><div class="term-def">Carriage Return (0x0D) + Line Feed (0x0A)，HTTP 欄位分隔符</div></div>
+    <div class="term-card"><div class="term-name">Best-effort (IP)</div><div class="term-def">IP 不保證封包送達；錯誤封包直接丟棄，不重傳</div></div>
+    <div class="term-card"><div class="term-name">Connection-oriented</div><div class="term-def">有明確開啟/關閉連線（TCP）；Connectionless 則無（HTTP、UDP、IP）</div></div>
+    <div class="term-card"><div class="term-name">FCS</div><div class="term-def">Frame Check Sequence，Ethernet Trailer 的錯誤偵測欄位（4 octets）</div></div>
+    <div class="term-card"><div class="term-name">Codec</div><div class="term-def">類比電訊號 ↔ 數位訊號的轉換晶片（Coder/Decoder）</div></div>
+    <div class="term-card"><div class="term-name">ASCII</div><div class="term-def">7-bit 文字編碼；英數字、標點、控制字元（共 128 種）</div></div>
+    <div class="term-card"><div class="term-name">Header Checksum</div><div class="term-def">IPv4 封包中用於偵測 Header 錯誤的欄位；錯誤則丟棄封包</div></div>
+    <div class="term-card"><div class="term-name">LLC Subheader</div><div class="term-def">Ethernet Frame Data Field 開頭的 8 octet 子標頭（Logical Link Control）</div></div>
+    <div class="term-card"><div class="term-name">IMP</div><div class="term-def">Interface Message Processor，ARPANET 的路由節點設備</div></div>
+  </div>
+</div>
+
+<!-- ENCAP -->
+<div id="pane-encap" class="pane">
+  <div class="sec-h">封裝流程（Source Host 下行）</div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:1.5rem">應用層訊息從 L5 開始，每往下一層被包入更大的訊息單位，最終轉為實體訊號送出。</p>
+
+  <div class="encap">
+    <div class="encap-row">
+      <span class="layer-label">L5 Application</span>
+      <span class="e-piece e-http">HTTP Message</span>
+    </div>
+    <div class="encap-arrow">↓ 封裝入 TCP Segment（Data Field）</div>
+    <div class="encap-row">
+      <span class="layer-label">L4 Transport</span>
+      <span class="e-piece e-http">HTTP Message</span>
+      <span class="e-piece e-tcp">TCP Hdr</span>
+    </div>
+    <div class="encap-arrow">↓ 封裝入 IP Packet（Data Field）</div>
+    <div class="encap-row">
+      <span class="layer-label">L3 Internet</span>
+      <span class="e-piece e-http">HTTP Message</span>
+      <span class="e-piece e-tcp">TCP Hdr</span>
+      <span class="e-piece e-ip">IP Hdr</span>
+    </div>
+    <div class="encap-arrow">↓ 封裝入 Ethernet Frame（Data Field）</div>
+    <div class="encap-row">
+      <span class="layer-label">L2 Data Link</span>
+      <span class="e-piece e-eth">Eth Hdr</span>
+      <span class="e-piece e-ip">IP Hdr</span>
+      <span class="e-piece e-tcp">TCP Hdr</span>
+      <span class="e-piece e-http">HTTP Msg</span>
+      <span class="e-piece e-eth">FCS Trlr</span>
+    </div>
+    <div class="encap-arrow">↓ 轉換為實體訊號（Physical Layer）</div>
+    <div class="encap-row">
+      <span class="layer-label">L1 Physical</span>
+      <span class="e-piece e-sig">0101101010111001... （電/光/無線訊號）</span>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1.5rem">
+    <div class="card-title">🔄 目的主機反向解封裝</div>
+    <p>L1 收訊號 → L2 讀 Eth Header/FCS，取出 Packet → L3 讀 IP Header，取出 Segment → L4 讀 TCP Header，取出 HTTP Message → L5 應用程式處理。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 各層訊息尺寸概念</div>
+    <div class="tbl-wrap" style="margin-top:.75rem">
+    <table>
+      <thead><tr><th>層</th><th>訊息名稱</th><th>主要 Header 欄位數</th><th>備註</th></tr></thead>
+      <tbody>
+        <tr><td>L5</td><td>HTTP Message</td><td>數個關鍵字欄位</td><td>CRLF 分隔，空白行結束 Header</td></tr>
+        <tr><td>L4</td><td>TCP Segment</td><td>20 bytes（固定最小）</td><td>含 SYN/ACK/FIN Flag、Sequence/ACK Number</td></tr>
+        <tr><td>L3</td><td>IP Packet</td><td>20 bytes（固定最小）</td><td>每列 32 bits，含 Checksum</td></tr>
+        <tr><td>L2</td><td>Ethernet Frame</td><td>Hdr ≥14B + FCS 4B</td><td>EUI-48 位址各 48 bits</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔁 二進位轉換快速複習</div>
+    <p>位元數 n → 可表示 <strong>2ⁿ</strong> 種值。<br>
+    8 bits = 256 種 · 16 bits = 65,536 種 · 32 bits = 4,294,967,296 種（IPv4 地址數量）<br><br>
+    二進位 → 十進位：各位元值 × 對應位值加總（1·128 + 0·64 + 1·32 ...）<br>
+    十進位 → 二進位：從最大位值開始貪心減法，直到餘數為 0。</p>
+  </div>
+</div>
+
+<!-- FLASHCARD -->
+<div id="pane-flashcard" class="pane">
+  <div class="sec-h">Flashcard</div>
+  <div class="fc-progress"><div class="fc-bar" id="fc-bar" style="width:5.5%"></div></div>
+  <div class="fc-count" id="fc-count">1 / 18</div>
+  <div class="fc-card" id="fc-card" onclick="revealFC()">
+    <div class="fc-question" id="fc-q">載入中...</div>
+    <div class="fc-answer" id="fc-a"></div>
+  </div>
+  <div class="fc-nav">
+    <button class="btn" onclick="prevFC()">← 上一題</button>
+    <button class="btn primary" onclick="revealFC()" id="fc-reveal-btn">顯示答案</button>
+    <button class="btn" onclick="nextFC()">下一題 →</button>
+    <button class="btn" onclick="shuffleFC()">🔀 隨機</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="pane-quiz" class="pane">
+  <div class="sec-h">小測驗（10 題）</div>
+  <div class="fc-progress"><div class="fc-bar" id="quiz-bar" style="width:0%"></div></div>
+  <div id="quiz-area"></div>
+  <div style="display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap">
+    <button class="btn primary" id="quiz-next-btn" onclick="nextQuiz()" style="display:none">下一題 →</button>
+    <button class="btn" onclick="resetQuiz()">重新開始</button>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+// ---- TABS ----
+function switchTab(id,btn){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ---- FLASHCARDS ----
+const cards=[
+  {q:"什麼是 RFC？由誰制定？",a:"Requests For Comments，由 NWG（後為 IETF）制定的網路標準文件，採平等主義（egalitarian）與 rough consensus 原則。"},
+  {q:"TCP 三向交握的完整步驟？",a:"① A → B：SYN（同步請求）\n② B → A：SYN/ACK（確認 A 的 SYN + 自己的 SYN）\n③ A → B：ACK（確認 B 的 SYN）→ 連線建立。"},
+  {q:"TCP 四向關閉的步驟？",a:"A 送 FIN → B 回 ACK → B 可繼續送 Data → B 送 FIN → A 回 ACK → 雙方連線關閉。"},
+  {q:"Encapsulation（封裝）的定義？",a:"將一個訊息放入另一個訊息的 Data Field 中。例如：HTTP message 放入 TCP segment 的 Data Field。"},
+  {q:"Socket 的定義與格式？",a:"Socket = IP Address : Port Number，唯一識別一個通訊端點。例如 60.171.18.22:2707（客戶端）或 1.33.17.13:80（伺服器）。"},
+  {q:"Well-Known Port 的範圍與例子？",a:"0–1023，伺服器使用。HTTP=80、HTTPS=443、SMTP=25、FTP=20/21。"},
+  {q:"Ephemeral Port 的範圍與特性？",a:"通常 1024–4999，客戶端每次連線隨機指派，連線結束後即可重用。"},
+  {q:"EUI-48 是什麼？",a:"Extended Unique Identifier 48-bit，即 MAC Address，用於 Ethernet Frame 的 Data Link 層位址識別，各 48 bits。"},
+  {q:"為什麼說 IP 是 best-effort、unreliable？",a:"IP 層不保證封包送達；Header Checksum 偵測到錯誤時，封包直接丟棄，不重傳。可靠性由上層 TCP 負責。"},
+  {q:"HTTP 與 TCP 在連線與可靠性上的差異？",a:"HTTP：Connectionless + Unreliable（輕量，無 ACK）\nTCP：Connection-oriented + Reliable（有 ACK、重傳、三向交握）"},
+  {q:"Ethernet Frame 的 FCS 欄位用途與大小？",a:"Frame Check Sequence，4 octets，位於 Frame 尾部（Trailer），用於錯誤偵測（Error Detection）。"},
+  {q:"IPv4 Packet 中 Header Checksum 的作用？",a:"偵測 IP Header 是否有位元錯誤；若有錯誤，封包直接被丟棄（這是 IP unreliable 的原因）。"},
+  {q:"n bits 能表示幾種狀態？IPv4 有幾個位元？",a:"2ⁿ 種狀態。IPv4 = 32 bits → 2³² = 4,294,967,296（約 43 億）個地址。"},
+  {q:"Codec 的功能是什麼？",a:"Coder/Decoder，將麥克風輸出的類比（analog）電訊號轉換為數位二進位訊號，或反向轉換，用於語音傳輸。"},
+  {q:"HTTP Request Message 的語法格式？",a:"GET /path HTTP/1.1[CRLF]\nHost: hostname[CRLF]\nConnection: Keep-Alive[CRLF]\n[CRLF]（空白行代表 Header 結束）\n每行格式：keyword: value[CRLF]"},
+  {q:"CRLF 的十六進位碼各是什麼？",a:"CR（Carriage Return）= 0x0D（13 decimal）\nLF（Line Feed）= 0x0A（10 decimal）\nWindows 用 CRLF；Unix 只用 LF；舊 Mac 只用 CR。"},
+  {q:"TCP Segment 中 Flag Fields 的特性？",a:"共 6 個 1-bit 欄位（Flag Fields），值 1 = set（啟用），值 0 = not set。包含 SYN、ACK、FIN 及其他三個旗標。"},
+  {q:"UDP Datagram 的欄位結構？",a:"Source Port(16b)、Destination Port(16b)、UDP Length(16b)、UDP Checksum(16b)、Data Field。比 TCP 精簡，無連線、無 ACK、無重傳。"},
+];
+
+let fcIdx=0,fcList=[...cards],fcShown=false;
+
+function updateFC(){
+  const c=fcList[fcIdx];
+  document.getElementById('fc-q').textContent=c.q;
+  const a=document.getElementById('fc-a');
+  a.style.display='none';
+  a.textContent=c.a;
+  document.getElementById('fc-count').textContent=(fcIdx+1)+' / '+fcList.length;
+  document.getElementById('fc-bar').style.width=((fcIdx+1)/fcList.length*100)+'%';
+  document.getElementById('fc-reveal-btn').textContent='顯示答案';
+  fcShown=false;
+}
+
+function revealFC(){
+  const a=document.getElementById('fc-a');
+  fcShown=!fcShown;
+  a.style.display=fcShown?'block':'none';
+  document.getElementById('fc-reveal-btn').textContent=fcShown?'隱藏答案':'顯示答案';
+}
+function nextFC(){fcIdx=(fcIdx+1)%fcList.length;updateFC();}
+function prevFC(){fcIdx=(fcIdx-1+fcList.length)%fcList.length;updateFC();}
+function shuffleFC(){
+  for(let i=fcList.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [fcList[i],fcList[j]]=[fcList[j],fcList[i]];
+  }
+  fcIdx=0;updateFC();
+}
+updateFC();
+
+// ---- QUIZ ----
+const quizData=[
+  {q:"TCP 屬於 TCP/IP 模型的哪一層？",opts:["Application Layer","Transport Layer","Internet Layer","Data Link Layer"],ans:1},
+  {q:"HTTP 的連線特性為何？",opts:["Connection-oriented + Reliable","Connectionless + Reliable","Connectionless + Unreliable","Connection-oriented + Unreliable"],ans:2},
+  {q:"Ethernet Frame 哪個欄位用於錯誤偵測？",opts:["LLC Subheader","Length Field","Frame Check Sequence (FCS)","Tag Protocol ID"],ans:2},
+  {q:"Socket 的正確格式為何？",opts:["IP Address / Port","IP Address : Port Number","MAC Address : Port","IP Address @ Port"],ans:1},
+  {q:"TCP 三向交握的第二個訊息是什麼？",opts:["SYN","SYN/ACK","ACK","FIN/ACK"],ans:1},
+  {q:"IPv4 有幾個位元，可表示多少個地址？",opts:["16 bits，65,536 個","32 bits，約 43 億個","64 bits，更多","128 bits，極多"],ans:1},
+  {q:"Well-Known Port Number 的範圍？",opts:["1–1024","0–1023","1024–4999","5000 以上"],ans:1},
+  {q:"Encapsulation 的正確定義是？",opts:["將訊息加密傳送","將訊息放入另一訊息的 Data Field","將訊息切分成多個片段","將訊息壓縮以節省頻寬"],ans:1},
+  {q:"UDP 的訊息單位稱為？",opts:["Segment","Packet","Datagram","Frame"],ans:2},
+  {q:"IP 層 best-effort 的意思是？",opts:["保證送達但可能延遲","優先傳送重要封包","不保證送達，封包可能被丟棄","會自動重傳遺失的封包"],ans:2},
+];
+
+let qIdx=0,score=0,qAnswered=false;
+
+function renderQuiz(){
+  const q=quizData[qIdx];
+  let html=`<div class="card"><div class="quiz-q">${qIdx+1}. ${q.q}</div>`;
+  q.opts.forEach((o,i)=>{
+    html+=`<button class="quiz-opt" id="qo-${i}" onclick="answerQuiz(${i})">${'ABCD'[i]}. ${o}</button>`;
+  });
+  html+=`<div id="qresult"></div></div>`;
+  document.getElementById('quiz-area').innerHTML=html;
+  document.getElementById('quiz-next-btn').style.display='none';
+  document.getElementById('quiz-bar').style.width=((qIdx)/quizData.length*100)+'%';
+  qAnswered=false;
+}
+
+function answerQuiz(i){
+  if(qAnswered)return;
+  qAnswered=true;
+  const q=quizData[qIdx];
+  document.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
+  if(i===q.ans){
+    document.getElementById('qo-'+i).classList.add('correct');
+    score++;
+    document.getElementById('qresult').className='quiz-result ok';
+    document.getElementById('qresult').textContent='✓ 正確！';
+  } else {
+    document.getElementById('qo-'+i).classList.add('wrong');
+    document.getElementById('qo-'+q.ans).classList.add('correct');
+    document.getElementById('qresult').className='quiz-result no';
+    document.getElementById('qresult').textContent='✗ 錯誤，正確答案為 '+'ABCD'[q.ans]+'. '+q.opts[q.ans];
+  }
+  document.getElementById('quiz-next-btn').style.display='inline-block';
+  document.getElementById('quiz-bar').style.width=(((qIdx+1)/quizData.length)*100)+'%';
+  if(qIdx===quizData.length-1) document.getElementById('quiz-next-btn').textContent='查看成績';
+}
+
+function nextQuiz(){
+  qIdx++;
+  if(qIdx>=quizData.length){
+    const pct=Math.round(score/quizData.length*100);
+    const msg=pct>=80?'🎉 優秀！':pct>=60?'👍 不錯！':'📚 繼續加油！';
+    document.getElementById('quiz-area').innerHTML=`
+      <div class="score-display">
+        <div class="score-big">${score} / ${quizData.length}</div>
+        <div style="font-size:2rem;margin:.5rem 0">${pct}%</div>
+        <div style="font-size:15px;color:var(--muted);margin-top:.5rem">${msg}</div>
+      </div>`;
+    document.getElementById('quiz-next-btn').style.display='none';
+  } else {
+    renderQuiz();
+  }
+}
+
+function resetQuiz(){qIdx=0;score=0;renderQuiz();}
+renderQuiz();
+</script>
+</body>
+</html>

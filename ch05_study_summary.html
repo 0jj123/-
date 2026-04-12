@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch05 — Ethernet Switched LANs</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&family=Bebas+Neue&display=swap');
+
+  :root {
+    --bg: #0a0c10;
+    --bg2: #0f1117;
+    --bg3: #161b24;
+    --card: #141820;
+    --border: #1e2535;
+    --accent: #00c6ff;
+    --accent2: #ff6b35;
+    --accent3: #7fff6b;
+    --accent4: #ffcc00;
+    --text: #d4dde8;
+    --text-dim: #6b7a94;
+    --text-bright: #eaf2ff;
+    --red: #ff4f5e;
+    --purple: #a78bfa;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Noto Sans TC', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,12,16,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 24px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all .2s;
+    letter-spacing: .03em;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .nav-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: .12em;
+    margin-right: 16px;
+    white-space: nowrap;
+  }
+
+  /* ── PAGES ── */
+  .page { display: none; padding: 32px 24px 80px; max-width: 1100px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 48px 0 40px;
+    position: relative;
+  }
+  .hero-chapter {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 7vw, 80px);
+    color: var(--text-bright);
+    letter-spacing: .06em;
+    line-height: 1;
+  }
+  .hero-title span { color: var(--accent); }
+  .hero-sub {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--text-dim);
+    letter-spacing: .04em;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 36px;
+  }
+  .hero-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 16px;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .2s, transform .2s;
+  }
+  .hero-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .hero-card-icon { font-size: 22px; margin-bottom: 8px; }
+  .hero-card-title { font-size: 13px; font-weight: 700; color: var(--text-bright); }
+  .hero-card-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 40px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(0,198,255,.08);
+    border: 1px solid rgba(0,198,255,.2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: .1em;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin-bottom: 14px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card p, .card li {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.75;
+  }
+  .card ul { padding-left: 18px; }
+  .card li { margin-bottom: 4px; }
+
+  /* ── TABLE ── */
+  .tbl-wrap { overflow-x: auto; margin-bottom: 14px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  th {
+    background: rgba(0,198,255,.08);
+    color: var(--accent);
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid var(--border);
+    letter-spacing: .03em;
+  }
+  td {
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .tag-blue { background: rgba(0,198,255,.12); color: var(--accent); border: 1px solid rgba(0,198,255,.25); }
+  .tag-orange { background: rgba(255,107,53,.12); color: var(--accent2); border: 1px solid rgba(255,107,53,.25); }
+  .tag-green { background: rgba(127,255,107,.12); color: var(--accent3); border: 1px solid rgba(127,255,107,.25); }
+  .tag-yellow { background: rgba(255,204,0,.12); color: var(--accent4); border: 1px solid rgba(255,204,0,.25); }
+  .tag-red { background: rgba(255,79,94,.12); color: var(--red); border: 1px solid rgba(255,79,94,.25); }
+  .tag-purple { background: rgba(167,139,250,.12); color: var(--purple); border: 1px solid rgba(167,139,250,.25); }
+
+  /* ── KEY BADGE ── */
+  .key { color: var(--accent4); font-weight: 700; }
+  .imp { color: var(--accent2); font-weight: 700; }
+  .warn { color: var(--red); font-weight: 700; }
+  .ok { color: var(--accent3); font-weight: 700; }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: rgba(0,198,255,.05);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 14px;
+    font-size: 13.5px;
+  }
+  .callout.warn { border-color: var(--red); background: rgba(255,79,94,.05); }
+  .callout.tip { border-color: var(--accent3); background: rgba(127,255,107,.05); }
+  .callout.note { border-color: var(--accent4); background: rgba(255,204,0,.05); }
+  .callout-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    opacity: .7;
+  }
+
+  /* ── FLOW ── */
+  .flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0;
+  }
+  .flow-node {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--text-bright);
+  }
+  .flow-arr { color: var(--text-dim); font-size: 18px; }
+
+  /* ── FLASHCARD ── */
+  .fc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .fc {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    cursor: pointer;
+    position: relative;
+    min-height: 120px;
+  }
+  .fc:hover { border-color: var(--accent); }
+  .fc-q {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 10px;
+  }
+  .fc-a {
+    font-size: 13.5px;
+    color: var(--text-dim);
+    display: none;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+    margin-top: 6px;
+  }
+  .fc.open .fc-a { display: block; color: var(--accent3); }
+  .fc-hint {
+    position: absolute;
+    bottom: 10px;
+    right: 14px;
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+  }
+
+  /* ── QUIZ ── */
+  .quiz-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; margin-bottom: 14px; }
+  .quiz-q { font-size: 14.5px; color: var(--text-bright); font-weight: 600; margin-bottom: 14px; }
+  .quiz-opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 6px;
+    border: 1px solid var(--border);
+    transition: background .15s;
+    font-size: 13.5px;
+  }
+  .quiz-opt:hover { background: rgba(0,198,255,.05); border-color: var(--accent); }
+  .quiz-opt.correct { background: rgba(127,255,107,.08); border-color: var(--accent3); color: var(--accent3); }
+  .quiz-opt.wrong { background: rgba(255,79,94,.08); border-color: var(--red); color: var(--red); }
+  .quiz-opt.disabled { pointer-events: none; }
+  .quiz-letter {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    min-width: 20px;
+    color: var(--accent);
+    padding-top: 1px;
+  }
+  .quiz-exp {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--text-dim);
+    display: none;
+    padding: 10px 14px;
+    background: rgba(255,255,255,.03);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent4);
+  }
+  .quiz-exp.show { display: block; }
+  .quiz-score {
+    background: var(--card);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    display: none;
+    margin-top: 20px;
+  }
+  .quiz-score-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    color: var(--accent);
+    letter-spacing: .06em;
+  }
+
+  /* ── TERM ── */
+  .term-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+  .term-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .term-name {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .term-def { font-size: 13px; color: var(--text); }
+
+  /* ── MISC ── */
+  .divider { height: 1px; background: var(--border); margin: 28px 0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* scroll */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2e3a4e; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">CH05</div>
+  <div class="nav-tab active" data-page="overview">📋 章節概覽</div>
+  <div class="nav-tab" data-page="physical">🔌 Physical Layer</div>
+  <div class="nav-tab" data-page="datalink">📦 Data Link Layer</div>
+  <div class="nav-tab" data-page="advanced">⚙️ Advanced Switch</div>
+  <div class="nav-tab" data-page="security">🛡️ Security</div>
+  <div class="nav-tab" data-page="glossary">📖 術語表</div>
+  <div class="nav-tab" data-page="flashcard">🃏 Flashcard</div>
+  <div class="nav-tab" data-page="quiz">✅ 小測驗</div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE: OVERVIEW -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page active" id="page-overview">
+  <div class="hero">
+    <div class="hero-chapter">Chapter 05 · Business Data Networks and Security</div>
+    <div class="hero-title">Ethernet <span>(802.3)</span><br>Switched LANs</div>
+    <div class="hero-sub">IEEE 802.3 Working Group · Local Area Network</div>
+    <div class="hero-grid">
+      <div class="hero-card" onclick="goPage('physical')">
+        <div class="hero-card-icon">🔌</div>
+        <div class="hero-card-title">Physical Layer</div>
+        <div class="hero-card-sub">UTP / 光纖 / 訊號傳輸</div>
+      </div>
+      <div class="hero-card" onclick="goPage('datalink')">
+        <div class="hero-card-icon">📦</div>
+        <div class="hero-card-title">Data Link Layer</div>
+        <div class="hero-card-sub">802.3 Frame / MAC / Switch</div>
+      </div>
+      <div class="hero-card" onclick="goPage('advanced')">
+        <div class="hero-card-icon">⚙️</div>
+        <div class="hero-card-title">Advanced Switch</div>
+        <div class="hero-card-sub">RSTP / VLAN / PoE / 管理</div>
+      </div>
+      <div class="hero-card" onclick="goPage('security')">
+        <div class="hero-card-icon">🛡️</div>
+        <div class="hero-card-title">Ethernet Security</div>
+        <div class="hero-card-sub">802.1X / ARP Poisoning / DAI</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.1</span>
+      <span class="section-title">Simple Switched Ethernet Network 架構</span>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">🏢 Core Switch（核心交換器）</div>
+        <ul>
+          <li>負責 <span class="key">交換器對交換器</span> 的連接</li>
+          <li>使用 <span class="key">光纖（Optical Fiber）</span> 作為 Trunk Lines</li>
+          <li>位於網路階層最上層（A、B、C）</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🖥️ Workgroup Switch（工作群組交換器）</div>
+        <ul>
+          <li>負責 <span class="key">Host 連接到網路</span></li>
+          <li>使用 <span class="key">UTP 銅線</span> 作為 Access Lines</li>
+          <li>連接終端設備（D、E、F）</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout">
+      <div class="callout-label">⚠️ 重要觀念</div>
+      LAN (Local Area Network) = 建置在<strong>客戶場所（customer premises）</strong>內的網路。Workgroup Switch 連接 Hosts；Core Switch 連接 Switches。
+    </div>
+    <div class="card">
+      <div class="card-title">📐 5.2 — Workgroup Switch 規格</div>
+      <p>標準 1U 機架式，寬 <span class="key">19 吋 / 48 cm</span>，高 <span class="key">1U = 1.75 吋</span>，可安裝於標準設備機架（Rack）。典型規格：48 個 UTP 埠 + 若干光纖上行埠。</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.4</span>
+      <span class="section-title">IEEE LAN/MAN Standards Committee</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Working Group</th><th>負責內容</th><th>重要標準</th></tr>
+        <tr><td><span class="tag tag-blue">802.1</span></td><td>跨工作群組共用標準、<strong>安全標準</strong></td><td>802.1X, RSTP, VLAN</td></tr>
+        <tr><td><span class="tag tag-green">802.3</span></td><td>Ethernet 標準</td><td>100BASE-TX, 1000BASE-T, 10GBASE-T</td></tr>
+        <tr><td><span class="tag tag-yellow">802.11</span></td><td>Wi-Fi 無線 LAN 標準</td><td>Wi-Fi 6 (ax)</td></tr>
+      </table>
+    </div>
+    <div class="callout note">
+      <div class="callout-label">💡 注意</div>
+      802.1X Port-Based Access Control 是由 <strong>802.1 WG</strong>（非 802.3 WG）制定，因為它是跨多個媒介的安全標準。
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE: PHYSICAL LAYER -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page" id="page-physical">
+  <div class="hero" style="padding:36px 0 28px">
+    <div class="hero-chapter">Physical Layer Standards</div>
+    <div class="hero-title" style="font-size:clamp(36px,5vw,60px)">實體層標準</div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.6</span>
+      <span class="section-title">Binary vs. Digital Signaling</span>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">⬛ Binary Transmission（二進位傳輸）</div>
+        <ul>
+          <li>只有 <span class="key">2 種狀態</span>（0 / 1）</li>
+          <li>每個 Clock Cycle 傳送 <span class="key">1 bit</span></li>
+          <li>方波訊號，高低電位切換</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🔢 Digital Transmission（數位傳輸）</div>
+        <ul>
+          <li>有 <span class="key">多種狀態</span>（2, 4, 8, 16…）</li>
+          <li>每個 Clock Cycle 傳送 <span class="key">&gt;1 bit</span></li>
+          <li>例：4 狀態 → 每週期送 2 bits</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">5.7 — Error Resistance（抗雜訊能力）</div>
+      <p>電壓範圍分區設計讓訊號具有容錯能力。例如：</p>
+      <ul style="margin-top:8px">
+        <li><span class="tag tag-blue">+3 ~ +15V → 代表 0</span>，<span class="tag tag-orange">-3 ~ -15V → 代表 1</span></li>
+        <li>即使訊號從 +12V 衰減到 +6V（衰減 50%），<span class="ok">仍正確讀作 0</span></li>
+        <li>Attenuation（衰減）：訊號強度隨距離遞減</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.8 – 5.11</span>
+      <span class="section-title">UTP (Unshielded Twisted Pair) 銅線</span>
+    </div>
+    <div class="card">
+      <div class="card-title">📌 UTP 結構</div>
+      <ul>
+        <li><span class="key">4 對</span>絞合銅線（8 條導線）</li>
+        <li>連接器：<span class="key">RJ-45 Connector</span> 插入 <span class="key">RJ-45 Jack</span></li>
+        <li>每根絞線對彼此絞合以抵抗 Crosstalk</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">5.10 — Serial vs. Parallel Transmission</div>
+      <ul>
+        <li><strong>Serial：</strong>單線，每 Clock Cycle 傳 1 bit</li>
+        <li><strong>Parallel：</strong>多線對同時傳輸，每對 1 bit → <span class="key">4 對 = 4 bits/cycle</span></li>
+        <li class="warn">⚠️ Parallel 不限於 4 對，可用更多對</li>
+      </ul>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr>
+          <th>Ethernet 標準</th>
+          <th>速度</th>
+          <th>UTP Category</th>
+          <th>最大距離</th>
+        </tr>
+        <tr>
+          <td><span class="tag tag-blue">100BASE-TX</span></td>
+          <td>100 Mbps</td>
+          <td>Cat 5e, 6, 或更高</td>
+          <td>100 m</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-green">1000BASE-T</span></td>
+          <td>1 Gbps</td>
+          <td>Cat 5e, 6, 或更高</td>
+          <td>100 m</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-yellow">10GBASE-T</span></td>
+          <td>10 Gbps</td>
+          <td>Cat 6</td>
+          <td>55 m</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-yellow">10GBASE-T</span></td>
+          <td>10 Gbps</td>
+          <td>Cat 6A</td>
+          <td>100 m</td>
+        </tr>
+      </table>
+    </div>
+    <div class="callout note">
+      <div class="callout-label">💡 Category = UTP 品質等級</div>
+      數字越大品質越好，雜訊抑制能力越強。Cat 6A 能在 10Gbps 下達到完整 100m。
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.12</span>
+      <span class="section-title">Crosstalk Interference（串音干擾）</span>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">🔊 EMI / Crosstalk</div>
+        <ul>
+          <li>每對線向環境輻射，並接收外部輻射</li>
+          <li>相鄰線對之間互相干擾 → <span class="key">Crosstalk</span></li>
+          <li>絞合（Twist）可消除大部分 Crosstalk</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">⚡ Terminal Crosstalk（端點串音）</div>
+        <ul>
+          <li>線末端需拆開插入 RJ-45 → <span class="warn">無絞合保護</span></li>
+          <li>此處 Crosstalk 最嚴重</li>
+          <li>Category 等級越高，端點抑制越好</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.13 – 5.16</span>
+      <span class="section-title">光纖傳輸（Optical Fiber）</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>特性</th><th>UTP</th><th>光纖</th></tr>
+        <tr><td>介質</td><td>銅線</td><td>玻璃</td></tr>
+        <tr><td>訊號</td><td>電</td><td>光</td></tr>
+        <tr><td>LAN 最大距離</td><td>通常 100 m</td><td>通常 200~500 m</td></tr>
+        <tr><td>速度</td><td>相近</td><td>相近</td></tr>
+        <tr><td>成本</td><td>較低</td><td>較高</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">🔬 光纖傳輸原理</div>
+      <ul>
+        <li>光線打到 Cladding（覆層）時產生 <span class="key">完全內部反射（Perfect Internal Reflection）</span></li>
+        <li><strong>無訊號損耗</strong>（只要不超過最大距離）</li>
+        <li>光源波長約 <span class="key">850 nm</span>（短波長，用於 LAN）</li>
+        <li>較長波長 → 傳輸距離更遠，但<span class="warn">成本更高</span></li>
+      </ul>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">🟠 Multimode Fiber（多模光纖）</div>
+        <ul>
+          <li>核心直徑 <span class="key">50 微米</span></li>
+          <li>有 <span class="key">Modal Dispersion</span>（模態色散）</li>
+          <li>不同角度光線到達時間不同 → 可能重疊出錯</li>
+          <li class="ok">✅ LAN 常用，成本較低</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🔵 Single-mode Fiber（單模光纖）</div>
+        <ul>
+          <li>核心直徑 <span class="key">8~9 微米</span>（極細）</li>
+          <li><span class="ok">無 Modal Dispersion</span></li>
+          <li>只允許一種模態（直線穿過）</li>
+          <li class="warn">⚠️ 成本較高，多用於長距離 WAN</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <tr>
+          <th>ISO 11801 標準</th>
+          <th>Core/Cladding (μm)</th>
+          <th>1Gbps 最大距離<br>(1000BASE-SX)</th>
+          <th>10Gbps 最大距離<br>(10GBASE-SR)</th>
+          <th>100Gbps 最大距離</th>
+        </tr>
+        <tr>
+          <td><span class="tag tag-orange">OM3</span></td>
+          <td>50/125</td>
+          <td>550 m</td>
+          <td>300 m</td>
+          <td>100 m</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-green">OM4</span></td>
+          <td>50/125</td>
+          <td>1,000 m</td>
+          <td>440 m</td>
+          <td>150 m</td>
+        </tr>
+      </table>
+    </div>
+    <div class="callout">
+      <div class="callout-label">📝 OM = Optical Multimode（多模光纖標準）</div>
+      表格數值為「最低要求距離」（Minimum Requirement）
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.17 – 5.18</span>
+      <span class="section-title">Link Aggregation & 距離限制</span>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">🔗 5.17 Link Aggregation（Bonding）</div>
+        <ul>
+          <li>多條平行鏈路<strong>聚合</strong>成一條邏輯鏈路</li>
+          <li>範例：2 條 1000BASE-SX → <span class="key">2 Gbps</span> trunk 容量</li>
+          <li>提升頻寬 + 備援能力</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">📏 5.18 Physical Link vs. Data Link 距離</div>
+        <ul>
+          <li><strong>Physical Link：</strong>受單一媒介最大距離限制</li>
+          <li>Switch 收到訊號後<span class="key">再生（Regenerate）</span>，非單純放大</li>
+          <li><strong>Data Link 距離：</strong>可透過多段 Physical Link 延伸，<span class="ok">無限制</span></li>
+        </ul>
+        <div class="flow" style="margin-top:12px">
+          <div class="flow-node">UTP 100m</div>
+          <div class="flow-arr">→</div>
+          <div class="flow-node">Switch</div>
+          <div class="flow-arr">→</div>
+          <div class="flow-node">OM3 500m</div>
+          <div class="flow-arr">→</div>
+          <div class="flow-node">Switch</div>
+          <div class="flow-arr">→</div>
+          <div class="flow-node">UTP 100m</div>
+          <span style="font-size:13px;color:var(--accent)">= 700m Data Link</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE: DATA LINK LAYER -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page" id="page-datalink">
+  <div class="hero" style="padding:36px 0 28px">
+    <div class="hero-chapter">Data Link Layer Standards</div>
+    <div class="hero-title" style="font-size:clamp(36px,5vw,60px)">資料鏈路層標準</div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.19</span>
+      <span class="section-title">Ethernet 802.3 Frame 結構</span>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Frame 各欄位說明</div>
+      <div class="tbl-wrap" style="margin-top:8px">
+        <table>
+          <tr><th>欄位</th><th>大小</th><th>說明</th></tr>
+          <tr><td><span class="tag tag-blue">Destination EUI-48</span></td><td>48 bits</td><td>目的地 MAC 位址（6 Bytes）</td></tr>
+          <tr><td><span class="tag tag-blue">Source EUI-48</span></td><td>48 bits</td><td>來源 MAC 位址（6 Bytes）</td></tr>
+          <tr><td><span class="tag tag-purple">Tag Protocol ID</span></td><td>2 octets（選用）</td><td>VLAN Tag 協定識別碼</td></tr>
+          <tr><td><span class="tag tag-purple">Tag Control Info</span></td><td>2 octets（選用）</td><td>優先權等 VLAN 控制資訊</td></tr>
+          <tr><td>Length</td><td>2 octets</td><td>Data Field 長度</td></tr>
+          <tr><td>LLC Subheader</td><td>8 octets</td><td>Logical Link Control 子標頭</td></tr>
+          <tr><td><span class="tag tag-green">Packet</span></td><td>可變長度</td><td>上層（IP層）封包</td></tr>
+          <tr><td>PAD</td><td>視情況</td><td>填充，使 Data Field ≥ 46 octets</td></tr>
+          <tr><td><span class="tag tag-orange">FCS</span></td><td>4 octets</td><td>Frame Check Sequence（錯誤偵測）</td></tr>
+        </table>
+      </div>
+      <div style="margin-top:12px">
+        <p>📌 <strong>Data Field</strong> = LLC Subheader + Packet，最小 <span class="key">46 octets</span></p>
+        <p>📌 <strong>Tag Fields</strong>（選用）：用於 VLAN 優先權等原始 802.3 未定義的功能</p>
+        <p>📌 <strong>FCS</strong>：錯誤檢查欄位，偵測傳輸錯誤</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.20</span>
+      <span class="section-title">十六進位表示法（Hexadecimal Notation）</span>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">🔢 4位元 → Hex 對照</div>
+        <div class="tbl-wrap">
+          <table>
+            <tr><th>4 Bits</th><th>Decimal</th><th>Hex</th></tr>
+            <tr><td>0000</td><td>0</td><td>0</td></tr>
+            <tr><td>0101</td><td>5</td><td><span class="key">5</span></td></tr>
+            <tr><td>1001</td><td>9</td><td><span class="key">9</span></td></tr>
+            <tr><td>1010</td><td>10</td><td><span class="key">A</span></td></tr>
+            <tr><td>1111</td><td>15</td><td><span class="key">F</span></td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 MAC 位址轉換步驟</div>
+        <ol style="padding-left:18px;font-size:14px;line-height:2">
+          <li>將 48 bits 分成 <span class="key">12 個 nibble</span>（4位元組）</li>
+          <li>每個 nibble 轉成 1 個 Hex 符號</li>
+          <li>每 2 個 Hex 符號配對，共 6 組</li>
+          <li>組間加 <span class="key">dash（-）</span>分隔</li>
+        </ol>
+        <div class="callout tip" style="margin-top:10px">
+          <div class="callout-label">範例</div>
+          0000 1111 0101 1010<br>
+          → <span class="key">0F-5A</span>（前16bits，僅示意）
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.21</span>
+      <span class="section-title">Multi-Switch Ethernet Operation</span>
+    </div>
+    <div class="card">
+      <div class="card-title">🔄 Frame 傳遞流程（A1… → E5…）</div>
+      <div class="flow">
+        <div class="flow-node">A1-44-D5-1F-AA-4C<br><small>送出 Frame to E5…</small></div>
+        <div class="flow-arr">→</div>
+        <div class="flow-node">Switch 1<br><small>Port 5 → E5</small></div>
+        <div class="flow-arr">→</div>
+        <div class="flow-node">Switch 2<br><small>Port 7 → E5</small></div>
+        <div class="flow-arr">→</div>
+        <div class="flow-node">Switch 3<br><small>Port 6 → E5</small></div>
+        <div class="flow-arr">→</div>
+        <div class="flow-node">E5-BB-47-21-D3-56</div>
+      </div>
+      <p style="margin-top:12px;font-size:13.5px">每台 Switch 查詢自己的 <span class="key">Switching Table（MAC Table）</span>，根據目的 MAC 找到對應 Port 並轉發。</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🌳 Hierarchical Switch Organization（階層式拓撲）</div>
+      <ul>
+        <li>每台 Switch 只有 <span class="key">一個 Parent Switch</span></li>
+        <li>任意兩 Host 之間只有 <span class="key">單一路徑</span></li>
+        <li>目的位址在 Switching Table 只出現 <span class="key">一次</span></li>
+        <li>優點：查表簡單、無迴圈</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE: ADVANCED SWITCH -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page" id="page-advanced">
+  <div class="hero" style="padding:36px 0 28px">
+    <div class="hero-chapter">Advanced Switch Operation</div>
+    <div class="hero-title" style="font-size:clamp(36px,5vw,60px)">進階交換器操作</div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.22</span>
+      <span class="section-title">Single Point of Failure（單點故障）</span>
+    </div>
+    <div class="card">
+      <div class="card-title">❌ 問題</div>
+      <p>階層式網路中，若一台 Core Switch 故障，其下所有 Hosts 與其他部分的通訊<span class="warn">完全中斷</span>。每台交換器都是潛在的 Single Point of Failure。</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.23</span>
+      <span class="section-title">Backup Link & RSTP（快速生成樹協定）</span>
+    </div>
+    <div class="card">
+      <div class="card-title">🔁 解決方案：備援鏈路 + RSTP</div>
+      <ul>
+        <li>在兩台 Switch 間加裝 <span class="key">Backup Link</span> 提供備援</li>
+        <li>但 Ethernet 不允許<span class="warn">迴圈（Loop）</span>存在</li>
+        <li><span class="key">RSTP（Rapid Spanning Tree Protocol）</span> = 802.1w</li>
+        <li>正常運作時：RSTP <span class="warn">停用</span>備援鏈路（防止迴圈）</li>
+        <li>主鏈路故障時：RSTP <span class="ok">自動啟用</span>備援鏈路</li>
+        <li>Ethernet 需維持<span class="key">嚴格階層（strict hierarchy）</span></li>
+      </ul>
+    </div>
+    <div class="callout warn">
+      <div class="callout-label">❗ 重要</div>
+      Loops are <strong>not allowed</strong> in Ethernet. RSTP 解決備援與無迴圈的矛盾。
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.24</span>
+      <span class="section-title">Advanced Ethernet Capabilities</span>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">🎯 Priority（優先權）</div>
+        <ul>
+          <li>支援最多 <span class="key">8 個優先權等級</span></li>
+          <li>透過 Tag Fields 攜帶優先權資訊（802.1p QoS）</li>
+          <li>適用於語音、影像等對延遲敏感的流量</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🛠️ Manageability（可管理性）</div>
+        <ul>
+          <li>Managed Switch 可透過 <span class="key">SNMP</span> 管理</li>
+          <li>雖然成本較高，但管理成本大幅降低</li>
+          <li>未來：Software-Defined Networking（SDN）可能革新管理方式</li>
+        </ul>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">⚡ PoE（Power over Ethernet）</div>
+        <ul>
+          <li>交換器透過 <span class="key">UTP 線材供電</span>給設備</li>
+          <li>同一條線傳輸資料 + 供電</li>
+          <li>比單獨佈電線<span class="ok">更省錢</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">⚡⚡ PoE Plus</div>
+        <ul>
+          <li>最多提供 <span class="key">25 Watts</span> 電力</li>
+          <li>足夠：VoIP 電話、監控攝影機、AP</li>
+          <li class="warn">不足：桌機或筆電</li>
+          <li>無需額外佈線節省成本</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE: SECURITY -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page" id="page-security">
+  <div class="hero" style="padding:36px 0 28px">
+    <div class="hero-chapter">Ethernet Security</div>
+    <div class="hero-title" style="font-size:clamp(36px,5vw,60px)">乙太網路安全</div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.25</span>
+      <span class="section-title">802.1X Port-Based Access Control</span>
+    </div>
+    <div class="callout warn">
+      <div class="callout-label">⚠️ 問題</div>
+      任何人只要進入建築物，就能將電腦插入交換器或牆壁的 RJ-45，<strong>繞過防火牆</strong>直接存取網路。
+    </div>
+    <div class="card">
+      <div class="card-title">✅ 解決方案：802.1X Port-Based Access Control</div>
+      <ul>
+        <li>由 <span class="key">802.1 WG</span>（非 802.3）制定</li>
+        <li>在 Switch Port 層級進行存取控制</li>
+      </ul>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>角色</th><th>說明</th></tr>
+        <tr><td><span class="tag tag-orange">Supplicant（Peer）</span></td><td>試圖連接的設備，必須先通過驗證才能使用 Port</td></tr>
+        <tr><td><span class="tag tag-blue">Authenticator（Switch）</span></td><td>Workgroup Switch，控制 Controlled Port（未授權/已授權）</td></tr>
+        <tr><td><span class="tag tag-green">Central Auth Server</span></td><td>儲存驗證資料庫，執行實際驗證工作</td></tr>
+      </table>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="card-title">🏆 Central Authentication Server 的優勢</div>
+      <ul>
+        <li><span class="key">Switch 成本↓</span>：繁重驗證工作由 Auth Server 負責</li>
+        <li><span class="key">一致性↑</span>：攻擊者無法找到設定錯誤的 Switch</li>
+        <li><span class="key">管理成本↓</span>：只需維護一個驗證資料庫</li>
+        <li><span class="key">變更快速</span>：人員離職/入職/權限異動即時生效</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">5.26</span>
+      <span class="section-title">ARP Poisoning — Man-in-the-Middle Attack</span>
+    </div>
+    <div class="card">
+      <div class="card-title">📚 ARP (Address Resolution Protocol) 基礎</div>
+      <ul>
+        <li>乙太網路需要知道目標的 <span class="key">MAC 位址</span>才能傳送 Frame</li>
+        <li>IP 層只知道 <span class="key">IP 位址</span>，不知道 MAC</li>
+        <li>ARP 負責將 IP → MAC 的解析</li>
+        <li>每台主機維護一個 <span class="key">ARP Cache</span>（IP ↔ MAC 對應表）</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">☠️ ARP Poisoning 攻擊流程</div>
+      <div class="flow" style="flex-direction:column;align-items:flex-start;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="tag tag-orange">Step 1</span>
+          <span>攻擊者廣播假的 ARP 回覆：「IP 1.2.3.4 的 MAC 是 <strong>FF-FF-FF-DD-DD-DD</strong>（攻擊者）」</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="tag tag-red">Step 2</span>
+          <span>受害者 ARP Cache 被<strong>毒化（Poisoned）</strong>：1.2.3.4 → FF-FF-FF-DD-DD-DD</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="tag tag-red">Step 3</span>
+          <span>受害者傳送封包給「預設路由器」，卻送到<strong>攻擊者</strong></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="tag tag-purple">Step 4</span>
+          <span>攻擊者攔截所有流量 → <span class="warn">Man-in-the-Middle</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">🛡️ 防禦：DAI (Dynamic ARP Inspection)</div>
+        <ul>
+          <li>Managed Switch 的安全功能</li>
+          <li>檢查 LAN 上的 ARP 封包</li>
+          <li>與 <span class="key">DHCP Snooping Table</span> 比對驗證</li>
+          <li>阻擋不合法的 ARP 回覆</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🖥️ ARP 常用指令（Windows）</div>
+        <ul>
+          <li><code style="font-family:var(--mono);color:var(--accent)">arp -a</code> — 顯示 ARP Cache</li>
+          <li><code style="font-family:var(--mono);color:var(--accent)">arp -d *</code> — 清除 ARP Cache</li>
+          <li><code style="font-family:var(--mono);color:var(--accent)">arp -s [IP] [MAC]</code> — 手動設定靜態 ARP</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE: GLOSSARY -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page" id="page-glossary">
+  <div class="hero" style="padding:36px 0 28px">
+    <div class="hero-chapter">術語表</div>
+    <div class="hero-title" style="font-size:clamp(36px,5vw,60px)">Glossary</div>
+  </div>
+  <div class="term-list">
+    <div class="term-item"><div class="term-name">LAN</div><div class="term-def">Local Area Network，建置在客戶場所（customer premises）內的網路</div></div>
+    <div class="term-item"><div class="term-name">UTP</div><div class="term-def">Unshielded Twisted Pair，非屏蔽絞合對銅線，LAN 主要存取線媒介</div></div>
+    <div class="term-item"><div class="term-name">RJ-45</div><div class="term-def">UTP 使用的 8 腳連接器（Connector）與插座（Jack）</div></div>
+    <div class="term-item"><div class="term-name">Crosstalk</div><div class="term-def">相鄰線對之間的電磁互相干擾，絞合可減少</div></div>
+    <div class="term-item"><div class="term-name">Terminal Crosstalk</div><div class="term-def">線末端插入 RJ-45 時，因無絞合保護而產生的串音</div></div>
+    <div class="term-item"><div class="term-name">EMI</div><div class="term-def">Electromagnetic Interference，來自馬達、日光燈等的外部電磁干擾</div></div>
+    <div class="term-item"><div class="term-name">Attenuation</div><div class="term-def">訊號衰減，訊號強度隨傳輸距離減弱</div></div>
+    <div class="term-item"><div class="term-name">Modal Dispersion</div><div class="term-def">多模光纖中，不同角度光線（模態）行進距離不同，造成到達時間差異</div></div>
+    <div class="term-item"><div class="term-name">Cladding</div><div class="term-def">光纖的覆層，使光線產生完全內部反射（Perfect Internal Reflection）</div></div>
+    <div class="term-item"><div class="term-name">OM3 / OM4</div><div class="term-def">Optical Multimode 多模光纖品質標準，OM4 品質高於 OM3</div></div>
+    <div class="term-item"><div class="term-name">Link Aggregation</div><div class="term-def">將多條平行鏈路聚合為一條邏輯鏈路，提升頻寬</div></div>
+    <div class="term-item"><div class="term-name">EUI-48 / MAC</div><div class="term-def">48-bit 乙太網路硬體位址，人類可讀格式為十六進位，如 A1-44-D5-1F-AA-4C</div></div>
+    <div class="term-item"><div class="term-name">FCS</div><div class="term-def">Frame Check Sequence，4 octets 的錯誤偵測欄位</div></div>
+    <div class="term-item"><div class="term-name">LLC</div><div class="term-def">Logical Link Control，Data Link Layer 子層，佔 Frame Data Field 的前 8 octets</div></div>
+    <div class="term-item"><div class="term-name">Switching Table</div><div class="term-def">Switch 維護的 MAC-to-Port 對應表，用於決定 Frame 轉發方向</div></div>
+    <div class="term-item"><div class="term-name">RSTP</div><div class="term-def">Rapid Spanning Tree Protocol (802.1w)，防止迴圈並在故障時自動啟用備援鏈路</div></div>
+    <div class="term-item"><div class="term-name">SNMP</div><div class="term-def">Simple Network Management Protocol，用於管理 Managed Switch</div></div>
+    <div class="term-item"><div class="term-name">PoE</div><div class="term-def">Power over Ethernet，透過 UTP 同時傳輸資料與供電</div></div>
+    <div class="term-item"><div class="term-name">PoE Plus</div><div class="term-def">增強型 PoE，最多提供 25W，適用 VoIP、攝影機、AP 等設備</div></div>
+    <div class="term-item"><div class="term-name">802.1X</div><div class="term-def">Port-Based Access Control，在交換器埠層級驗證使用者身分</div></div>
+    <div class="term-item"><div class="term-name">Supplicant</div><div class="term-def">802.1X 中試圖連接網路的設備（申請者）</div></div>
+    <div class="term-item"><div class="term-name">Authenticator</div><div class="term-def">802.1X 中的交換器，負責控制 Controlled Port</div></div>
+    <div class="term-item"><div class="term-name">ARP</div><div class="term-def">Address Resolution Protocol，將 IP 位址解析為 MAC 位址</div></div>
+    <div class="term-item"><div class="term-name">ARP Cache</div><div class="term-def">主機維護的 IP ↔ MAC 對應快取表</div></div>
+    <div class="term-item"><div class="term-name">ARP Poisoning</div><div class="term-def">攻擊者送假 ARP 回覆，污染受害者 ARP Cache，實現中間人攻擊</div></div>
+    <div class="term-item"><div class="term-name">MITM</div><div class="term-def">Man-in-the-Middle Attack，攻擊者攔截通訊雙方流量</div></div>
+    <div class="term-item"><div class="term-name">DAI</div><div class="term-def">Dynamic ARP Inspection，Managed Switch 功能，透過 DHCP Snooping 表驗證 ARP 封包</div></div>
+    <div class="term-item"><div class="term-name">SDN</div><div class="term-def">Software-Defined Networking，未來可能革新交換器管理的技術</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE: FLASHCARD -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page" id="page-flashcard">
+  <div class="hero" style="padding:36px 0 28px">
+    <div class="hero-chapter">點擊卡片查看答案</div>
+    <div class="hero-title" style="font-size:clamp(36px,5vw,60px)">Flashcard 🃏</div>
+  </div>
+  <div class="fc-grid">
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">Workgroup Switch 與 Core Switch 的差異？</div>
+      <div class="fc-a">Workgroup Switch 連接 Hosts（Access Lines, UTP）；Core Switch 連接 Switches（Trunk Lines, 光纖）。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">Binary vs. Digital Transmission 的差異？</div>
+      <div class="fc-a">Binary = 2 狀態，每週期 1 bit；Digital = 多狀態（4/8/16…），每週期 &gt;1 bit。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">UTP 為何要「絞合」？</div>
+      <div class="fc-a">絞合使相鄰線對的電磁干擾互相抵消，有效減少 Crosstalk Interference。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">Terminal Crosstalk 發生在哪裡？為什麼？</div>
+      <div class="fc-a">發生在線材末端插入 RJ-45 的地方，因為線需要拆開（untwisted）才能插入，失去絞合保護。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">10GBASE-T 用 Cat 6 vs Cat 6A 的距離差異？</div>
+      <div class="fc-a">Cat 6 → 55 m；Cat 6A → 100 m。同樣 10 Gbps，但 Cat 6A 品質更好能達到更遠距離。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">Multimode vs Single-mode 光纖？</div>
+      <div class="fc-a">Multimode：50μm，有 Modal Dispersion，LAN 常用；Single-mode：8-9μm，無 Modal Dispersion，成本更高。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">什麼是 Modal Dispersion？</div>
+      <div class="fc-a">多模光纖中不同角度（模態）的光線行進距離不同，到達時間不同，若不同時鐘週期的光重疊會造成錯誤。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">Switch 是「再生」還是「放大」訊號？差別？</div>
+      <div class="fc-a">Switch 是「再生（Regenerate）」—— 讀取訊號後以全強度重新發送，而不是放大（含雜訊的）舊訊號。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">802.3 Frame 的 FCS 欄位功能？</div>
+      <div class="fc-a">Frame Check Sequence，4 Octets，接收端用來偵測 Frame 在傳輸過程中是否發生錯誤。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">IEEE 802.1X 的三個角色？</div>
+      <div class="fc-a">①Supplicant（申請連接的設備）②Authenticator（Switch，控制 Port）③Central Auth Server（驗證資料庫）</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">RSTP 的作用是什麼？</div>
+      <div class="fc-a">防止 Ethernet 迴圈（Loop）：正常時停用備援鏈路，主鏈路故障時自動啟用備援鏈路，維持嚴格階層拓撲。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">ARP Poisoning 如何實現中間人攻擊？</div>
+      <div class="fc-a">攻擊者送假 ARP 回覆，讓受害者 ARP Cache 以為路由器 IP 對應攻擊者的 MAC，使流量轉送給攻擊者。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">DAI 如何防禦 ARP Poisoning？</div>
+      <div class="fc-a">Dynamic ARP Inspection 比對 ARP 封包中的 IP-MAC 對應是否與 DHCP Snooping Table 一致，不合法則丟棄。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">PoE Plus 最多提供多少電力？適用哪些設備？</div>
+      <div class="fc-a">最多 25 Watts，適用 VoIP 電話、監控攝影機、無線 AP；不足以供給桌機或筆電。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">Link Aggregation 的作用？</div>
+      <div class="fc-a">將多條並行實體鏈路聚合為一條邏輯鏈路，提升頻寬並增加備援能力（例：2 × 1Gbps = 2Gbps trunk）。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+    <div class="fc" onclick="this.classList.toggle('open')">
+      <div class="fc-q">802.1X 由哪個 Working Group 制定？為什麼？</div>
+      <div class="fc-a">802.1 WG（非 802.3 WG）制定，因為 802.1X 是跨媒介的安全標準，802.1 WG 負責通用與安全標準。</div>
+      <div class="fc-hint">點擊翻面</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PAGE: QUIZ -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="page" id="page-quiz">
+  <div class="hero" style="padding:36px 0 28px">
+    <div class="hero-chapter">測驗你的理解程度</div>
+    <div class="hero-title" style="font-size:clamp(36px,5vw,60px)">小測驗 ✅</div>
+  </div>
+
+  <div id="quiz-container">
+
+    <div class="quiz-item" data-answer="B">
+      <div class="quiz-q">Q1. 哪種交換器負責將 Hosts 連接到網路？使用何種媒介？</div>
+      <div class="quiz-opt" data-opt="A"><span class="quiz-letter">A</span>Core Switch，使用光纖</div>
+      <div class="quiz-opt" data-opt="B"><span class="quiz-letter">B</span>Workgroup Switch，使用 UTP</div>
+      <div class="quiz-opt" data-opt="C"><span class="quiz-letter">C</span>Core Switch，使用 UTP</div>
+      <div class="quiz-opt" data-opt="D"><span class="quiz-letter">D</span>Workgroup Switch，使用光纖</div>
+      <div class="quiz-exp">Workgroup Switch 連接 Hosts，使用 UTP（銅線）Access Lines；Core Switch 連接交換器，使用光纖 Trunk Lines。</div>
+    </div>
+
+    <div class="quiz-item" data-answer="C">
+      <div class="quiz-q">Q2. Binary Transmission 與 Digital Transmission 最主要的差異是？</div>
+      <div class="quiz-opt" data-opt="A"><span class="quiz-letter">A</span>Binary 速度較快</div>
+      <div class="quiz-opt" data-opt="B"><span class="quiz-letter">B</span>Digital 使用類比訊號</div>
+      <div class="quiz-opt" data-opt="C"><span class="quiz-letter">C</span>Binary 每週期送 1 bit；Digital 每週期送多個 bits</div>
+      <div class="quiz-opt" data-opt="D"><span class="quiz-letter">D</span>兩者完全相同</div>
+      <div class="quiz-exp">Binary = 2 個狀態，每 Clock Cycle 1 bit；Digital = 多個狀態（4/8/16…），每週期可傳送超過 1 bit。</div>
+    </div>
+
+    <div class="quiz-item" data-answer="A">
+      <div class="quiz-q">Q3. 10GBASE-T 使用 Cat 6A 時，最大傳輸距離為何？</div>
+      <div class="quiz-opt" data-opt="A"><span class="quiz-letter">A</span>100 m</div>
+      <div class="quiz-opt" data-opt="B"><span class="quiz-letter">B</span>55 m</div>
+      <div class="quiz-opt" data-opt="C"><span class="quiz-letter">C</span>200 m</div>
+      <div class="quiz-opt" data-opt="D"><span class="quiz-letter">D</span>500 m</div>
+      <div class="quiz-exp">10GBASE-T 搭配 Cat 6 最大 55m；搭配 Cat 6A 則可達 100m。Cat 6A 有更高的雜訊抑制能力。</div>
+    </div>
+
+    <div class="quiz-item" data-answer="D">
+      <div class="quiz-q">Q4. Terminal Crosstalk 主要發生在什麼位置？</div>
+      <div class="quiz-opt" data-opt="A"><span class="quiz-letter">A</span>UTP 線材的中間段</div>
+      <div class="quiz-opt" data-opt="B"><span class="quiz-letter">B</span>光纖接頭</div>
+      <div class="quiz-opt" data-opt="C"><span class="quiz-letter">C</span>Switch 的 CPU</div>
+      <div class="quiz-opt" data-opt="D"><span class="quiz-letter">D</span>線材末端插入 RJ-45 的地方（需解開絞合）</div>
+      <div class="quiz-exp">線末端需將絞合拆開才能插入 RJ-45，失去絞合的保護，此處 Crosstalk 最嚴重，稱為 Terminal Crosstalk。</div>
+    </div>
+
+    <div class="quiz-item" data-answer="B">
+      <div class="quiz-q">Q5. Single-mode 光纖相較 Multimode 的主要優點是？</div>
+      <div class="quiz-opt" data-opt="A"><span class="quiz-letter">A</span>核心較粗，較容易連接</div>
+      <div class="quiz-opt" data-opt="B"><span class="quiz-letter">B</span>沒有 Modal Dispersion，傳輸更穩定</div>
+      <div class="quiz-opt" data-opt="C"><span class="quiz-letter">C</span>成本較低</div>
+      <div class="quiz-opt" data-opt="D"><span class="quiz-letter">D</span>只能用於 LAN</div>
+      <div class="quiz-exp">Single-mode 核心極細（8-9μm），只允許一種光線模態，無 Modal Dispersion；但成本較高，通常用於長距離 WAN。</div>
+    </div>
+
+    <div class="quiz-item" data-answer="C">
+      <div class="quiz-q">Q6. 802.3 Frame 的 FCS 欄位有幾個 Octets？其功能為何？</div>
+      <div class="quiz-opt" data-opt="A"><span class="quiz-letter">A</span>2 Octets，標示 Frame 長度</div>
+      <div class="quiz-opt" data-opt="B"><span class="quiz-letter">B</span>8 Octets，LLC 子標頭</div>
+      <div class="quiz-opt" data-opt="C"><span class="quiz-letter">C</span>4 Octets，錯誤偵測</div>
+      <div class="quiz-opt" data-opt="D"><span class="quiz-letter">D</span>48 bits，目的 MAC 位址</div>
+      <div class="quiz-exp">FCS（Frame Check Sequence）= 4 Octets，位於 Frame 末端，用於偵測傳輸過程中的錯誤。</div>
+    </div>
+
+    <div class="quiz-item" data-answer="A">
+      <div class="quiz-q">Q7. 下列關於 RSTP 的敘述何者正確？</div>
+      <div class="quiz-opt" data-opt="A"><span class="quiz-letter">A</span>正常時停用備援鏈路，主鏈路故障時自動啟用備援</div>
+      <div class="quiz-opt" data-opt="B"><span class="quiz-letter">B</span>允許 Ethernet 中存在迴圈</div>
+      <div class="quiz-opt" data-opt="C"><span class="quiz-letter">C</span>由 802.3 WG 制定</div>
+      <div class="quiz-opt" data-opt="D"><span class="quiz-letter">D</span>RSTP 主動封鎖所有備援鏈路，無法自動恢復</div>
+      <div class="quiz-exp">RSTP（802.1w）平時禁用備援鏈路防止迴圈；主要鏈路故障時，RSTP 偵測到後自動啟用備援鏈路恢復連線。</div>
+    </div>
+
+    <div class="quiz-item" data-answer="D">
+      <div class="quiz-q">Q8. 802.1X Port-Based Access Control 中，哪個元件負責儲存驗證資料庫？</div>
+      <div class="quiz-opt" data-opt="A"><span class="quiz-letter">A</span>Supplicant</div>
+      <div class="quiz-opt" data-opt="B"><span class="quiz-letter">B</span>Workgroup Switch（Authenticator）</div>
+      <div class="quiz-opt" data-opt="C"><span class="quiz-letter">C</span>Router</div>
+      <div class="quiz-opt" data-opt="D"><span class="quiz-letter">D</span>Central Authentication Server</div>
+      <div class="quiz-exp">驗證資料儲存在 Central Authentication Server，Switch 只是 Authenticator（中繼者），把認證工作外包給 Auth Server。</div>
+    </div>
+
+    <div class="quiz-item" data-answer="B">
+      <div class="quiz-q">Q9. ARP Poisoning 攻擊的核心手法是？</div>
+      <div class="quiz-opt" data-opt="A"><span class="quiz-letter">A</span>暴力破解路由器密碼</div>
+      <div class="quiz-opt" data-opt="B"><span class="quiz-letter">B</span>發送假 ARP 回覆，污染受害者的 ARP Cache</div>
+      <div class="quiz-opt" data-opt="C"><span class="quiz-letter">C</span>對 Switch 的 MAC Table 進行 Flooding</div>
+      <div class="quiz-opt" data-opt="D"><span class="quiz-letter">D</span>修改 FCS 欄位繞過錯誤偵測</div>
+      <div class="quiz-exp">攻擊者廣播假 ARP 回覆，聲稱某 IP（如路由器）對應攻擊者自己的 MAC，受害者 ARP Cache 被毒化後，流量就會被導向攻擊者。</div>
+    </div>
+
+    <div class="quiz-item" data-answer="C">
+      <div class="quiz-q">Q10. PoE Plus 最多可以通過 UTP 提供多少 Watts 的電力？</div>
+      <div class="quiz-opt" data-opt="A"><span class="quiz-letter">A</span>10 W</div>
+      <div class="quiz-opt" data-opt="B"><span class="quiz-letter">B</span>15 W</div>
+      <div class="quiz-opt" data-opt="C"><span class="quiz-letter">C</span>25 W</div>
+      <div class="quiz-opt" data-opt="D"><span class="quiz-letter">D</span>65 W</div>
+      <div class="quiz-exp">PoE Plus 最多提供 25W，足夠供給 VoIP 電話、監控攝影機與大多數 AP，但不足以供給桌機或筆電。</div>
+    </div>
+
+  </div>
+
+  <div class="quiz-score" id="quiz-score">
+    <div style="font-size:13px;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">最終得分</div>
+    <div class="quiz-score-num" id="score-num">0/10</div>
+    <div style="margin-top:12px;font-size:14px;color:var(--text-dim)" id="score-msg"></div>
+    <button onclick="resetQuiz()" style="margin-top:20px;background:rgba(0,198,255,.1);border:1px solid var(--accent);color:var(--accent);padding:10px 28px;border-radius:6px;cursor:pointer;font-size:14px;font-family:var(--sans);">重新測驗</button>
+  </div>
+</div>
+
+<script>
+// NAV
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const p = tab.dataset.page;
+    goPage(p);
+  });
+});
+
+function goPage(name) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const tab = document.querySelector(`.nav-tab[data-page="${name}"]`);
+  const page = document.getElementById(`page-${name}`);
+  if (tab) tab.classList.add('active');
+  if (page) page.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// QUIZ
+let quizDone = 0;
+let quizScore = 0;
+const total = document.querySelectorAll('.quiz-item').length;
+
+document.querySelectorAll('.quiz-item').forEach(item => {
+  const correct = item.dataset.answer;
+  item.querySelectorAll('.quiz-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      if (item.dataset.answered) return;
+      item.dataset.answered = '1';
+      quizDone++;
+
+      item.querySelectorAll('.quiz-opt').forEach(o => o.classList.add('disabled'));
+      const exp = item.querySelector('.quiz-exp');
+
+      if (opt.dataset.opt === correct) {
+        opt.classList.add('correct');
+        quizScore++;
+      } else {
+        opt.classList.add('wrong');
+        item.querySelectorAll('.quiz-opt').forEach(o => {
+          if (o.dataset.opt === correct) o.classList.add('correct');
+        });
+      }
+      exp.classList.add('show');
+
+      if (quizDone === total) {
+        const scoreEl = document.getElementById('quiz-score');
+        const numEl = document.getElementById('score-num');
+        const msgEl = document.getElementById('score-msg');
+        scoreEl.style.display = 'block';
+        numEl.textContent = `${quizScore} / ${total}`;
+        if (quizScore >= 9) msgEl.textContent = '🎉 滿分！Ch05 掌握得很好！';
+        else if (quizScore >= 7) msgEl.textContent = '👍 不錯！再複習一下錯的部分。';
+        else msgEl.textContent = '📖 建議重新閱讀重要章節。';
+        scoreEl.scrollIntoView({behavior:'smooth'});
+      }
+    });
+  });
+});
+
+function resetQuiz() {
+  quizDone = 0; quizScore = 0;
+  document.querySelectorAll('.quiz-item').forEach(item => {
+    delete item.dataset.answered;
+    item.querySelectorAll('.quiz-opt').forEach(o => {
+      o.classList.remove('correct','wrong','disabled');
+    });
+    item.querySelector('.quiz-exp').classList.remove('show');
+  });
+  document.getElementById('quiz-score').style.display = 'none';
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
