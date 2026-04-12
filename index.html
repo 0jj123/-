@@ -2,42 +2,51 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>學習筆記目錄</title>
+    <title>筆記目錄</title>
     <style>
         body { 
-    font-family: sans-serif; 
-    line-height: 1.6; 
-    max-width: 600px; 
-    margin: 40px auto; 
-    padding: 20px; 
-    background-color: #000000; 
-    color: #ffffff;            
-}
-h1 { 
-    border-bottom: 2px solid #444;
-    padding-bottom: 10px; 
-    color: #4da3ff;
-}
-ul { 
-    list-style: none; 
-    padding: 0; 
-    display: flex;       
-    gap: 20px;         
-    flex-wrap: wrap;   
-}
-li { margin: 10px 0; }
-a { 
-    text-decoration: none; 
-    color: #4da3ff; 
-    font-size: 18px; 
-}
-a:hover { 
-    text-decoration: underline; 
-    color: #80bfff; 
-}
-.note-image {
-            max-width: 100%;   
+            font-family: sans-serif; 
+            line-height: 1.6; 
+            max-width: 600px; 
+            margin: 40px auto; 
+            padding: 20px; 
+            background-color: #000000; 
+            color: #ffffff;
+            position: relative; 
+        }
+        h1 { 
+            border-bottom: 2px solid #444;
+            padding-bottom: 10px; 
+            color: #4da3ff;
+        }
+        ul { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0;
+            display: flex; 
+            flex-direction: column; 
+            gap: 2px;             
+            position: absolute; 
+            top: 400px;           
+            left: 285px;         
+            z-index: 999;         
+        }
+        a { 
+            text-decoration: none; 
+            color: #4da3ff; 
+            font-size: 16px;      
+            font-weight: bold;
+            background: rgba(0,0,0,0.5);
+        }
+        a:hover { 
+            color: #80bfff; 
+        }
+        .note-image {
+            display: block;
+            width: 100%;
             height: auto;
+            position: relative;
+            z-index: 1;         
         }
     </style>
 </head>
@@ -50,6 +59,6 @@ a:hover {
         <li><a href="ch04_study_summary.html">ch04</a></li>
         <li><a href="ch05_study_summary.html">ch05</a></li>
     </ul>
-    <img src="IMG_9223.jpg" alt="筆記相關圖片" class="note-image">
+    <img src="your-image.jpg" alt="Note Image" class="note-image">
 </body>
 </html>
