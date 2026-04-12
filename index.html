@@ -6,68 +6,61 @@
     <style>
         body { 
             font-family: sans-serif; 
-            line-height: 1.6; 
-            max-width: 800px; /* 稍微加大容器寬度 */
-            margin: 40px auto; 
-            padding: 20px; 
             background-color: #000000; 
             color: #ffffff;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 讓內容置中 */
+            padding: 20px;
         }
 
         h1 { 
             border-bottom: 2px solid #444;
             padding-bottom: 10px; 
             color: #4da3ff;
-            margin-bottom: 30px;
+            width: 100%;
+            max-width: 600px;
         }
 
-        /* 圖片與目錄的容器 */
+        /* 圖片容器 */
         .container {
             position: relative;
-            display: inline-block; /* 讓容器大小等於圖片大小 */
+            margin-top: 20px;
+            width: fit-content;
         }
 
-        /* 目錄樣式：絕對定位在圖片上 */
+        /* 目錄位置 */
         ul { 
             list-style: none; 
             padding: 0; 
             margin: 0;
             display: flex; 
             flex-direction: column; 
-            gap: 2px;
+            gap: 5px;
             
             position: absolute; 
-            /* --- 以下是微調位置的關鍵 --- */
-            top: 48%;    /* 調整百分比讓目錄上下移動 */
-            left: 48%;   /* 調整百分比讓目錄左右移動 */
-            transform: translate(-50%, -50%); /* 確保目錄中心點對準座標 */
-            /* ------------------------- */
-            
+            top: 48%;    /* 調整上下位置：越大越往下 */
+            left: 48%;   /* 調整左右位置：越大越往右 */
+            transform: translate(-50%, -50%);
             z-index: 999;
         }
-
-        li { margin: 0; }
 
         a { 
             text-decoration: none; 
             color: #4da3ff; 
             font-size: 18px; 
             font-weight: bold;
-            /* 增加一點文字陰影，確保在圖片背景上清晰可見 */
-            text-shadow: 2px 2px 4px #000000;
+            text-shadow: 2px 2px 4px #000; /* 文字陰影防止字體模糊 */
         }
 
-        a:hover { 
-            color: #80bfff; 
-            text-decoration: underline;
-        }
+        a:hover { color: #80bfff; }
 
         .note-image {
             display: block;
-            width: 100%; /* 寬度填滿容器 */
-            max-width: 500px; /* 限制圖片不要太大 */
+            max-width: 500px; /* 限制圖片顯示大小 */
+            width: 100%;
             height: auto;
-            border-radius: 8px;
         }
     </style>
 </head>
