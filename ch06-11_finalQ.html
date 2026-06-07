@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>網路概論複習 — Ch06–Ch11(含期末考古題)</title>
+<style>
+:root{
+  --bg:#FAF9F5; --card:#FFFFFF; --border:#E8E6DC; --border-strong:#DAD7CC;
+  --text:#1F1E1D; --text-soft:#52504A; --muted:#86837A;
+  --accent:#D97757; --accent-dark:#BC5A3C; --accent-soft:#F4E3DB; --accent-bg:#FBF1EC;
+  --blue:#4A6FA5; --blue-soft:#E8EFF7; --green:#5B8A5B; --green-soft:#E9F2E9;
+  --warn:#C98A2B; --warn-soft:#FBF1DF; --code-bg:#F2F0E9;
+  --shadow:0 1px 3px rgba(31,30,29,.06),0 1px 2px rgba(31,30,29,.04);
+  --shadow-lg:0 4px 16px rgba(31,30,29,.08);
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+/* top bar */
+header.top{position:sticky;top:0;z-index:100;background:rgba(250,249,245,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.top-inner{max-width:1180px;margin:0 auto;padding:10px 20px}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.brand .logo{width:26px;height:26px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex-shrink:0}
+.brand h1{font-size:16px;font-weight:600;letter-spacing:-.01em}
+.brand .sub{font-size:12.5px;color:var(--muted);margin-left:auto;font-weight:500}
+.tabs{display:flex;gap:5px;flex-wrap:wrap}
+.tab{appearance:none;border:1px solid var(--border-strong);background:var(--card);color:var(--text-soft);
+  padding:7px 15px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.tab:hover{border-color:var(--accent);color:var(--accent-dark)}
+.tab.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:var(--shadow)}
+.tab .t-sub{font-size:11px;font-weight:500;opacity:.8;display:block;margin-top:1px}
+/* layout */
+.layout{max-width:1180px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:230px 1fr;gap:34px;align-items:start}
+nav.side{position:sticky;top:104px;align-self:start;max-height:calc(100vh - 124px);overflow-y:auto;padding:18px 0 40px;font-size:13.5px}
+nav.side .nav-title{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;padding:0 12px 8px}
+nav.side a{display:block;padding:6px 12px;border-left:2px solid transparent;color:var(--text-soft);text-decoration:none;transition:all .12s;border-radius:0 6px 6px 0}
+nav.side a:hover{background:var(--accent-bg);color:var(--accent-dark)}
+nav.side a.active{border-left-color:var(--accent);background:var(--accent-bg);color:var(--accent-dark);font-weight:600}
+main{padding:26px 0 120px;min-width:0}
+.chapter{display:none}
+.chapter.active{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* chapter head */
+.chap-head{margin-bottom:8px}
+.chap-head .ch-num{display:inline-block;font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
+.chap-head h2{font-size:30px;font-weight:700;letter-spacing:-.02em;margin:4px 0 6px;line-height:1.2}
+.chap-head .ch-meta{font-size:14px;color:var(--muted)}
+.chap-intro{background:var(--accent-bg);border:1px solid var(--accent-soft);border-radius:12px;padding:16px 20px;margin:18px 0 30px;font-size:14.5px;color:var(--text-soft)}
+.chap-intro b{color:var(--accent-dark)}
+/* sections */
+section.sec{margin:0 0 14px;scroll-margin-top:96px}
+section.sec h3{font-size:21px;font-weight:700;letter-spacing:-.01em;margin:34px 0 14px;padding-bottom:9px;border-bottom:2px solid var(--accent-soft);display:flex;align-items:baseline;gap:9px}
+section.sec h3 .pg{font-size:11.5px;font-weight:600;color:var(--accent);background:var(--accent-bg);padding:2px 8px;border-radius:20px;border:1px solid var(--accent-soft);flex-shrink:0}
+section.sec h4{font-size:16.5px;font-weight:700;margin:22px 0 8px;color:var(--text)}
+p{margin:11px 0;color:var(--text-soft)}
+strong{color:var(--text);font-weight:650}
+.lead{font-size:15px}
+ul.clean,ol.clean{margin:11px 0 11px 4px;padding-left:22px}
+ul.clean li,ol.clean li{margin:6px 0;color:var(--text-soft)}
+ul.clean li::marker{color:var(--accent)}
+code{background:var(--code-bg);padding:1.5px 6px;border-radius:5px;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;color:var(--accent-dark)}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow-x:auto;margin:14px 0;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;line-height:1.65;color:var(--text)}
+/* callouts */
+.box{border-radius:12px;padding:15px 18px;margin:16px 0;font-size:14.5px;border:1px solid}
+.box .bx-t{font-weight:700;font-size:13.5px;margin-bottom:5px;display:flex;align-items:center;gap:7px}
+.box.key{background:var(--accent-bg);border-color:var(--accent-soft)}
+.box.key .bx-t{color:var(--accent-dark)}
+.box.note{background:var(--blue-soft);border-color:#D3E0F0}
+.box.note .bx-t{color:var(--blue)}
+.box.tip{background:var(--green-soft);border-color:#D5E5D5}
+.box.tip .bx-t{color:var(--green)}
+.box.warn{background:var(--warn-soft);border-color:#F0E2C4}
+.box.warn .bx-t{color:var(--warn)}
+.box p{margin:6px 0;color:var(--text-soft)}
+.box p:first-child{margin-top:0}.box p:last-child{margin-bottom:0}
+.mnemonic{background:linear-gradient(135deg,var(--accent-bg),#fff);border:1px dashed var(--accent);border-radius:12px;padding:13px 18px;margin:16px 0;font-size:15px;font-weight:600;color:var(--accent-dark)}
+.mnemonic .mn-label{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);display:block;margin-bottom:3px;font-weight:700}
+/* tables */
+.tbl-wrap{overflow-x:auto;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:14px;background:var(--card);border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+th,td{padding:9px 13px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:var(--accent);color:#fff;font-weight:600;font-size:13px;letter-spacing:.01em}
+tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even){background:#FCFBF7}
+td b,td strong{color:var(--accent-dark)}
+/* svg figure */
+figure.fig{margin:22px 0;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+figure.fig svg{width:100%;height:auto;display:block}
+figure.fig figcaption{margin-top:12px;font-size:13px;color:var(--muted);text-align:center;line-height:1.6}
+.svg-label{font:600 13px var(--sans);fill:var(--text)}
+.svg-sub{font:500 11px var(--sans);fill:var(--muted)}
+.svg-accent{fill:var(--accent)}
+/* quiz */
+.quiz{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin:26px 0;box-shadow:var(--shadow)}
+.quiz-head{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px;margin-bottom:4px}
+.quiz-head .qz-ico{width:22px;height:22px;background:var(--accent);border-radius:6px;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px}
+.quiz-head .qz-score{margin-left:auto;font-size:13px;font-weight:600;color:var(--muted)}
+.q{margin:18px 0 0;padding-top:16px;border-top:1px solid var(--border)}
+.q:first-of-type{border-top:none;padding-top:6px}
+.q .q-text{font-weight:600;font-size:14.5px;margin-bottom:10px;color:var(--text)}
+.q .q-text .qnum{color:var(--accent);font-weight:700;margin-right:6px}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--border-strong);background:var(--card);
+  padding:10px 14px;border-radius:9px;margin:7px 0;font-size:14px;cursor:pointer;font-family:inherit;color:var(--text-soft);transition:all .13s;position:relative}
+.opt:hover:not(.locked){border-color:var(--accent);background:var(--accent-bg)}
+.opt.correct{border-color:var(--green);background:var(--green-soft);color:#2f5a2f;font-weight:600}
+.opt.wrong{border-color:#cc6b5a;background:#fbeae6;color:#a23d2a}
+.opt.locked{cursor:default}
+.opt .mark{position:absolute;right:13px;font-weight:700}
+.explain{display:none;margin-top:10px;padding:12px 15px;background:var(--blue-soft);border:1px solid #D3E0F0;border-radius:9px;font-size:13.5px;color:var(--text-soft);line-height:1.7}
+.explain.show{display:block;animation:fade .25s}
+.explain b{color:var(--blue)}
+/* back to top */
+#toTop{position:fixed;right:26px;bottom:26px;width:44px;height:44px;border-radius:12px;background:var(--accent);color:#fff;border:none;cursor:pointer;font-size:20px;box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:all .25s;z-index:90}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{background:var(--accent-dark)}
+/* misc */
+.pill{display:inline-block;background:var(--accent-bg);color:var(--accent-dark);border:1px solid var(--accent-soft);border-radius:20px;padding:1px 9px;font-size:12px;font-weight:600;margin:0 2px}
+.kbd{font-size:12.5px;color:var(--muted)}
+hr.soft{border:none;border-top:1px dashed var(--border-strong);margin:26px 0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+/* ===== 考古題雙側欄 ===== */
+.layout.exam-on{max-width:2060px;grid-template-columns:200px minmax(400px,1.1fr) minmax(320px,.95fr) minmax(320px,.95fr);gap:24px}
+aside.exam-col{display:none;position:sticky;top:96px;align-self:start;max-height:calc(100vh - 116px);overflow-y:auto;padding:18px 4px 60px;min-width:0}
+.layout.exam-on aside.exam-col{display:block}
+.col-head{position:sticky;top:0;z-index:6;background:var(--bg);padding:4px 2px 10px;display:flex;align-items:center;gap:8px;font-weight:700;font-size:14.5px;border-bottom:1px solid var(--border);margin-bottom:10px}
+.col-head .ico{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0}
+.exam-pane{display:none}
+.exam-pane.active{display:block;animation:fade .25s}
+.year-block{margin:0 0 22px}
+.year-head{display:flex;align-items:center;gap:7px;font-weight:700;font-size:13px;color:var(--accent-dark);background:var(--accent-bg);border:1px solid var(--accent-soft);border-radius:9px;padding:5px 11px;margin-bottom:9px}
+.xq,.pq{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:9px 0;box-shadow:var(--shadow);font-size:13px;line-height:1.7;color:var(--text-soft)}
+.xq-no{display:inline-block;font-size:11px;font-weight:700;color:var(--accent-dark);background:var(--accent-bg);border:1px solid var(--accent-soft);padding:0 8px;border-radius:11px;margin-bottom:6px}
+.xq-text{color:var(--text)}
+.xq-text .blank{border-bottom:1.5px solid var(--text-soft);padding:0 16px;display:inline-block;min-width:34px}
+.xq-text code{background:var(--code-bg);border-radius:5px;padding:1px 6px;font-size:12px}
+.xq-ans{margin-top:8px;padding:8px 11px;background:var(--green-soft);border:1px solid #CDE3CD;border-radius:8px;color:#2f5a2f;font-size:12.8px}
+.xq-ans b{color:#3c6e3c}
+.xq-warn{margin-top:7px;padding:7px 10px;background:var(--warn-soft);border:1px solid #EAD9B0;border-radius:8px;color:#8a5f1d;font-size:12.3px}
+.xtab{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0;background:var(--card)}
+.xtab th,.xtab td{border:1px solid var(--border-strong);padding:2px 5px;text-align:left;white-space:nowrap;color:var(--text-soft)}
+.xtab th{background:var(--code-bg);font-size:10.5px}
+.pool{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:8px 0}
+.pool span{background:var(--code-bg);border:1px solid var(--border-strong);border-radius:6px;text-align:center;padding:2px 0;font-size:11.5px;font-weight:600;color:var(--text-soft)}
+.reveal{appearance:none;border:1px solid var(--border-strong);background:var(--card);color:var(--accent-dark);font-family:inherit;font-weight:600;font-size:12.5px;border-radius:8px;padding:5px 13px;margin-top:9px;cursor:pointer;transition:all .15s}
+.reveal:hover{border-color:var(--accent);background:var(--accent-bg)}
+.reveal.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.pq-ans{display:none;margin-top:9px;padding:9px 11px;background:var(--blue-soft);border:1px solid #D3E0F0;border-radius:8px;font-size:12.8px;color:var(--text-soft)}
+.pq-ans.show{display:block;animation:fade .25s}
+.pq-ans b{color:var(--blue)}
+@media(max-width:1560px){
+  .layout.exam-on{max-width:1180px;grid-template-columns:230px minmax(0,1fr)}
+  .layout.exam-on aside.exam-col{position:static;max-height:none;overflow:visible;grid-column:2;padding-top:0}
+}
+@media(max-width:900px){
+  .layout.exam-on{grid-template-columns:1fr}
+  .layout.exam-on aside.exam-col{grid-column:auto}
+}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;gap:0}
+  nav.side{position:static;max-height:none;overflow:visible;border-bottom:1px solid var(--border);margin-bottom:10px;padding:12px 0}
+  nav.side.collapsed .nav-links{display:none}
+  .nav-toggle{display:block}
+  .two-col{grid-template-columns:1fr}
+  .chap-head h2{font-size:24px}
+}
+.nav-toggle{display:none;width:100%;text-align:left;background:none;border:none;font-family:inherit;font-weight:700;font-size:13px;color:var(--accent-dark);cursor:pointer;padding:4px 12px}
+@media(min-width:901px){.nav-toggle{display:none!important}.nav-links{display:block!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="logo">網</div>
+      <h1>網路概論 — 期末複習</h1>
+      <span class="sub">Business Data Networks &amp; Security · Ch06–Ch11</span>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-ch="ch06">Ch 6<span class="t-sub">無線區網 I</span></button>
+      <button class="tab" data-ch="ch07">Ch 7<span class="t-sub">無線區網 II</span></button>
+      <button class="tab" data-ch="ch08">Ch 8<span class="t-sub">TCP/IP 互連 I</span></button>
+      <button class="tab" data-ch="ch09">Ch 9<span class="t-sub">TCP/IP 互連 II</span></button>
+      <button class="tab" data-ch="ch10">Ch 10<span class="t-sub">廣域網路</span></button>
+      <button class="tab" data-ch="ch11">Ch 11<span class="t-sub">網路應用</span></button>
+      <button class="tab" data-ch="quizbank" style="border-style:dashed">📝 總題庫<span class="t-sub">混合測驗</span></button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="side" id="sidebar">
+    <button class="nav-toggle" onclick="document.getElementById('sidebar').classList.toggle('collapsed')">☰ 本章目錄</button>
+    <div class="nav-links" id="navLinks"></div>
+  </nav>
+  <main id="main">
+<!-- ================= CHAPTER 6 ================= -->
+<div class="chapter active" id="ch06">
+  <div class="chap-head">
+    <span class="ch-num">Chapter 6</span>
+    <h2>無線區域網路 I — Wi-Fi 基礎</h2>
+    <div class="ch-meta">802.11 標準 · 電波傳播 · 頻段頻寬 · 展頻 · WLAN 運作 · 傳輸標準 · 網狀網路</div>
+  </div>
+  <div class="chap-intro">
+    本章建立 Wi-Fi 的物理與運作基礎。核心主線:<b>無線電波先天不可靠</b>(衰減、干擾、多路徑),所以 802.11 用各種技術(展頻、CSMA/CA、MIMO)在「共享又混亂」的無線媒介上盡力可靠通訊。每一個「問題」都是下一個「技術」的動機。
+  </div>
+
+  <section class="sec" id="ch06-s1">
+    <h3 data-nav="6.1 標準與 Wi-Fi 聯盟"><span class="pg">p.3–7</span>802.11 標準與 Wi-Fi 聯盟</h3>
+    <p>有線乙太網路 <strong>802.3</strong> 與無線 <strong>802.11</strong> 是 IEEE 802 委員會底下的兄弟標準,都只負責 OSI 的<strong>第 1 層(實體)與第 2 層(資料鏈結)</strong>。差別只在傳輸媒介:銅線 vs 無線電波。第 3 層以上(IP/TCP)由別的標準負責,與它們無關。</p>
+    <div class="box key"><div class="bx-t">🔑 IEEE 與 Wi-Fi 聯盟的分工(必考)</div>
+      <p><strong>IEEE</strong> 制定 802.11「技術標準」;<strong>Wi-Fi 聯盟</strong>從標準中挑出功能子集(profile)做「互通性認證」,通過才能貼 Wi-Fi 標誌。所以「Wi-Fi」嚴格說是<strong>認證商標</strong>,不是標準名稱。</p>
+    </div>
+    <p>Wi-Fi 聯盟偶爾也自己推標準,出過兩個「資安惡夢」:<strong>WPA</strong>(WEP 被破後的過渡方案,TKIP 已不安全)與 <strong>WPS</strong>(8 位數 PIN 被拆成 4+3 段驗證,暴力破解只需約 11,000 次,建議關閉)。</p>
+    <div class="box note"><div class="bx-t">混合式網路(Hybrid Network)</div>
+      <p>真實 Wi-Fi 幾乎都是「最後一段無線」:筆電 →(無線電)→ AP →(UTP 網路線)→ 乙太交換器 → 伺服器/Internet。<strong>AP 扮演 Layer 2 橋接器</strong>,把 802.11 訊框轉成 802.3 訊框。無線只是有線網路的延伸,不是取代。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="ch06-s2">
+    <h3 data-nav="6.2 電波傳播問題"><span class="pg">p.10–21</span>電波傳播與五大問題</h3>
+    <p>電磁波三要素:<strong>振幅</strong>(訊號強度)、<strong>波長 λ</strong>、<strong>頻率 f</strong>,關係 <code>c = f × λ</code>。光纖習慣講波長,無線電習慣講頻率。典型資料 LAN 落在 <strong>500 MHz–10 GHz</strong>(Wi-Fi 的 2.4/5 GHz 在此)。</p>
+    <h4>天線:全向 vs 碟形</h4>
+    <div class="tbl-wrap"><table>
+      <tr><th>天線</th><th>特性</th><th>對準</th><th>用途</th></tr>
+      <tr><td><b>全向性</b></td><td>360° 散開、衰減快</td><td>不需對準</td><td>手機、AP(會移動的)</td></tr>
+      <tr><td><b>碟形</b></td><td>聚焦成束、傳得遠</td><td>必須對準</td><td>衛星、大樓點對點(固定的)</td></tr>
+    </table></div>
+    <p class="kbd">口訣:會動的用全向,固定的才能用碟形。</p>
+    <h4>五大傳播問題</h4>
+    <div class="tbl-wrap"><table>
+      <tr><th>問題</th><th>本質</th><th>與頻率有關?</th></tr>
+      <tr><td><b>反平方衰減</b> (1/r²)</td><td>能量在球面攤薄(幾何)</td><td>❌ 無關</td></tr>
+      <tr><td><b>吸收衰減</b></td><td>空氣/水吸收能量</td><td>✅ 頻率越高越糟</td></tr>
+      <tr><td><b>死區/陰影</b></td><td>被障礙物擋住</td><td>✅ 頻率越高越糟(繞射差)</td></tr>
+      <tr><td><b>多路徑干擾</b></td><td>直達波+反射波相位抵消</td><td>WLAN 頻段<b>最嚴重</b></td></tr>
+      <tr><td><b>EMI 電磁干擾</b></td><td>別的設備同頻率搗亂</td><td>看誰同頻</td></tr>
+    </table></div>
+    <div class="box key"><div class="bx-t">🔑 反平方定律計算</div>
+      <p>強度 ∝ 1/r²,公式 <code>S₂ = S₁ × (r₁/r₂)²</code>(新距離放分母)。例:10 m 處 9 mW,30 m 處 = 9 × (10/30)² = 9 × 1/9 = <strong>1 mW</strong>。距離 ×3 → 功率 ÷9。</p>
+    </div>
+    <figure class="fig">
+      <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+        <text x="20" y="24" class="svg-label">多路徑干擾:直達波 vs 反射波相位相反 → 抵消歸零</text>
+        <path d="M40,80 Q70,55 100,80 T160,80 T220,80 T280,80" fill="none" stroke="#4A6FA5" stroke-width="2.5"/>
+        <text x="285" y="84" class="svg-sub" fill="#4A6FA5">直達波</text>
+        <path d="M40,140 Q70,165 100,140 T160,140 T220,140 T280,140" fill="none" stroke="#D97757" stroke-width="2.5"/>
+        <text x="285" y="144" class="svg-sub" fill="#D97757">反射波(相位相反)</text>
+        <line x1="400" y1="60" x2="400" y2="160" stroke="#DAD7CC" stroke-width="1.5"/>
+        <text x="410" y="64" class="svg-sub">相加</text>
+        <line x1="440" y1="110" x2="600" y2="110" stroke="#86837A" stroke-width="2.5" stroke-dasharray="5 4"/>
+        <text x="500" y="100" class="svg-label" fill="#BC5A3C">= 0(無訊號)</text>
+      </svg>
+      <figcaption>多路徑:同一訊號的反射複本晚到、相位錯開,在接收端某些位置剛好互相抵消。挪幾公分結果就不同——這就是 Wi-Fi「看位置吃飯」的原因。</figcaption>
+    </figure>
+  </section>
+
+  <section class="sec" id="ch06-s3">
+    <h3 data-nav="6.3 頻段與頻寬"><span class="pg">p.22–36</span>頻段、頻道與頻寬</h3>
+    <p>三層架構:<strong>頻譜</strong>(0 Hz→∞ 所有頻率)→ <strong>服務頻段</strong>(劃給特定用途的區塊,多數需執照)→ <strong>頻道</strong>(頻段內細分,實際開台的單位)。不同頻道訊號互不干擾。</p>
+    <div class="box key"><div class="bx-t">🔑 頻寬 ∝ 速度</div>
+      <p>頻寬 = 最高頻率 − 最低頻率(單位 Hz)。<strong>頻寬加倍 → 傳輸速度上限加倍</strong>(香農定理 C = B·log₂(1+SNR) 中 C ∝ B)。這就是 Wi-Fi 拼命搶寬頻道的根本原因。「broadband 寬頻」工程定義是<strong>頻道頻寬寬</strong>,不是單純「快」。</p>
+    </div>
+    <h4>2.4 GHz 的頻道重疊(經典考圖)</h4>
+    <figure class="fig">
+      <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+        <line x1="30" y1="170" x2="620" y2="170" stroke="#86837A" stroke-width="1.5"/>
+        <!-- overlapping dashed arcs -->
+        <path d="M50,170 Q120,60 190,170" fill="none" stroke="#DAD7CC" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <path d="M110,170 Q180,60 250,170" fill="none" stroke="#DAD7CC" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <path d="M170,170 Q240,60 310,170" fill="none" stroke="#DAD7CC" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <!-- channel 1 6 11 solid -->
+        <path d="M50,170 Q140,40 230,170" fill="rgba(217,119,87,.10)" stroke="#D97757" stroke-width="2.5"/>
+        <path d="M225,170 Q315,40 405,170" fill="rgba(74,111,165,.10)" stroke="#4A6FA5" stroke-width="2.5"/>
+        <path d="M400,170 Q490,40 580,170" fill="rgba(91,138,91,.10)" stroke="#5B8A5B" stroke-width="2.5"/>
+        <text x="140" y="56" class="svg-label" fill="#BC5A3C" text-anchor="middle">Ch 1</text>
+        <text x="315" y="56" class="svg-label" fill="#4A6FA5" text-anchor="middle">Ch 6</text>
+        <text x="490" y="56" class="svg-label" fill="#5B8A5B" text-anchor="middle">Ch 11</text>
+        <text x="140" y="190" class="svg-sub" text-anchor="middle">2.412 GHz</text>
+        <text x="315" y="190" class="svg-sub" text-anchor="middle">2.437 GHz</text>
+        <text x="490" y="190" class="svg-sub" text-anchor="middle">2.462 GHz</text>
+        <text x="320" y="210" class="svg-sub" text-anchor="middle">每頻道寬 22 MHz,中心間隔僅 5 MHz → 相鄰頻道必重疊;只有 1/6/11 完全不重疊</text>
+      </svg>
+      <figcaption>2.4 GHz 全頻段僅 85 MHz,容不下超過 3 個 22 MHz 不重疊頻道 → 只有 <b>Ch 1、6、11</b>。</figcaption>
+    </figure>
+    <div class="tbl-wrap"><table>
+      <tr><th></th><th>2.4 GHz</th><th>5 GHz</th></tr>
+      <tr><td>不重疊頻道</td><td><b>只有 3 個</b>(1/6/11)</td><td><b>11–24 個</b></td></tr>
+      <tr><td>傳播</td><td>好(遠、穿牆)</td><td>差(吸收重、死區多)</td></tr>
+      <tr><td>干擾</td><td>擁擠(微波爐、藍牙)</td><td>相對乾淨</td></tr>
+      <tr><td>速度潛力</td><td>低(頻段窄)</td><td>高(可開寬頻道)</td></tr>
+    </table></div>
+    <p class="kbd">一句話:<strong>2.4 GHz = 遠但擠;5 GHz = 快但短</strong>。雙頻 AP 兩者兼得。</p>
+    <div class="box warn"><div class="bx-t">⚠ 需照 vs 免照頻段</div>
+      <p>多數頻段<strong>需執照</strong>(FM、行動電話),政府靠限制執照數量防干擾;Wi-Fi 用的 2.4/5 GHz 是<strong>免執照(ISM)頻段</strong>,人人能用、零門檻,但代價是沒人保護你不被干擾——只能靠技術手段共存。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="ch06-s4">
+    <h3 data-nav="6.4 展頻與 OFDM"><span class="pg">p.43–47</span>展頻傳輸與 OFDM</h3>
+    <div class="box key"><div class="bx-t">🔑 展頻三大要點(必考)</div>
+      <p>① 在 2.4/5 GHz <strong>法律強制</strong>使用展頻;② 能<strong>減輕傳播問題,尤其多路徑</strong>;③ 在 WLAN 中<strong>不是用來做安全</strong>的(參數公開,毫無保密效果——安全靠 WPA2/3 加密)。</p>
+    </div>
+    <p>展頻 = 故意用<strong>遠超必要</strong>的頻寬傳訊號,把能量攤薄。某個窄頻率被干擾或抵消,其他頻率成分還活著 → 抗多路徑、抗 EMI。「浪費頻寬但為避免傳播問題是必要的」。注意:<strong>展頻買到的是可靠性,不是速度</strong>。</p>
+    <p><strong>OFDM(正交分頻多工)</strong>:把寬頻道切成幾十~幾百條窄子載波,一個訊框拆散並行傳送,資料以冗餘方式分佈。某些子載波被多路徑抵消,其餘仍能重建資料。是 802.11a/g/n/ac/ax、4G、5G 的現役主力技術。</p>
+  </section>
+
+  <section class="sec" id="ch06-s5">
+    <h3 data-nav="6.5 WLAN 運作"><span class="pg">p.49–68</span>802.11 WLAN 運作</h3>
+    <h4>封包與訊框之旅(必考觀念)</h4>
+    <p>筆電送資料給有線伺服器:封包(Layer 3)裝進 <strong>802.11 訊框</strong>無線送到 AP → AP <strong>拆掉</strong> 802.11 訊框、取出封包 → 重新裝進 <strong>802.3 訊框</strong>走有線送到伺服器。</p>
+    <div class="mnemonic"><span class="mn-label">核心口訣</span>封包走全程(端到端不變),訊框只走一段(per-hop)。一個封包,N 段鏈路 = N 個不同訊框。AP 是唯一的雙語翻譯官;交換器不拆訊框,路由器才會。</div>
+    <p>有線骨幹在 802.11 標準術語叫 <strong>DS(分送系統)</strong>。架構層級:STA(站台)→ <strong>BSS</strong>(一台 AP + 它的客戶)→ DS(串接多 AP 的有線骨幹)→ <strong>ESS</strong>(多個 BSS + DS,共用同一 SSID)。<strong>SSID</strong> = 網路名稱;同 ESS 同 SSID 才能<strong>漫遊(hand off)</strong>。</p>
+    <h4>媒介存取:CSMA/CA + ACK</h4>
+    <p>一個 BSS 共用一個頻道,<strong>同時只能一人講話</strong>,否則碰撞。無線發射時聽不到別人,<strong>無法偵測碰撞</strong>,所以不能用有線的 CSMA/CD,改用碰撞「避免」:</p>
+    <ol class="clean">
+      <li><strong>CS 載波感測</strong>:先聽,別人在傳就等</li>
+      <li><strong>CA 碰撞避免</strong>:頻道空了還要<strong>隨機退避(backoff)</strong>才發,避免大家齊發 → 效率低但必要</li>
+      <li><strong>ACK 確認</strong>:收到完好訊框立即回 ACK;沒收到就重傳 → 802.11 是少見的「Layer 2 可靠協定」(因無線錯誤率高,值得)</li>
+    </ol>
+    <div class="box note"><div class="bx-t">隱藏節點問題 → RTS/CTS</div>
+      <p>A 和 C 都連 AP(B)但彼此聽不到,CSMA「先聽」失效 → 在 B 處相撞。解法 <strong>RTS/CTS</strong>(選用):A 先發 RTS 請求,<strong>AP 廣播 CTS</strong>(大家都聽得到,包括隱藏的 C)宣告禁聲 → A 獨佔時間窗。代價是多一輪握手開銷,故只對大訊框啟用。</p>
+    </div>
+    <div class="tbl-wrap"><table>
+      <tr><th></th><th>CSMA/CA+ACK</th><th>RTS/CTS</th></tr>
+      <tr><td>強制性</td><td><b>強制</b></td><td>選用</td></tr>
+      <tr><td>效率</td><td>較高</td><td>較低(多握手)</td></tr>
+      <tr><td>解決</td><td>一般碰撞</td><td><b>隱藏節點</b></td></tr>
+    </table></div>
+  </section>
+
+  <section class="sec" id="ch06-s6">
+    <h3 data-nav="6.6 傳輸標準與 MIMO"><span class="pg">p.69–84</span>802.11 傳輸標準 · MIMO</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>世代</th><th>標準</th><th>年</th><th>速率</th><th>頻段</th><th>MIMO</th></tr>
+      <tr><td>Wi-Fi 1</td><td>802.11</td><td>1997</td><td>2 Mbps</td><td>2.4</td><td>—</td></tr>
+      <tr><td>—</td><td>802.11a</td><td>1999</td><td>54</td><td><b>5</b>(首見)</td><td>—</td></tr>
+      <tr><td>—</td><td>802.11b</td><td>1999</td><td>11</td><td>2.4</td><td>—</td></tr>
+      <tr><td>Wi-Fi 3</td><td>802.11g</td><td>2003</td><td>54</td><td>2.4</td><td>—</td></tr>
+      <tr><td><b>Wi-Fi 4</b></td><td>802.11n</td><td>2009</td><td>600</td><td>2.4+5</td><td><b>是(4 流)</b></td></tr>
+      <tr><td><b>Wi-Fi 5</b></td><td>802.11ac</td><td>2013</td><td>6,933</td><td>5</td><td>是(8 流)+MU</td></tr>
+      <tr><td><b>Wi-Fi 6/6E</b></td><td>802.11ax</td><td>2019</td><td>9,608</td><td>+6 GHz</td><td>是+OFDMA</td></tr>
+    </table></div>
+    <p>速度三引擎:<strong>更寬頻道</strong>(20→40→80→160 MHz,但頻道數同步減半)、<strong>MIMO 多空間流</strong>、更高階調變。速度 = 頻寬 × 流數 × 調變效率。</p>
+    <div class="box key"><div class="bx-t">🔑 MIMO 的漂亮逆轉</div>
+      <p>MIMO 在同頻道同時送多條空間流(N 流 = N 倍速)。靠什麼分開?靠各天線經<strong>不同多路徑</strong>到達的時間/相位差解聯立方程式。<strong>多路徑這個 WLAN 頭號敵人,被 MIMO 變成提速的工具!</strong> 好處:更快 + 更遠(波束成形)。</p>
+    </div>
+    <p><strong>波束成形(Beamforming)</strong>:多天線以相位差發射,在目標方向同相增強、其他方向抵消——軟體聚焦,可毫秒切換指向。<strong>MU-MIMO</strong>:用空間分離讓 AP 同頻道同時服務多台設備(空間成為頻率、時間外的第三復用維度)。</p>
+    <div class="box warn"><div class="bx-t">⚠ 標稱速率 vs 實際吞吐(必考)</div>
+      <p>三層折扣:① 協定開銷(CSMA/CA 等待)砍 30–50%;② 總體吞吐由 BSS 內所有人<strong>均分</strong>(個人 ≪ 總體);③ 距離遠 → SNR 降 → <strong>自動降速</strong>。所以「AX5400」隔兩道牆跑 80 Mbps 完全正常。<strong>向下相容</strong>讓舊設備能連,但會被慢設備拖累全場。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="ch06-s7">
+    <h3 data-nav="6.7 無線網狀網路"><span class="pg">p.86–88</span>無線網狀網路(Mesh)</h3>
+    <p>傳統架構每台 AP 都要拉網路線回 DS。<strong>Mesh 拿掉 DS</strong>:AP(甚至一般設備)之間用無線互相<strong>多跳轉發(multi-hop)</strong>訊框,只需少數節點接有線。優點:免佈線、自癒(節點掛了自動繞路)、擴大覆蓋。代價:每跳佔一次頻道時間 → 吞吐逐跳折半、延遲增加。標準 802.11s(不成熟),現代家用 Mesh(Deco/Orbi/eero)多用私有協定 + EasyMesh 認證。</p>
+  </section>
+
+  
+</div>
+<!-- ================= CHAPTER 7 ================= -->
+<div class="chapter" id="ch07">
+  <div class="chap-head">
+    <span class="ch-num">Chapter 7</span>
+    <h2>無線區域網路 II — 安全與其他無線</h2>
+    <div class="ch-meta">WLAN 威脅 · 802.11i (WPA2) · PSK/802.1X · WPA3 · Rogue/Evil Twin · dB 計算 · Bluetooth · NFC/RFID</div>
+  </div>
+  <div class="chap-intro">
+    本章接續 Ch6,焦點轉向<b>無線安全</b>:Wi-Fi 跑在誰都能接收的空氣裡,沒有加密就形同裸奔(TJX 案例)。核心是 <b>802.11i (WPA2)</b> 如何用 CIA(機密、完整、認證)保護,以及它<b>擋不住</b>的威脅(Rogue/Evil Twin)。後半補充 dB 功率計算與藍牙、NFC、RFID 等其他無線技術。
+  </div>
+
+  <section class="sec" id="ch07-s1">
+    <h3 data-nav="7.1 WLAN 安全威脅"><span class="pg">p.3–9</span>WLAN 安全威脅</h3>
+    <div class="box warn"><div class="bx-t">⚠ TJX 資料外洩案(真實案例)</div>
+      <p>駭客透過佛羅里達分店一個<strong>防護薄弱的 AP</strong>入侵,再從分店打進總部,下載<strong>數百萬筆信用卡號</strong>。若當時用 802.11i 安全就不可能發生。教訓:<strong>保護你的端點(endpoint)!</strong></p>
+    </div>
+    <div class="tbl-wrap"><table>
+      <tr><th></th><th>War Driver(戰爭駕駛)</th><th>Drive-By Hacker(路過駭客)</th></tr>
+      <tr><td>位置</td><td>潛伏建築外</td><td>潛伏建築外</td></tr>
+      <tr><td>行為</td><td>收集 AP 資料(SSID、訊號、安全),<b>可能公布</b>但不讀訊息、不攻擊</td><td>讀訊息、<b>發動繞過防火牆的攻擊</b></td></tr>
+      <tr><td>合法性</td><td><b>合法</b></td><td><b>非法</b></td></tr>
+    </table></div>
+    <p class="kbd">差別:War driver 只「看」(合法);drive-by hacker 會「動手」(非法)。</p>
+    <div class="box note"><div class="bx-t">舊方法都不安全(p.281)</div>
+      <p><strong>關閉 SSID 廣播</strong>、<strong>只接受預先核可的 EUI-48(MAC)位址</strong>——這兩招都<strong>不安全</strong>!SSID 仍會在其他訊框中出現、MAC 位址可被竊聽後偽造。真正的安全要靠 802.11i 加密。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="ch07-s2">
+    <h3 data-nav="7.2–7.3 802.11i (WPA2)"><span class="pg">p.10–11</span>802.11i 安全(WPA2)</h3>
+    <p>802.11i 在<strong>無線主機與 AP 之間</strong>提供:初始認證、訊息加密(機密性)、認證、訊息完整性,使用強密碼學標準(<strong>AES</strong> 加密)。對應 <strong>CIA:Confidentiality(機密)、Integrity(完整)、Authentication(認證)</strong>。</p>
+    <div class="box note"><div class="bx-t">保護範圍的限制(必考)</div>
+      <p>802.11i 只保護「無線那一段」(host↔AP),<strong>不是端到端</strong>加密。封包進了有線網路就是明文。</p>
+    </div>
+    <div class="box key"><div class="bx-t">🔑 設定 AP 的選擇順序</div>
+      <p>✅ 選 <strong>802.11i(=WPA2)</strong>;❌ 不要選 <strong>WPA</strong>(Wi-Fi 聯盟的早期較弱方案);⛔ <strong>絕對不要選 WEP</strong>(802.11 工作小組的最早期標準,已徹底破解)。安全強度:<strong>WPA2 &gt; WPA &gt; WEP</strong>。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="ch07-s3">
+    <h3 data-nav="7.4–7.7 PSK 與 802.1X 模式"><span class="pg">p.13–20</span>802.11i 運作模式:PSK vs 802.1X</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th></th><th>PSK 模式(預共享金鑰)</th><th>802.1X 模式</th></tr>
+      <tr><td>環境</td><td>家用、單一 AP 的小企業</td><td>多 AP 的公司</td></tr>
+      <tr><td>用中央認證伺服器?</td><td><b>否</b></td><td><b>是</b></td></tr>
+      <tr><td>認證依據</td><td>知道預共享金鑰(PSK)</td><td>認證伺服器上的憑證</td></tr>
+      <tr><td>技術安全</td><td>強</td><td>非常強</td></tr>
+      <tr><td>人為安全</td><td><b>脆弱</b></td><td>非常強</td></tr>
+    </table></div>
+    <p><strong>PSK 初始認證</strong>:所有 PC 共用同一把預共享金鑰做初始認證。認證後 AP 會給每台主機一把<strong>不共享的會話金鑰(unshared session key)</strong>,各自加密,彼此不知道對方的金鑰。</p>
+    <div class="box warn"><div class="bx-t">⚠ PSK 模式的威脅</div>
+      <p>① <strong>有人可能把 PSK 給未授權者</strong>——它「看起來不像密碼」,員工容易隨意分享(人為脆弱);② PSK 由通關密語產生,<strong>密語至少要 20 字元</strong>;③ <strong>WPS</strong>(8 位數 PIN 簡化設定)<strong>易被破解,應在 AP 上關閉</strong>。</p>
+    </div>
+    <p><strong>802.1X 模式</strong>有三角色:<strong>supplicant(請求者=客戶端)、authenticator(認證者=交換器/AP)、中央認證伺服器</strong>。有線(UTP)上的鏈路是安全的;但無線段需額外保護 → 在 AP 與客戶端間建 <strong>SSL/TLS VPN</strong> 保護後續 802.1X 訊息交換,最流行的標準是 <strong>PEAP</strong>(微軟開發)。</p>
+  </section>
+
+  <section class="sec" id="ch07-s4">
+    <h3 data-nav="7.8 WPA3 與 SAE"><span class="pg">p.21–22</span>WPA3 與 SAE</h3>
+    <p><strong>WPA3</strong>(Personal 與 Enterprise)用 <strong>SAE</strong> 取代 PSK 做更好的認證,提升密碼強度(AES-CCMP 128、HMAC-SHA256;Enterprise 達 192 位元),並使用受保護管理訊框(PMF)。</p>
+    <div class="box key"><div class="bx-t">🔑 SAE(Simultaneous Authentication of Equals)</div>
+      <p>基於密碼的安全金鑰協商方法,密碼與 MAC 位址共同參與金鑰產生。特點:可自然選密碼、<strong>抵抗離線字典攻擊</strong>、易用、具<strong>前向保密(Forward Secrecy)</strong>——即使密碼日後外洩,先前攔截的流量仍無法解密。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="ch07-s5">
+    <h3 data-nav="7.9–7.13 Rogue / Evil Twin"><span class="pg">p.24–33</span>802.11i 擋不住的威脅</h3>
+    <p>802.11i 只防部分威脅,還有兩種要另外處理:</p>
+    <h4>Rogue Access Point(流氓 AP)</h4>
+    <p>員工<strong>未經許可</strong>私接的 AP(通常為了方便),往往<strong>沒設安全</strong>,變成繞過企業防護的後門——攻擊者從這個洞長驅直入。</p>
+    <h4>Evil Twin(邪惡雙胞胎)</h4>
+    <div class="box warn"><div class="bx-t">⚠ 經典中間人攻擊(MITM)</div>
+      <p>攻擊者的電腦<strong>偽裝成合法 AP</strong>(同 SSID),分別與「受害客戶端」和「真 AP」各建一條 802.11i 連線。Evil Twin <strong>解密→讀取→再加密</strong>轉發,受害者毫無察覺。因為金鑰是各段分別協商的,ET 握有兩段的金鑰。</p>
+    </div>
+    <div class="box tip"><div class="bx-t">✓ 用 VPN 打敗 Evil Twin</div>
+      <p>客戶端<strong>先用 VPN 金鑰加密,再用與 ET 共享的金鑰加密</strong>。ET 拆掉外層後,裡面<strong>還是 VPN 加密的密文,讀不到原文</strong>。VPN 金鑰從未在無線上傳輸,ET 無法攔截 → 端到端保護擊敗中間人。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="ch07-s6">
+    <h3 data-nav="7.14–7.16 AP 部署與管理"><span class="pg">p.35–42</span>AP 部署與遠端管理</h3>
+    <p><strong>部署規劃</strong>:在藍圖上畫約 <strong>10 公尺重疊的圓</strong>達到良好覆蓋並最小化 AP 間干擾;考慮厚牆、檔案櫃;多樓層要做<strong>三維</strong>考量。<strong>安裝後做場勘(site survey)</strong>量測訊號品質、持續調整(環境一直在變)。</p>
+    <p><strong>遠端管理</strong>:AP 是「受管裝置」,把資料送到管理主控台,管理員可下指令。期望功能:故障即時通知、持續品質監控、遠端功率調整、推送軟體更新、自動偵測 Rogue/Evil Twin/設定錯誤的 AP——<strong>盡量自動化</strong>(人工管理大量 AP 太貴)。</p>
+  </section>
+
+  <section class="sec" id="ch07-s7">
+    <h3 data-nav="7.17–7.19 分貝 dB 計算"><span class="pg">p.43–48</span>分貝(Decibel)功率計算</h3>
+    <p>功率比可用簡單比值,但常以分貝表示:<code>dB = 10 × log₁₀(P₂/P₁)</code>。</p>
+    <div class="box key"><div class="bx-t">🔑 衰減 vs 放大</div>
+      <p><strong>衰減(P₂&lt;P₁)→ 負 dB</strong>;<strong>放大(P₂&gt;P₁)→ 正 dB</strong>。例:30→10 mW,dB = 10·log(10/30) = <strong>−4.77 dB</strong>。</p>
+    </div>
+    <div class="tbl-wrap"><table>
+      <tr><th>功率比</th><th>≈ dB</th><th>記憶</th></tr>
+      <tr><td>×2</td><td>+3 dB</td><td rowspan="2">每加倍 ≈ +3 dB</td></tr>
+      <tr><td>÷2</td><td>−3 dB</td></tr>
+      <tr><td>×10</td><td>+10 dB</td><td rowspan="2">每 ×10 ≈ +10 dB</td></tr>
+      <tr><td>÷10</td><td>−10 dB</td></tr>
+    </table></div>
+    <p><strong>dBm</strong>:P₁ 永遠固定為 <strong>1 mW</strong>,讓不同無線電的絕對功率可比較。例:10 mW = 10 dBm、4 mW ≈ 6 dBm、0.5 mW = −3 dBm、10 W = 40 dBm。</p>
+  </section>
+
+  <section class="sec" id="ch07-s8">
+    <h3 data-nav="7.20–7.22 藍牙 Bluetooth"><span class="pg">p.50–62</span>藍牙(Bluetooth)</h3>
+    <p>為<strong>低速、近距離</strong>設計的<strong>個人區域網路(PAN)</strong>纜線替代技術,不是完整 WLAN。範圍(由近到遠):<strong>PAN → LAN → MAN → WAN</strong>。Classic 藍牙約 3 Mbps 但省電。</p>
+    <div class="tbl-wrap"><table>
+      <tr><th></th><th>Classic 藍牙</th><th>高速藍牙</th></tr>
+      <tr><td>速度</td><td>≤ 3 Mbps</td><td>≤ 約 24 Mbps</td></tr>
+      <tr><td>功率</td><td>低(長電池壽命)</td><td>高(偶爾才用)</td></tr>
+      <tr><td>距離</td><td>約 10 m</td><td>約 30 m</td></tr>
+    </table></div>
+    <p><strong>Piconet(微網)</strong>:一個 master 加上最多 7 個 slave(共 8 裝置)。一台裝置可同時是 master 也是 slave。<strong>BLE</strong>(低功耗藍牙)用於 IoT;<strong>Bluetooth 5</strong> 相對 4.2 有 2× 速度、4× 範圍、8× 廣播資料。</p>
+    <div class="box note"><div class="bx-t">藍牙 Profiles(設定檔)</div>
+      <p>規範裝置如何協同運作(802.11 Wi-Fi 沒有對應概念)。例:Headset(耳機)、Hands-Free(車用語音)、Basic Printing(免驅動列印)、HID(藍牙滑鼠鍵盤)、Bluetooth Smart(IoT)。<strong>iBeacon</strong>(Apple)用 BLE 廣播唯一識別碼做近接感測。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="ch07-s9">
+    <h3 data-nav="7.23–7.24 NFC / RFID / Wi-Fi Direct"><span class="pg">p.63–68</span>NFC · RFID · Wi-Fi Direct</h3>
+    <p><strong>NFC(近場通訊)</strong>:極短距離(≤ 4 cm)、低速(≤ 424 kbps),故極省電,用 13.56 MHz 專用頻段。應用:公車票、解鎖車門、門禁、電子名片、零售支付(含集點優惠)。</p>
+    <p><strong>被動 RFID 標籤</strong>:目標是取代條碼。標籤<strong>無電源</strong>,被讀取器掃描時用掃描的能量產生回應 → 便宜,但只能送少量資訊、<strong>無法加密</strong>。(成本約 4 美分)</p>
+    <p><strong>Wi-Fi Direct</strong>:兩台 802.11 無線主機<strong>直接通訊,不需 AP</strong>。</p>
+  </section>
+
+  
+</div>
+<!-- ================= CHAPTER 8 ================= -->
+<div class="chapter" id="ch08">
+  <div class="chap-head">
+    <span class="ch-num">Chapter 8</span>
+    <h2>TCP/IP 互連網路 I</h2>
+    <div class="ch-meta">TCP/IP 標準 · IPv4 位址與遮罩 · 路由程序 · ARP · IPv4/IPv6 封包 · TCP/UDP</div>
+  </div>
+  <div class="chap-intro">
+    從 Ch5–7 的「單一網路(Layer 1–2,OSI 標準)」上升到 <b>Layer 3–4 的互連網路(TCP/IP 標準,來自 IETF 的 RFC)</b>。本章終於揭曉<b>路由器到底在做什麼</b>:收到封包 → 比對路由表 → 找最佳匹配列 → 轉送出去。並深入 IP 位址結構、遮罩運算、ARP、IPv4/v6 封包格式與 TCP/UDP。
+  </div>
+
+  <section class="sec" id="ch08-s1">
+    <h3 data-nav="8.1 TCP/IP 標準總覽"><span class="pg">p.4–7</span>TCP/IP 標準總覽</h3>
+    <p>單一交換/無線網路在 Layer 1–2,標準幾乎全來自 <strong>OSI</strong>;互連網路在 Layer 3–4,標準主要來自 <strong>IETF</strong>(稱 TCP/IP 標準,文件叫 <strong>RFC</strong>)。</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>層</th><th>核心協定</th></tr>
+      <tr><td>5 應用</td><td>HTTP、SMTP、DNS、動態路由協定…</td></tr>
+      <tr><td>4 傳輸</td><td><b>TCP、UDP</b></td></tr>
+      <tr><td>3 網路</td><td><b>IP</b>、ICMP、ARP</td></tr>
+      <tr><td>1–2 實體/資料鏈結</td><td>無:使用 OSI 標準</td></tr>
+    </table></div>
+    <p>核心三大標準:<strong>IP、TCP、UDP</strong>。TCP/IP 在第 1–2 層不自訂,直接用 OSI(乙太網路、Wi-Fi)。</p>
+  </section>
+
+  <section class="sec" id="ch08-s2">
+    <h3 data-nav="8.2–8.3 階層式 IPv4 位址"><span class="pg">p.9–13</span>階層式 IPv4 位址與路由器</h3>
+    <p>IPv4 位址共 <strong>32 位元</strong>,通常分三部分(總和固定 32):<strong>網路部分</strong>(由號碼分配機構給公司/ISP)、<strong>子網部分</strong>(公司自己劃分)、<strong>主機部分</strong>(指定子網內某主機)。例 <code>128.171.17.13</code>。</p>
+    <div class="box note"><div class="bx-t">邊界 vs 內部路由器</div>
+      <p><strong>邊界路由器(Border Router)</strong>連接<strong>不同網路</strong>(如公司 192.168.x.x ↔ ISP 60.x.x.x);<strong>內部路由器(Internal Router)</strong>連接一個網路內的<strong>不同子網</strong>(192.168.1.x ↔ 192.168.2.x)。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="ch08-s3">
+    <h3 data-nav="8.4 IPv4 遮罩"><span class="pg">p.14–21</span>網路與子網遮罩(Masks)</h3>
+    <div class="box key"><div class="bx-t">🔑 為什麼需要遮罩?</div>
+      <p>看一個 IPv4 位址<strong>無法</strong>得知網路/子網/主機各佔幾位元(只知總和 32)。<strong>遮罩</strong>就是解答:一連串開頭的 1 接著一連串結尾的 0,共 32 位。如同噴漆模板——讓部分通過、擋住其餘。</p>
+    </div>
+    <ul class="clean">
+      <li>16 個 1 + 16 個 0 = <code>255.255.0.0</code> = 前綴 <strong>/16</strong></li>
+      <li>24 個 1 + 8 個 0 = <code>255.255.255.0</code> = <strong>/24</strong></li>
+    </ul>
+    <p><strong>遮罩運算 = 位元 AND</strong>:遮罩位 = 1 時結果取 IP 位元;遮罩位 = 0 時結果一律 0。</p>
+    <pre>目的 IP : 128.171. 17. 13
+遮罩/16 : 255.255.  0.  0
+結果    : 128.171.  0.  0   ← 取出網路部分</pre>
+  </section>
+
+  <section class="sec" id="ch08-s4">
+    <h3 data-nav="8.5 交換 vs 路由"><span class="pg">p.23–29</span>乙太交換 vs IP 路由</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th></th><th>乙太網路交換</th><th>IP 路由</th></tr>
+      <tr><td>拓樸</td><td>階層式(無迴圈)</td><td><b>網狀(多條替代路徑)</b></td></tr>
+      <tr><td>送出埠</td><td>只有一個可能埠 → 每位址一列</td><td>可能多個埠 → 需找所有替代路徑</td></tr>
+      <tr><td>表的列</td><td>處理單一 EUI-48(MAC)位址</td><td>處理一段 IP 位址範圍</td></tr>
+      <tr><td>成本</td><td>低</td><td><b>較貴</b>(要挑最佳路徑)</td></tr>
+    </table></div>
+    <p>路由器排成網狀以提供<strong>可靠性</strong>(一條路斷了走另一條),代價是路由比交換複雜昂貴。交換表的列是 MAC 規則,路由表的列是 <strong>IP 範圍規則</strong>(目的網路+遮罩)。</p>
+  </section>
+
+  <section class="sec" id="ch08-s5">
+    <h3 data-nav="8.6–8.8 路由程序"><span class="pg">p.27–53</span>路由程序(三步驟)</h3>
+    <p>每個路由器有一張<strong>路由表</strong>,每列代表一段 IP 範圍的路由規則。欄位:列號、<strong>Destination</strong>(目的網路)、<strong>Mask</strong>、<strong>Metric</strong>(路由品質/成本)、<strong>Interface</strong>(送出埠)、<strong>Next-Hop Router</strong>(下一跳)。</p>
+    <div class="box key"><div class="bx-t">🔑 封包到達時的三步驟</div>
+      <p><strong>Step 1 找出所有匹配列</strong>:對<strong>每一列</strong>(從第一列到最後一列全看)套用遮罩,若結果 = Destination 欄 → 該列匹配。<br>
+      <strong>Step 2 找最佳匹配列</strong>:基本規則選<strong>最長匹配</strong>(遮罩開頭 1 最多 = 前綴最長);若平手再比 Metric(成本則選最低、速度則選最高)。<br>
+      <strong>Step 3 送出</strong>:依最佳列的 Interface 與 Next-Hop 送出;若 Next-Hop = <strong>Local</strong> 表示目的主機就在那個介面子網上,直接以訊框送達。</p>
+    </div>
+    <h4>匹配計算範例</h4>
+    <pre>不匹配:60.43.7.8  AND /16(255.255.0.0)= 60.43.0.0 ≠ 128.171.0.0  → 不匹配
+  匹配:128.171.17.13 AND /16 = 128.171.0.0 = 128.171.0.0  → 匹配
+(別忘了最後一步:寫出結論!)</pre>
+    <div class="box note"><div class="bx-t">經典考題:檢查列數</div>
+      <p>若有 127,976 列,只有第 2、7 列匹配:① 路由器最先檢查<strong>第 1 列</strong>;② 它必須檢查<strong>全部 127,976 列</strong>(因為可能有多個匹配,不能提早停)。</p>
+    </div>
+    <div class="box tip"><div class="bx-t">✓ 預設路由(Default Route)</div>
+      <p>路由表中 <code>0.0.0.0</code> + 遮罩 <code>/0</code> 那一列就是<strong>預設路由</strong>。遮罩 /0 對任何位址都匹配(但最長匹配為 0,優先度最低),所以「找不到更好的就走它」。</p>
+    </div>
+    <h4>最佳匹配練習</h4>
+    <pre>列220 /24 成本40   列345 /18 成本50   列682 /8 成本40
+→ 最佳:列220,因為 /24 前綴最長(優先比長度,不比成本)</pre>
+  </section>
+
+  <section class="sec" id="ch08-s6">
+    <h3 data-nav="8.9 非 8-bit 邊界遮罩"><span class="pg">p.54–58</span>不在 8 位邊界結束的遮罩</h3>
+    <p>遮罩常<strong>不</strong>在 8 位邊界切斷,此時不能用點分十進位硬算,要<strong>轉成二進位</strong>做 AND。記住每個位元組的對應:<code>255=11111111, 254=11111110, 252=11111100, 248=11111000, 240=11110000…</code></p>
+    <pre>IP   3.143.12.12 → 143 = 10001111
+遮罩 255.248.0.0 → 248 = 11111000
+AND              →       10001000 = 136
+結果 3.136.0.0 = Destination → 匹配!</pre>
+  </section>
+
+  <section class="sec" id="ch08-s7">
+    <h3 data-nav="8.10 ARP"><span class="pg">p.60–64</span>位址解析協定(ARP)</h3>
+    <div class="box key"><div class="bx-t">🔑 ARP 解決的問題</div>
+      <p>路由器要把封包送給下一跳,知道對方的<strong>IP 位址</strong>(來自路由表),但<strong>不知道對方的資料鏈結層(MAC)位址</strong>——而封包必須裝進該子網適用的訊框。ARP 就是「用 IP 問出 MAC」的協定。</p>
+    </div>
+    <ol class="clean">
+      <li><strong>廣播 ARP 請求</strong>:「IP 10.19.8.17 你的 EUI-48 是多少?」</li>
+      <li>只有該 IP 的主機<strong>回應</strong>:「我的 EUI-48 是 A7-23-DA-95-7C-99」</li>
+      <li>路由器把 IP↔MAC 配對存進 <strong>ARP cache</strong>,之後不用再為同一 IP 跑 ARP</li>
+    </ol>
+  </section>
+
+  <section class="sec" id="ch08-s8">
+    <h3 data-nav="8.11 IPv4 封包"><span class="pg">p.66–73</span>IPv4 封包格式</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>欄位</th><th>說明</th></tr>
+      <tr><td>Version (4 bit)</td><td>IPv4 = 4 (0100)</td></tr>
+      <tr><td>Header Length / Total Length</td><td>封包大小(1 = 32 bits/4 octets;5 = 20 octets)</td></tr>
+      <tr><td>DSCP / Diff-Serv</td><td>服務品質(QoS)標記</td></tr>
+      <tr><td>第二列(Identification / Flags / Fragment Offset)</td><td>分段重組用,但 IP 分段罕見</td></tr>
+      <tr><td><b>Time to Live (TTL)</b></td><td>發送者設(常 64–128),每經一路由器 −1,減到 0 即丟棄(可能回 ICMP 錯誤)</td></tr>
+      <tr><td><b>Protocol</b></td><td>資料欄內容:<b>1=ICMP, 6=TCP, 17=UDP</b></td></tr>
+      <tr><td>Header Checksum</td><td>檢查標頭錯誤,有錯就丟。<b>網路層不重傳 → 仍是不可靠</b></td></tr>
+      <tr><td>Source / Destination IP</td><td>各 32 位元</td></tr>
+    </table></div>
+  </section>
+
+  <section class="sec" id="ch08-s9">
+    <h3 data-nav="8.12 IPv6 位址寫法"><span class="pg">p.74–82</span>IPv4 耗盡與 IPv6 位址寫法</h3>
+    <p>IPv4 的 32 位約 40 億位址,雖只用了 14%,但<strong>已無法再分配給新組織</strong>(早期成塊發放浪費)。<strong>IPv6 用 128 位</strong>(2¹²⁸,天文數字),公司現在就須規劃支援。</p>
+    <div class="box key"><div class="bx-t">🔑 IPv6 位址簡寫規則</div>
+      <p>① 每 4 位 → 1 個十六進位符號(小寫),4 符號為一段,段間用<strong>冒號</strong>;② <strong>每段開頭的 0 可省</strong>;③ 一組連續全 0 的段可縮成 <code>::</code>(只留外冒號);④ 若有<strong>多組</strong>全 0,只縮<strong>最長</strong>那組(平手取第一組),<strong>其餘不縮</strong>。</p>
+    </div>
+    <pre>2001:0027:fe56:0000:0000:0000:cd3f:0fca
+→ 2001:27:fe56::cd3f:fca</pre>
+  </section>
+
+  <section class="sec" id="ch08-s10">
+    <h3 data-nav="8.13–8.15 IPv6 封包"><span class="pg">p.83–97</span>IPv6 封包與 Next Headers</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>IPv4</th><th>IPv6 對應</th></tr>
+      <tr><td>Version=4</td><td>Version=6 (0110),標頭<b>固定 40 octets</b></td></tr>
+      <tr><td>TTL</td><td><b>Hop Limit</b>(完全一樣,只是改名)</td></tr>
+      <tr><td>DSCP/Diff-Serv</td><td>Traffic Class(QoS)</td></tr>
+      <tr><td>—</td><td><b>Flow Label</b>(20 bit,標記特定流)</td></tr>
+      <tr><td>Total Length</td><td>Payload Length</td></tr>
+    </table></div>
+    <div class="box note"><div class="bx-t">IPv6 的精簡(必考)</div>
+      <p>① <strong>沒有分段</strong>——封包太大就丟棄,由發送端先用 MTU 探測決定大小;② <strong>沒有 Header Checksum</strong>——交給傳輸層處理錯誤,減少每跳路由處理時間;③ <strong>Next Header</strong> 機制:多個延伸標頭用 Next Header 欄串接,路由器通常只需看 Hop-by-Hop Options Header。</p>
+    </div>
+    <p>Next Header 值:Hop-by-Hop=0、Routing=43、Fragmentation=44、ESP=50、Authentication=51、Destination Options=60、Mobility=135、No Next Header=59;上層:<strong>TCP=6、UDP=17、ICMPv6=58</strong>。</p>
+  </section>
+
+  <section class="sec" id="ch08-s11">
+    <h3 data-nav="8.16–8.17 TCP 與 UDP"><span class="pg">p.99–118</span>TCP 與 UDP</h3>
+    <div class="box key"><div class="bx-t">🔑 TCP 程序(可靠、連線導向)</div>
+      <p>從應用層收訊息 → <strong>分段(segment)</strong> → 每段放一個 IP 封包送出 → 每段帶<strong>序號</strong>供接收端重組 → 收到正確段就回 <strong>ACK</strong>(帶確認號)。TCP 是<strong>連線導向</strong>,有明確的開啟與關閉。</p>
+    </div>
+    <p><strong>TCP 三向交握(開)</strong>:SYN → SYN/ACK → ACK。<strong>正常四步關閉</strong>:FIN → ACK → FIN → ACK;<strong>突然關閉(Abrupt close)</strong>:送 <strong>RST</strong> 立即中斷,對方不回應(本章新增)。旗標欄(1 位):<strong>SYN, ACK, FIN, RST, PSH, URG</strong>。</p>
+    <div class="tbl-wrap"><table>
+      <tr><th></th><th>TCP</th><th>UDP</th></tr>
+      <tr><td>分段</td><td>是</td><td><b>否</b></td></tr>
+      <tr><td>序號/ACK</td><td>是</td><td><b>否</b>(更精簡)</td></tr>
+      <tr><td>可靠性</td><td>可靠</td><td>不可靠</td></tr>
+      <tr><td>訊息名稱</td><td>segment(段)</td><td>datagram(資料報)</td></tr>
+      <tr><td>限制</td><td>—</td><td>整個訊息須塞進單一 datagram(≤ 65,536 octets)</td></tr>
+    </table></div>
+    <div class="box note"><div class="bx-t">埠號(Port Numbers)</div>
+      <p>多工伺服器跑多個應用,各對應一個埠號。<strong>Well-Known Ports 0–1023</strong>(HTTP=80, SMTP=25, FTP=20/21);<strong>Registered 1024–49151</strong>;<strong>Dynamic/Ephemeral 49152–65535</strong>(客戶端每次連線用一個臨時埠)。<strong>Socket = IP 位址 : 埠號</strong>。</p>
+    </div>
+  </section>
+
+  
+</div>
+<!-- ================= CHAPTER 9 ================= -->
+<div class="chapter" id="ch09">
+  <div class="chap-head">
+    <span class="ch-num">Chapter 9</span>
+    <h2>TCP/IP 互連網路 II — 管理與安全</h2>
+    <div class="ch-meta">IPv4 子網切割 · NAT · DNS · VPN · IPsec · 動態路由協定 · ICMP</div>
+  </div>
+  <div class="chap-intro">
+    Ch8 講「路由器怎麼運作」,Ch9 講「<b>如何管理與保護互連網路</b>」:公司如何切子網、用 NAT 一個公有 IP 服務眾多內部主機、DNS 如何把名稱變 IP、VPN/IPsec 如何在不可信網路上建私密通道,以及路由表如何靠<b>動態路由協定</b>自動填寫。
+  </div>
+
+  <section class="sec" id="ch09-s1">
+    <h3 data-nav="9.1 IPv4 子網切割"><span class="pg">p.5–12</span>IPv4 子網切割(Subnetting)</h3>
+    <p>公司拿到網路部分後,把剩餘位元分成<strong>子網部分</strong>與<strong>主機部分</strong>。<strong>此消彼長</strong>:子網部分越大 → 子網越多,但主機部分越小 → 每子網主機越少。</p>
+    <div class="box key"><div class="bx-t">🔑 2ᴺ − 2 公式</div>
+      <p>N 位元可表示 <strong>2ᴺ − 2</strong> 個子網或每子網主機數。減 2 是因為<strong>全 0(初始未指派)與全 1(廣播)不能用</strong>。例:8 位 → 2⁸−2 = 254;12 位 → 4094;16 位 → 65,534。</p>
+    </div>
+    <h4>計算範例(總長固定 32)</h4>
+    <pre>網路部分 16 → 剩 16 給公司分配
+選 子網/主機 = 8/8 → 子網 2⁸−2=254,每子網主機 2⁸−2=254
+選 子網/主機 = 6/10 → 子網 2⁶−2=62,每子網主機 2¹⁰−2=1022</pre>
+    <p class="kbd">練習:網路 20 位、子網 6 位 → 主機 = 32−20−6 = 6 位 → 主機數 2⁶−2 = 62;子網數 2⁶−2 = 62。</p>
+  </section>
+
+  <section class="sec" id="ch09-s2">
+    <h3 data-nav="9.2–9.3 NAT"><span class="pg">p.14–26</span>網路位址轉換(NAT)</h3>
+    <p><strong>私有 IP 位址</strong>(只能內部用,絕不上 Internet):<code>10.x.x.x</code>、<code>172.16–31.x.x</code>、<code>192.168.x.x</code>(最常見)。</p>
+    <div class="box key"><div class="bx-t">🔑 NAT 運作</div>
+      <p>NAT 防火牆把外送封包的<strong>真實內部來源 IP + 埠號</strong>記進轉換表,替換成<strong>假的外部 IP + 埠號</strong>送出;回程封包反向還原。對內外主機<strong>透明</strong>(transparent)——兩端都不知道 NAT 存在,無須修改主機。</p>
+    </div>
+    <p><strong>兩大目的</strong>:① <strong>擴充可用 IP</strong>——每個 IP 約有 4000 個臨時埠,一個 IP 可支撐約 4000 條外部連線(248 個 IP × 4000 ≈ 百萬連線);② <strong>安全</strong>——外部嗅探器只能讀到假的外部 IP,無法用來攻擊內部主機。</p>
+    <div class="box warn"><div class="bx-t">⚠ NAT 的協定問題</div>
+      <p>IPsec、VoIP 等需要知道對方真實 IP/埠的應用,難以穿越 NAT 防火牆(NAT traversal),需要特別處理。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="ch09-s3">
+    <h3 data-nav="9.4–9.5 DNS"><span class="pg">p.28–39</span>網域名稱系統(DNS)</h3>
+    <p><strong>網域(domain)</strong>= 某組織控制下的一組資源。DNS 是 Internet 的通用命名系統,把名稱解析成 IP。</p>
+    <div class="box key"><div class="bx-t">🔑 DNS 查詢流程(必考)</div>
+      <p>① 主機要 <code>dakine.pukanui.com</code> 的 IP,問自己的<strong>本地 DNS 伺服器</strong>;② 本地 DNS 若沒有,轉送請求給 pukanui.com 的<strong>權威 DNS 伺服器</strong>;③ 權威伺服器把回應送回<strong>本地 DNS 伺服器(不是直接給客戶端)</strong>;④ <strong>本地 DNS 伺服器</strong>再把答案送回原始主機。重點:<strong>永遠由本地 DNS 伺服器回覆客戶端</strong>。</p>
+    </div>
+    <p><strong>DNS 階層</strong>:根(所有網域,有 <strong>13 個根伺服器</strong>)→ 頂級域名(<strong>通用 TLD</strong> 如 .com/.edu/.gov 表組織類型;<strong>國家 TLD</strong> 如 .au/.tw)→ 第二級域名(microsoft.com,競爭激烈)→ 子網域 → 主機。2012 年起任何人可申請管理通用 TLD。</p>
+  </section>
+
+  <section class="sec" id="ch09-s4">
+    <h3 data-nav="9.8 VPN"><span class="pg">p.41–44</span>虛擬私人網路(VPN)</h3>
+    <p>VPN = 在<strong>不可信網路</strong>(Internet、無線)上以<strong>密碼學保護</strong>的通訊,「私密」指別人看不到內容。</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>類型</th><th>說明</th></tr>
+      <tr><td><b>遠端存取 VPN</b></td><td>把遠端使用者連到公司站點;使用者連到站點的 VPN 閘道</td></tr>
+      <tr><td><b>站對站 VPN</b></td><td>保護兩個站點間的所有流量;各站有閘道加密外送/解密進入</td></tr>
+    </table></div>
+  </section>
+
+  <section class="sec" id="ch09-s5">
+    <h3 data-nav="9.9–9.11 IPsec"><span class="pg">p.45–56</span>IPsec 與傳輸/隧道模式</h3>
+    <p><strong>IPsec</strong>(IETF 的 IP 安全標準)運作在<strong>網路層(Layer 3)</strong>,保護傳輸標頭、應用內容與部分 IP 標頭內容,且<strong>透明</strong>(上層不知道被保護)。<strong>ESP</strong>(封裝安全酬載)提供機密、認證、訊息完整。</p>
+    <div class="tbl-wrap"><table>
+      <tr><th></th><th>傳輸模式(Transport)</th><th>隧道模式(Tunnel)</th></tr>
+      <tr><td>保護範圍</td><td>主機到主機(Internet + 站內網路全程)</td><td><b>只在 Internet</b>(站內網路不保護)</td></tr>
+      <tr><td>安全</td><td>較佳(端到端);但防火牆讀不到加密流量</td><td>較弱(只保護不可信網路段)</td></tr>
+      <tr><td>成本</td><td><b>高</b>(每台主機都要憑證與設定)</td><td><b>低</b>(只有兩個 IPsec 閘道需設定)</td></tr>
+    </table></div>
+    <p><strong>SA(安全關聯)</strong>:兩台主機/閘道對「用哪些安全方法與選項」的協議,<strong>單向</strong>(Sal→Jenn 與 Jenn→Sal 可不同)。</p>
+    <div class="box note"><div class="bx-t">IPsec vs SSL/TLS VPN</div>
+      <div class="tbl-wrap"><table>
+        <tr><th></th><th>IPsec</th><th>SSL/TLS</th></tr>
+        <tr><td>層</td><td>Layer 3</td><td>Layer 4</td></tr>
+        <tr><td>內建於瀏覽器/伺服器(低成本保護)</td><td>否</td><td><b>是</b></td></tr>
+        <tr><td>可保護任何應用</td><td><b>是</b></td><td>否(僅 SSL/TLS-aware 如 web/email)</td></tr>
+        <tr><td>支援 VPN 類型</td><td>三種全支援</td><td>主機到主機</td></tr>
+        <tr><td>安全強度 / 集中管理</td><td>優 / 可</td><td>良 / 否</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <section class="sec" id="ch09-s6">
+    <h3 data-nav="9.13 IPv6 子網切割"><span class="pg">p.58–61</span>IPv6 子網切割</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>IPv4</th><th>IPv6</th><th>IPv6 長度</th></tr>
+      <tr><td>網路部分</td><td>Routing Prefix(路由前綴)</td><td>可變</td></tr>
+      <tr><td>子網部分</td><td>Subnet ID</td><td>可變</td></tr>
+      <tr><td>主機部分</td><td>Interface ID</td><td><b>(幾乎)固定 64 位元</b></td></tr>
+    </table></div>
+    <p>IPv6 的 Interface ID 不像 IPv4 主機部分可變,固定 64 位「浪費」但位元充足。前綴 m 位 + 子網 n 位,<code>m + n = 64</code>。</p>
+  </section>
+
+  <section class="sec" id="ch09-s7">
+    <h3 data-nav="9.15 動態路由協定"><span class="pg">p.63–68</span>動態路由協定</h3>
+    <p>路由表怎麼來?路由器之間<strong>持續交換資訊</strong>,由動態路由協定標準化。注意 TCP/IP 裡「Routing」有<strong>兩義</strong>:① 轉送單一封包的程序;② 透過動態路由協定交換路由表資訊的程序。</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>協定</th><th>內部/外部</th><th>備註</th></tr>
+      <tr><td><b>OSPF</b></td><td>內部(Interior)</td><td>大型自治系統、僅 TCP/IP</td></tr>
+      <tr><td><b>EIGRP</b></td><td>內部</td><td>Cisco 專有,不限 TCP/IP(也支援 IPX/SPX、SNA)</td></tr>
+      <tr><td><b>BGP</b></td><td>外部(Exterior)</td><td>組織不能自選外部路由協定(對外只能用 BGP)</td></tr>
+    </table></div>
+  </section>
+
+  <section class="sec" id="ch09-s8">
+    <h3 data-nav="9.17 ICMP"><span class="pg">p.69–73</span>網際控制訊息協定(ICMP)</h3>
+    <p><strong>ICMP</strong> 處理不同主機/路由器的網路層間的<strong>監督性通訊</strong>,避免讓 IP 自己處理這類訊息。它提供<strong>錯誤通知</strong>幫助診斷,但<strong>不提供可靠性</strong>。</p>
+    <p>常見類型:Echo Reply(0)、Destination Unreachable(3)、Redirect(5)、Echo Request(8)、Time Exceeded(11)。<strong>Ping</strong> 告訴你對方是否可達,並給出<strong>往返延遲(round-trip latency)</strong>。ICMP 訊息封裝在 IP 封包的資料欄中,來源 IP 會洩漏發送裝置的 IP(可能的安全隱憂)。</p>
+  </section>
+
+  
+</div>
+<!-- ================= CHAPTER 10 ================= -->
+<div class="chapter" id="ch10">
+  <div class="chap-head">
+    <span class="ch-num">Chapter 10</span>
+    <h2>電信業者廣域網路(Carrier WANs)</h2>
+    <div class="ch-meta">LAN/MAN/WAN · PSTN · ADSL · Cable · 行動電話 · 專線 · Carrier Ethernet · MPLS</div>
+  </div>
+  <div class="chap-intro">
+    LAN 你自己建,但跨城市/跨國的 <b>WAN 必須向電信業者(carrier)租用</b>。本章看各種「最後一哩」接取技術(ADSL、Cable、行動)與企業骨幹技術(專線、Carrier Ethernet、MPLS)。核心張力:<b>Internet 便宜但無 QoS 保證;企業 WAN 貴但有 QoS</b>。
+  </div>
+
+  <section class="sec" id="ch10-s1">
+    <h3 data-nav="10.1 LAN vs MAN vs WAN"><span class="pg">p.3–7</span>LAN vs MAN vs WAN</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th></th><th>LAN</th><th>MAN</th><th>WAN</th></tr>
+      <tr><td>服務範圍</td><td>客戶自有場地(家/辦公室/校園)</td><td>都會區(城市+郊區)</td><td>區域/國家/全球</td></tr>
+      <tr><td>建置/管理者</td><td><b>自己</b></td><td>電信業者</td><td>電信業者</td></tr>
+      <tr><td>選技術的自由</td><td>高</td><td>低</td><td>低</td></tr>
+      <tr><td>每位元成本</td><td>低</td><td>中</td><td><b>高</b></td></tr>
+      <tr><td>典型速度</td><td>1 Gbps</td><td>10 Mbps–1 Gbps</td><td>1–100 Mbps</td></tr>
+      <tr><td>技術多樣性</td><td>低(802.3/802.11)</td><td>中</td><td>高</td></tr>
+    </table></div>
+    <div class="box note"><div class="bx-t">Internet vs 企業 WAN</div>
+      <p><strong>Internet</strong>:無所不在又便宜,但<strong>缺乏組織所需的 QoS</strong>。<strong>企業 WAN</strong>:提供所需 QoS,但比 Internet<strong>貴很多</strong>,主要用於公司各站點間傳輸。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="ch10-s2">
+    <h3 data-nav="10.3–10.4 WAN 元件與 PSTN"><span class="pg">p.9–11</span>WAN 基本元件與 PSTN</h3>
+    <p>三大元件:<strong>CPE(客戶端設備,Customer Premises Equipment)</strong>、<strong>接取線路(Access Link)</strong>連到 <strong>WAN 核心(WAN Core)</strong>。WAN 連接公司各站點,或把公司接上 Internet(ISP)。</p>
+    <p><strong>PSTN(公共交換電話網)</strong>:一個修改過的階層,含 End Office Switch(Class 5)、Class 4/3 交換機、<strong>Trunk Line(中繼線)</strong>,並有<strong>Bypass(旁路)中繼線</strong>可跳過階層。</p>
+  </section>
+
+  <section class="sec" id="ch10-s3">
+    <h3 data-nav="10.5 ADSL"><span class="pg">p.12–15</span>非對稱數位用戶迴路(ADSL)</h3>
+    <div class="box key"><div class="bx-t">🔑 ADSL 為什麼便宜</div>
+      <p>本地迴路(local loop)本來是給每家送語音的<strong>1 對 voice-grade UTP</strong>,不是為資料設計。ADSL 用先進技術在這條既有線路上送資料——<strong>線路已存在,不必拉新線</strong>,所以便宜。</p>
+    </div>
+    <p><strong>非對稱</strong>:<strong>下載(downstream)較快、上傳(upstream)較慢</strong>,並保留<strong>一般電話服務</strong>同時運作。電信端有 <strong>DSLAM(DSL 接取多工器)</strong>把資料導向 Data WAN、語音導向 PSTN。</p>
+  </section>
+
+  <section class="sec" id="ch10-s4">
+    <h3 data-nav="10.6–10.7 Cable Modem"><span class="pg">p.16–20</span>Cable Modem 服務</h3>
+    <p>同軸電纜本為<strong>收看電視</strong>(改善收訊)而建,現也提供雙向資料服務(cable modem)。在美國流行,多數國家不流行。<strong>同軸電纜</strong>有兩導體:中央導線 + 同軸環。共享頻寬(鄰里用 two-way amplifier、splitter)。</p>
+    <div class="box note"><div class="bx-t">ADSL vs Cable Modem</div>
+      <p>Cable modem 提供<strong>稍快的個人吞吐、稍高的成本</strong>;ADSL <strong>稍慢、稍便宜</strong>。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="ch10-s5">
+    <h3 data-nav="10.8–10.10 行動電話"><span class="pg">p.21–32</span>行動電話服務</h3>
+    <div class="box key"><div class="bx-t">🔑 五個核心概念</div>
+      <p><strong>Cell(細胞)</strong>=地理區域;<strong>Cellsite(基地台)</strong>=放設備的建築物;<strong>Channel Reuse(頻道重用)</strong>=同一頻道在不重疊的細胞重複使用 → 服務更多用戶;<strong>Handoff(交遞)</strong>=跨細胞時轉交到新基地台;<strong>MTSO</strong>=行動電話交換中心,控制各基地台、連接 PSTN。</p>
+    </div>
+    <p><strong>頻道重用的威力</strong>:無重用時 500 頻道只能服務 500 人;有重用時 500 頻道 × 100 細胞 = 同時服務 <strong>50,000 人</strong>。(原理同 802.11 大樓佈多個 AP)。基地台用<strong>點對點微波</strong>連回 MTSO。</p>
+    <p><strong>速度</strong>:早期約 20 kbps,現在多數業者尖峰下載 5–20 Mbps,幾乎都用 <strong>LTE</strong>;LTE-Advanced 要求下行 3 Gbps。<strong>ITU</strong> 定義世代(3G/4G/5G),但行銷常亂用。</p>
+    <div class="box warn"><div class="bx-t">⚠ 吞吐量遠低於標稱(同 Wi-Fi)</div>
+      <p>蜂巢傳輸有大量開銷;<strong>移動中(坐車)、用戶變多、距離遠、穿過建築物</strong>都會降速,並與時段有關。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="ch10-s6">
+    <h3 data-nav="10.11–10.14 專線"><span class="pg">p.35–46</span>有線企業 WAN 與專線</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>技術</th><th>層</th><th>特點</th></tr>
+      <tr><td><b>Leased Lines(專線)</b></td><td>Layer 1</td><td>接取線路、專線網路</td></tr>
+      <tr><td><b>Carrier Ethernet</b></td><td>Layer 2</td><td>把站點乙太 LAN 延伸到全公司</td></tr>
+      <tr><td><b>MPLS</b></td><td>Layer 3</td><td>強流量工程、高 QoS</td></tr>
+    </table></div>
+    <p>公司到 ISP 最近點(<strong>POP, Point of Presence</strong>)也用專線。每個客戶站點需 <strong>CSU/DSU</strong> 介面接電話網。</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>系統</th><th>線路</th><th>速度</th></tr>
+      <tr><td>北美數位階層</td><td>T1</td><td>1.544 Mbps(2 對資料級 UTP)</td></tr>
+      <tr><td></td><td>T3</td><td>44.736 Mbps(光纖)</td></tr>
+      <tr><td>歐洲 CEPT</td><td>E1</td><td>2.048 Mbps</td></tr>
+      <tr><td></td><td>E3</td><td>34.368 Mbps</td></tr>
+      <tr><td>SONET/SDH(&gt;50 Mbps 標準化)</td><td>OC3/STM1</td><td>155.52 Mbps</td></tr>
+      <tr><td></td><td>OC768/STM256</td><td>39,813 Mbps</td></tr>
+    </table></div>
+    <p><strong>Fractional T1</strong>:128/256/384/512/768 kbps 等子速率;T1/E1 可<strong>綁定(bonded)</strong>成 2/3/4 倍容量。</p>
+  </section>
+
+  <section class="sec" id="ch10-s7">
+    <h3 data-nav="10.15–10.17 PSDN/Carrier Ethernet"><span class="pg">p.47–51</span>PSDN 與 Carrier Ethernet</h3>
+    <p><strong>PSDN(公共交換資料網)</strong>是 Layer 2 交換技術。現役主流是 <strong>Carrier Ethernet</strong>;歷史技術 <strong>Frame Relay、ATM</strong> 已死或將亡。</p>
+    <ul class="clean">
+      <li><strong>E-Line</strong>:像擁有一條專線(點對點)</li>
+      <li><strong>E-LAN</strong>:把站點乙太 LAN 延伸覆蓋多個站點</li>
+    </ul>
+    <p>Carrier Ethernet 吸引力:<strong>低成本、員工熟悉、高速、速度敏捷(可快速調升)、QoS、安全</strong>。站點只需乙太設備。</p>
+  </section>
+
+  <section class="sec" id="ch10-s8">
+    <h3 data-nav="10.18 MPLS"><span class="pg">p.52–59</span>多協定標籤交換(MPLS)</h3>
+    <div class="box key"><div class="bx-t">🔑 MPLS 為什麼便宜</div>
+      <p>傳統路由<strong>每個封包</strong>都跑 Ch8 的三步驟(即使目的相同)→ 耗大量處理力 → 昂貴。MPLS:<strong>事先</strong>為一段 IP 範圍找好最佳路徑並給一個<strong>標籤號(label)</strong>;每個封包帶標籤,路由器只做<strong>快速查表</strong>(幾乎不耗處理力)→ 比傳統路由便宜很多。</p>
+    </div>
+    <p>標籤位於<strong>訊框標頭與 IP 封包標頭之間</strong>。Label-Switching Router(LSR)依標籤把封包送出對應介面(如 Label 123 → Interface 1)。</p>
+  </section>
+
+  
+</div>
+<!-- ================= CHAPTER 11 ================= -->
+<div class="chapter" id="ch11">
+  <div class="chap-head">
+    <span class="ch-num">Chapter 11</span>
+    <h2>網路應用(Networked Applications)</h2>
+    <div class="ch-meta">應用架構 · 應用安全 (XSS/SQLi) · 電子郵件 · VoIP · HTTP/HTML · P2P</div>
+  </div>
+  <div class="chap-intro">
+    最後一章來到 <b>Layer 5 應用層</b>——使用者真正看到的東西。反覆出現的主題:<b>多數應用都有「傳輸標準」與「文件格式標準」兩套</b>(送得到還要看得懂)。涵蓋應用架構、Web 安全攻擊、E-mail、VoIP、HTTP/HTML 與 P2P。
+  </div>
+
+  <section class="sec" id="ch11-s1">
+    <h3 data-nav="11.2–11.3 應用架構"><span class="pg">p.4–5</span>應用架構與用戶端演進</h3>
+    <p>應用層功能如何分散在電腦間提供服務,三種架構:</p>
+    <ul class="clean">
+      <li><strong>獨立運作(Stand-alone)</strong></li>
+      <li><strong>主從架構(Client/Server)</strong></li>
+      <li><strong>點對點(P2P)</strong></li>
+    </ul>
+    <p>用戶端演進:啞終端(無桌面處理力)→ Client/Server(部分處理力)→ <strong>P2P(大量桌面處理力)</strong>。處理力下放是 P2P 興起的條件。</p>
+  </section>
+
+  <section class="sec" id="ch11-s2">
+    <h3 data-nav="11.4–11.5 應用安全"><span class="pg">p.6–11</span>應用安全:XSS 與 SQL Injection</h3>
+    <div class="box warn"><div class="bx-t">⚠ 跨站腳本攻擊(XSS)</div>
+      <p>使用者輸入「Pat」,網站顯示「Hello Pat」。攻擊者改輸入 <code>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code> 來竊取 cookie。網頁載入時把使用者的「name」放進 HTML,<strong>瀏覽器執行了那段腳本</strong>。XSS 也可藏在 email 的超連結中(配合 spear phishing)。</p>
+    </div>
+    <div class="box warn"><div class="bx-t">⚠ SQL 注入攻擊</div>
+      <p>原始查詢 <code>SELECT * FROM users WHERE name='[輸入]' AND pw='[輸入]'</code>。攻擊者帳密都輸入 <code>' OR '1'='1</code> → 條件恆真 → 繞過驗證登入。根因:把使用者輸入直接拼進 SQL 字串。</p>
+    </div>
+    <div class="box note"><div class="bx-t">應用被入侵的後果</div>
+      <p>若可被入侵的程式擁有 root 權限,攻擊者可為所欲為——「effectively owns the box(等於擁有整台機器)」。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="ch11-s3">
+    <h3 data-nav="11.5–11.8 電子郵件"><span class="pg">p.12–28</span>電子郵件標準</h3>
+    <div class="box key"><div class="bx-t">🔑 兩套標準(本章核心主題)</div>
+      <p>① <strong>傳遞標準(Delivery)</strong>:<strong>SMTP</strong>(寄送,近乎即時)、<strong>POP / IMAP</strong>(收件者稍後下載);② <strong>文件格式標準(Document)</strong>:RFC 822/2822(純文字)、HTML(格式)、ASCII。<strong>送得到沒用,收件者還要看得懂</strong>。</p>
+    </div>
+    <p>流程:寄件 client →(<strong>SMTP</strong>)→ 寄件方 mail server →(<strong>SMTP</strong>)→ 收件方 mail server →(<strong>POP/IMAP</strong>)→ 收件 client。</p>
+    <h4>SMTP 對話(命令-回應)</h4>
+    <pre>R: 220 mail.panko.com Ready
+S: HELO voyager...          R: 250 mail.panko.com
+S: MAIL FROM: david@...     R: 250 OK
+S: RCPT TO: ray@panko.com   R: 250 OK
+S: RCPT TO: lee@panko.com   R: 550 No such user here
+S: DATA                     R: 354 Start mail input...
+S: (內文)... &lt;CRLF&gt;.&lt;CRLF&gt;  R: 250 OK
+S: QUIT                     R: 221 ...closing</pre>
+    <p><strong>Web-based E-mail</strong>:用 <strong>HTTP</strong> 取代 SMTP/POP/IMAP,訊息文件是 HTML 網頁。(寄件端 client↔mail server 之間仍可能用 SMTP/POP,但使用者←→自己的 mail server 全走 HTTP)。</p>
+  </section>
+
+  <section class="sec" id="ch11-s4">
+    <h3 data-nav="11.9–11.10 E-mail 安全"><span class="pg">p.29–35</span>電子郵件安全</h3>
+    <p><strong>病毒、蠕蟲、木馬</strong>常透過附件傳播;防毒軟體幾乎普及但只能部分有效(「antivirus」其實掃描多種惡意軟體)。在<strong>兩個以上位置過濾</strong>(如 mail server + 收件 client)可達<strong>縱深防禦(defense in depth)</strong>。</p>
+    <div class="box note"><div class="bx-t">加密的限制</div>
+      <p>即使寄件者用 SSL/TLS,也<strong>只保護到自己 mail host 的那一段</strong>(link encryption)。mail server 會解密處理再(可能)重新加密。<strong>端到端加密(如 PGP)</strong>可行但罕見,因為它會妨礙防火牆過濾訊息。</p>
+    </div>
+    <p><strong>Open Mail Relay(開放轉送)</strong>:允許任何人透過它寄信的 SMTP 伺服器,常被濫發垃圾郵件,多被關閉或列入黑名單。應設定只轉送:本地→本地、本地→外部、外部→本地、以及已認證授權的客戶端。</p>
+  </section>
+
+  <section class="sec" id="ch11-s5">
+    <h3 data-nav="11.11–11.13 VoIP"><span class="pg">p.37–45</span>VoIP(IP 語音)</h3>
+    <p>在 IP 網路上傳語音電話,省錢:不必維護獨立的語音+資料網路,且語音數位化時被<strong>壓縮</strong>。</p>
+    <div class="box key"><div class="bx-t">🔑 Signaling vs Transport(電信核心概念)</div>
+      <p><strong>Signaling(信令)</strong>:建立連線、結束、計費等;<strong>Transport(傳輸)</strong>:語音/影像的實際傳送。<strong>SIP(會話啟始協定)</strong>是信令協定,負責所有信令任務(開、關、計費)。傳輸則<strong>直接在通話雙方之間</strong>進行。</p>
+    </div>
+    <p>傳輸用 <strong>UDP</strong>(沒時間等遺失封包重傳,輕量適合即時),搭配 <strong>RTP 標頭</strong>補足 UDP 兩個缺點:加<strong>序號</strong>、加<strong>時間戳</strong>(決定 codec 位元組何時播放)。<strong>Media Gateway</strong> 連接 IP 網路與 PSTN,處理傳輸與信令轉換。</p>
+    <p><strong>Codec</strong>:把類比語音轉成數位訊號。G.711 = 64 kbps(初始電話標準),G.729AB = 8 kbps,G.723 ≈ 5–6 kbps。<strong>壓縮越多 → 音質越差</strong>。</p>
+  </section>
+
+  <section class="sec" id="ch11-s6">
+    <h3 data-nav="11.14–11.15 HTTP/HTML"><span class="pg">p.47–55</span>HTTP 與 HTML</h3>
+    <p>又是「兩套標準」:<strong>HTTP = 傳輸標準</strong>(檔案傳輸)、<strong>HTML = 文件格式標準</strong>。瀏覽器送 HTTP Request,伺服器回 HTTP Response + HTML 文件。</p>
+    <div class="box key"><div class="bx-t">🔑 下載複雜網頁(必考)</div>
+      <p>網頁有文字 + 2 張圖:HTML 檔含文字與圖的<strong>標籤(tag)</strong>。瀏覽器依標籤<strong>分別下載</strong>各圖檔再渲染。<strong>每個物件一個檔案</strong>。例:3 張圖 + 1 首背景音樂 + 1 個 HTML = <strong>5 個檔案</strong>。</p>
+    </div>
+    <pre>HTTP 請求:GET /panko/home.htm HTTP/1.1
+          Host: voyager.shidler.hawaii.edu
+HTTP 回應:HTTP/1.1 200 OK ...
+          Content-type: text/plain
+          (檔案內容)</pre>
+    <p class="kbd">CRLF = CR(0x0D)+ LF(0x0A),標記文字檔換行。Windows 用 CRLF、Unix 用 LF、舊 Mac 用 CR。</p>
+  </section>
+
+  <section class="sec" id="ch11-s7">
+    <h3 data-nav="11.16–11.17 P2P"><span class="pg">p.57–63</span>主從架構與 P2P</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th></th><th>Client/Server</th><th>P2P</th></tr>
+      <tr><td>處理工作</td><td>伺服器做繁重處理</td><td>客戶端互相提供服務</td></tr>
+      <tr><td>優點</td><td>中央控制</td><td>使用者自由、省客戶端容量</td></tr>
+      <tr><td>缺點</td><td>伺服器處理力/儲存/頻寬未充分利用;中央控制</td><td>客戶端短暫出現、IP 不固定、<b>無中央控制(安全弱)</b></td></tr>
+    </table></div>
+    <p>P2P 中客戶端互相服務,伺服器不用或只做次要任務(如幫客戶端找到另一個客戶端)。由桌面處理力成長而成為可能。<strong>SETI@home</strong> 是處理力共享 P2P 的例子——利用閒置 PC 的處理力。</p>
+  </section>
+
+  
+</div>
+<!-- ================= QUIZ BANK ================= -->
+<div class="chapter" id="quizbank">
+  <div class="chap-head">
+    <span class="ch-num">Quiz Bank</span>
+    <h2>總題庫 — 跨章混合測驗</h2>
+    <div class="ch-meta">70 題 · Ch6–Ch11 考點覆蓋 · 跨章混排 · 即時對錯+解析</div>
+  </div>
+  <div class="chap-intro">
+    所有題目<b>跨章節混排</b>,每題標示出處章節。答錯就回到對應章節複習;<b>重新整理頁面</b>即可重新作答。
+  </div>
+  <section class="sec" id="qb-s1">
+    <h3 data-nav="綜合題庫(70 題)"><span class="pg">Ch6–11</span>綜合題庫</h3>
+    <div class="quiz">
+      <div class="quiz-head"><span class="qz-ico">?</span>混合測驗 70 題
+        <button onclick="location.reload()" style="margin-left:12px;border:1px solid var(--border-strong);background:var(--card);border-radius:7px;padding:3px 10px;font-size:12px;cursor:pointer;font-family:inherit;color:var(--text-soft)">↺ 重新作答</button>
+        <span class="qz-score">尚未作答</span></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q1</span><span class="pill">Ch6</span>無線 802.11 為什麼使用 CSMA/CA 而非有線的 CSMA/CD?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">無線電發射時聽不到別人,無法偵測碰撞,只能事先避免<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">CSMA/CD 已被淘汰,不能再用<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">無線速度太快,來不及偵測<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>發射端自己的訊號太強蓋過一切,聽不到他人是否同時在傳,「邊傳邊偵測碰撞」失效。只能先聽+隨機退避+ACK 確認。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q2</span><span class="pill">Ch7</span>War driver 與 drive-by hacker 最關鍵的差異是?</div>
+        <button class="opt" onclick="quizPick(this,false)">使用的設備不同<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">War driver 只收集資料(合法);drive-by hacker 讀訊息並攻擊(非法)<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">距離建築物的遠近<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>兩者都潛伏在外收集 AP 資料,但 war driver 不讀訊息不攻擊(合法);drive-by hacker 會讀訊息、發動繞過防火牆的攻擊(非法)。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q3</span><span class="pill">Ch8</span>路由器選擇最佳匹配列的「基本規則」是?</div>
+        <button class="opt" onclick="quizPick(this,false)">選 Metric(成本)最低的列<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">選最長匹配(遮罩前綴最長)的列;平手才比 Metric<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">選列號最小的列<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>先比前綴長度(/24 勝 /16),最精確。長度平手時才用 Metric 當 tie-breaker(成本選低、速度選高)。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q4</span><span class="pill">Ch9</span>公司剩餘 16 位元選擇子網/主機 = 6/10,每個子網可有幾台主機?</div>
+        <button class="opt" onclick="quizPick(this,false)">62<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">1024<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">1022<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>主機 10 位 → 2¹⁰−2 = 1022(扣全 0 與全 1)。子網數 = 2⁶−2 = 62。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q5</span><span class="pill">Ch10</span>LAN 與 WAN 最根本的差異是?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">LAN 自己建置管理;WAN 必須向電信業者租用<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">LAN 比 WAN 慢<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">WAN 不需要 QoS<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>LAN 在自有場地、自管、技術自由度高、每位元成本低;WAN 須租用 carrier、自由度低、每位元成本高。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q6</span><span class="pill">Ch11</span>本章反覆強調多數應用都有哪兩套標準?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">傳遞/傳輸標準 與 文件格式標準<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">加密標準 與 壓縮標準<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">有線標準 與 無線標準<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>E-mail:SMTP/POP/IMAP(傳遞)+ RFC 822/HTML(文件);Web:HTTP(傳輸)+ HTML(文件)。送得到還要看得懂。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q7</span><span class="pill">Ch6</span>2.4 GHz 頻段為什麼只有 3 個不重疊頻道?</div>
+        <button class="opt" onclick="quizPick(this,false)">法規只開放 3 個<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">頻段僅約 85 MHz,容不下超過 3 個 22 MHz 寬的不重疊頻道<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">因為微波爐佔用了其他頻道<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>85 ÷ 22 ≈ 3.8,且頻道編號間隔僅 5 MHz 相鄰必重疊 → 唯一不重疊組合是 Ch 1、6、11。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q8</span><span class="pill">Ch7</span>設定無線安全時,正確的優先順序是?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">選 802.11i (WPA2);避免 WPA;絕不用 WEP<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">選 WEP,因為它最早最成熟<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">關閉 SSID 廣播就夠安全了<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>WPA2 &gt; WPA &gt; WEP。關 SSID 廣播與 MAC 過濾都不安全(SSID 仍出現在其他訊框、MAC 可偽造)。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q9</span><span class="pill">Ch8</span>路由表有 127,976 列,只有第 2、7 列匹配。路由器要檢查幾列?</div>
+        <button class="opt" onclick="quizPick(this,false)">2 列(找到就停)<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">7 列(到第 7 列就停)<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">全部 127,976 列<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>Step 1 必須檢查每一列(可能有多個匹配),全找出後 Step 2 才能挑最佳。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q10</span><span class="pill">Ch9</span>NAT 提供安全的原理是?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">外部嗅探器只能讀到假的外部 IP/埠,無法據此攻擊內部主機<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">NAT 會加密所有封包內容<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">NAT 會封鎖所有外來連線<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>NAT 把真實內部 IP/埠換成假的外部 IP/埠,攻擊者無法定位內部主機。NAT 不加密內容。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q11</span><span class="pill">Ch10</span>ADSL 之所以便宜的主要原因是?</div>
+        <button class="opt" onclick="quizPick(this,false)">使用光纖<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">沿用既有的 1 對語音級 UTP 本地迴路,不必拉新線<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">上下行速度相同<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>ADSL 在每家既有電話線上用先進技術送資料,省佈線成本。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q12</span><span class="pill">Ch11</span>SQL 注入輸入 <code>' OR '1'='1</code> 能繞過登入,根本原因是?</div>
+        <button class="opt" onclick="quizPick(this,false)">資料庫密碼太弱<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">使用者輸入被直接拼進 SQL 字串,使 WHERE 條件恆真<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">伺服器沒有防火牆<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b><code>'1'='1'</code> 恆真 → 條件永遠成立 → 繞過帳密驗證。根因是未過濾/未參數化輸入。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q13</span><span class="pill">Ch6</span>訊號在 5 公尺處為 48 mW,依反平方定律,20 公尺處為多少?</div>
+        <button class="opt" onclick="quizPick(this,false)">12 mW<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">3 mW<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">6 mW<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>距離 ×4 → 功率 ÷16。48÷16 = 3 mW。S₂ = S₁×(r₁/r₂)²。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q14</span><span class="pill">Ch7</span>Evil Twin 攻擊中,為什麼用 VPN 可以擊敗它?</div>
+        <button class="opt" onclick="quizPick(this,false)">VPN 讓訊號變強,蓋過 Evil Twin<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">ET 拆掉外層加密後,內層仍是 VPN 密文,且 VPN 金鑰從未在無線上傳輸<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">VPN 會自動偵測並封鎖假 AP<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>先 VPN 加密、再 802.11i 加密。ET 解掉它知道的那層,看到的還是 VPN 密文——端到端加密擊敗中間人。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q15</span><span class="pill">Ch8</span>ARP 協定解決什麼問題?</div>
+        <button class="opt" onclick="quizPick(this,false)">把網域名稱轉成 IP 位址<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">已知下一跳的 IP,要查出它的資料鏈結層(MAC)位址<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">把私有 IP 轉成公有 IP<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>廣播「這個 IP 的 EUI-48 是?」只有該主機回應,結果存入 ARP cache。(名稱→IP 是 DNS;私有→公有是 NAT)</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q16</span><span class="pill">Ch9</span>DNS 查詢中,誰負責把最終答案送回原始客戶端?</div>
+        <button class="opt" onclick="quizPick(this,false)">權威 DNS 伺服器直接回給客戶端<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">本地 DNS 伺服器<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">根 DNS 伺服器<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>權威伺服器把回應送給本地 DNS 伺服器,再由它轉交客戶端——永遠是本地 DNS 伺服器回覆客戶端。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q17</span><span class="pill">Ch10</span>500 個頻道、100 個細胞,採頻道重用最多可同時服務幾人?</div>
+        <button class="opt" onclick="quizPick(this,false)">500<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">5,000<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">50,000<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>同一頻道可在不重疊細胞重複使用:500 × 100 = 50,000。與大樓佈多 AP 重用頻道同理。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q18</span><span class="pill">Ch11</span>VoIP 傳輸為什麼用 UDP 而非 TCP?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">即時通話沒時間等遺失封包重傳,UDP 輕量更合適<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">UDP 比 TCP 安全<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">TCP 無法傳語音<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>等待重傳會造成卡頓;UDP 輕量,再用 RTP 補序號與時間戳。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q19</span><span class="pill">Ch6</span>關於展頻傳輸,下列何者<strong>錯誤</strong>?</div>
+        <button class="opt" onclick="quizPick(this,false)">在 2.4/5 GHz 是法律強制的<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">能減輕多路徑干擾<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">在 WLAN 中提供資料安全/保密功能<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>陷阱題。Wi-Fi 展頻參數公開,毫無保密性。安全靠 WPA2/WPA3 加密。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q20</span><span class="pill">Ch7</span>功率從 40 mW 降到 10 mW,以分貝表示約為?</div>
+        <button class="opt" onclick="quizPick(this,false)">+6 dB<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">−6 dB<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">−4 dB<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>÷4 = ÷2÷2 ≈ −3−3 = −6 dB。衰減為負、放大為正。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q21</span><span class="pill">Ch8</span>IPv6 相對 IPv4 的改變,下列何者<strong>正確</strong>?</div>
+        <button class="opt" onclick="quizPick(this,false)">保留 Header Checksum 增加可靠性<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">取消分段與標頭檢查碼,減少每跳處理;Hop Limit 等同 TTL<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">位址縮短為 64 位元<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>太大就丟、發送端先做 MTU 探測;錯誤交給傳輸層;位址是 128 位元;標頭固定 40 octets。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q22</span><span class="pill">Ch9</span>IPsec 傳輸模式 vs 隧道模式,下列何者正確?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">傳輸模式主機到主機保護但成本高;隧道模式只保護 Internet 段但成本低<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">隧道模式提供端到端保護<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">傳輸模式只需閘道設定<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>傳輸模式每台主機要憑證/設定(貴)、全程保護;隧道模式只設兩個閘道(省)、站內不保護。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q23</span><span class="pill">Ch10</span>MPLS 比傳統路由便宜的原因?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">事先設好標籤路徑,每個封包只做快速查表,不重跑三步驟路由<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">MPLS 不需要任何路由器<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">MPLS 用無線傳輸省纜線<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>傳統路由每封包都重跑三步驟,耗處理力;MPLS 查標籤表幾乎不耗處理力。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q24</span><span class="pill">Ch11</span>網頁有 3 張圖且載入時播放音樂,瀏覽器要下載幾個檔案?</div>
+        <button class="opt" onclick="quizPick(this,false)">1<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">4<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">5<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>1 HTML + 3 圖 + 1 音樂 = 5。HTML 含文字與標籤,瀏覽器依標籤逐一下載物件。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q25</span><span class="pill">Ch6</span>MIMO 靠什麼把同頻道的多條空間流分開?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">各天線經不同多路徑到達的時間/相位差<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">把訊號切到不同頻道<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">輪流分時傳送<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>多路徑的不同特徵讓接收端解聯立方程式分離各流——把頭號敵人變成提速工具。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q26</span><span class="pill">Ch7</span>一個藍牙 piconet 最多包含幾個裝置?</div>
+        <button class="opt" onclick="quizPick(this,false)">2 個(一對一)<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">8 個(1 master + 7 slave)<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">無上限<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>1 master 最多 7 slave,共 8 裝置;一台裝置可同時是 master 與 slave。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q27</span><span class="pill">Ch8</span>關於 TCP 與 UDP,下列何者<strong>錯誤</strong>?</div>
+        <button class="opt" onclick="quizPick(this,false)">TCP 訊息叫 segment,UDP 叫 datagram<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">UDP 沒有序號與 ACK,較精簡<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">UDP 是連線導向且可靠的協定<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>UDP 非連線、不可靠;訊息須塞進單一 datagram(≤65,536 octets)。連線導向可靠的是 TCP。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q28</span><span class="pill">Ch9</span>下列哪個是「外部(Exterior)」動態路由協定?</div>
+        <button class="opt" onclick="quizPick(this,false)">OSPF<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">EIGRP<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">BGP<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>OSPF、EIGRP(Cisco 專有)是內部協定;對外只能用 BGP,組織無法自選。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q29</span><span class="pill">Ch10</span>T1 專線的速度是?</div>
+        <button class="opt" onclick="quizPick(this,false)">44.736 Mbps<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">1.544 Mbps<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">155.52 Mbps<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>T1=1.544、T3=44.736、OC3/STM1=155.52 Mbps;歐洲 E1=2.048 Mbps。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q30</span><span class="pill">Ch11</span>關於 SSL/TLS 對 email 的保護,何者正確?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">只保護到自己 mail host 那一段(link encryption),mail server 仍會解密<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">提供完整端到端加密<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">能防止所有病毒附件<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>SSL/TLS 是逐段加密;端到端要 PGP 但罕見(妨礙防火牆過濾)。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q31</span><span class="pill">Ch6</span>制定 802.11 標準與負責互通性認證的組織分別是?</div>
+        <button class="opt" onclick="quizPick(this,false)">Wi-Fi 聯盟制定標準;IEEE 做認證<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">IEEE 制定標準;Wi-Fi 聯盟挑選 profile 做互通認證與商標<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">都由 ITU 負責<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>「Wi-Fi」是認證商標。聯盟自行開發標準曾出包:WPA 與 WPS 兩個資安惡夢。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q32</span><span class="pill">Ch7</span>802.11i 的保護範圍是?</div>
+        <button class="opt" onclick="quizPick(this,false)">寄件主機到收件主機的端到端<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">只在無線客戶端與 AP 之間<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">整條路徑包括有線網路<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>802.11i 無端到端密碼保護——封包進入有線網路後即不在其保護範圍。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q33</span><span class="pill">Ch8</span>Layer 3–4 的 TCP/IP 標準主要由誰制定?文件稱為?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">IETF;RFC(Requests for Comments)<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">IEEE;802 系列<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">Wi-Fi 聯盟;白皮書<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>Layer 1–2 用 OSI/IEEE 標準;Layer 3–4(互連網路)用 IETF 的 TCP/IP 標準,出版品是 RFC。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q34</span><span class="pill">Ch9</span>2ᴺ−2 公式中「−2」扣掉的是哪兩個?</div>
+        <button class="opt" onclick="quizPick(this,false)">第一台與最後一台路由器<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">全 0(初始未指派)與全 1(廣播)<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">網路部分與主機部分<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>子網或主機編號不可全 0(未指派)或全 1(廣播用),所以 2ᴺ−2。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q35</span><span class="pill">Ch10</span>Internet 與企業 WAN 的取捨是?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">Internet 便宜普及但缺乏 QoS;企業 WAN 有 QoS 但貴很多<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">Internet 比企業 WAN 貴<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">企業 WAN 只能在一個城市內使用<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>企業 WAN 為達流量工程需求成本高,主要用於公司站點間傳輸。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q36</span><span class="pill">Ch11</span>XSS(跨站腳本)攻擊成功的機制是?</div>
+        <button class="opt" onclick="quizPick(this,false)">攻擊者暴力破解網站密碼<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">使用者輸入被放進網頁 HTML,瀏覽器把它當腳本執行<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">伺服器作業系統當機<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>輸入 <code>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code> 被嵌入頁面執行可竊 cookie;XSS 連結也常藏在(魚叉式釣魚)email 中。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q37</span><span class="pill">Ch6</span>筆電經 AP 送封包到有線伺服器,802.11 訊框會一路送達伺服器嗎?</div>
+        <button class="opt" onclick="quizPick(this,false)">會,訊框端到端不變<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">不會;AP 取出封包、丟棄 802.11 訊框,改裝進 802.3 訊框<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">不會;交換器會把它轉成 IPv6<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>802.11 訊框格式 802.3 網路看不懂。封包走全程,訊框只走一段(per-hop)。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q38</span><span class="pill">Ch7</span>PSK 模式與 802.1X 模式最關鍵的差異?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">802.1X 使用中央認證伺服器;PSK 靠共享金鑰、無中央伺服器<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">PSK 完全不加密<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">802.1X 只能用在家庭<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>PSK 適合家用/單 AP(技術強但「人為安全脆弱」);802.1X 適合多 AP 企業,認證靠伺服器上的憑證。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q39</span><span class="pill">Ch8</span>前綴 /16 的遮罩,點分十進位寫法是?</div>
+        <button class="opt" onclick="quizPick(this,false)">255.255.255.0<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">255.255.0.0<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">255.0.0.0<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>/16 = 16 個 1 = 255.255.0.0;/24 = 255.255.255.0。遮罩 = 開頭連續 1 + 結尾連續 0,共 32 位。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q40</span><span class="pill">Ch9</span>下列哪個「不是」私有 IP 位址範圍?</div>
+        <button class="opt" onclick="quizPick(this,false)">10.x.x.x<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">192.168.x.x<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">172.32.x.x<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>私有範圍:10/8、172.16–172.31、192.168/16。172.32 已超出 172.16/12 的範圍。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q41</span><span class="pill">Ch10</span>cell 與 cellsite 的差別?</div>
+        <button class="opt" onclick="quizPick(this,false)">是同義詞<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">cell 是地理區域;cellsite 是放蜂巢設備的建築,由 MTSO 控制<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">cellsite 是手機的一種<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>MTSO(行動電話交換中心)控制各 cellsite 並連接 PSTN;跨 cell 移動時發生 handoff。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q42</span><span class="pill">Ch11</span>SMTP 對話中,回應碼「550」代表?</div>
+        <button class="opt" onclick="quizPick(this,false)">接受訊息內文<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">沒有此收件者,拒收(No such user here)<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">服務關閉連線<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>250 OK = 接受;550 = 拒絕該收件者;354 = 允許開始內文;221 = 關閉連線。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q43</span><span class="pill">Ch6</span>ESS(延伸服務集)的定義?</div>
+        <button class="opt" onclick="quizPick(this,false)">一台 AP 加上它服務的無線主機<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">共用同一 SSID、由分送系統(DS)相連的多個 BSS<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">不同 SSID 的 AP 隨機集合<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>一台 AP+客戶 = BSS;多 BSS+DS+同 SSID = ESS。同 SSID 是自動漫遊(hand off)的前提。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q44</span><span class="pill">Ch7</span>關於 PSK 模式的安全建議,何者<strong>錯誤</strong>?</div>
+        <button class="opt" onclick="quizPick(this,false)">通關密語至少 20 字元<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">提防員工隨意分享 PSK<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">開啟 WPS 以提升安全性<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>WPS 的 8 位 PIN 易被破解,<b>應該關閉</b>而非開啟。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q45</span><span class="pill">Ch8</span>遮罩運算(bitwise AND)的規則是?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">遮罩位=1 → 結果取 IP 位元;遮罩位=0 → 結果一律 0<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">遮罩位=0 → 結果取 IP 位元<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">把遮罩與 IP 相加再進位<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>像噴漆模板:1 讓位元「透過」、0 擋掉。結果=網路/子網部分後面補 0。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q46</span><span class="pill">Ch9</span>NAT 對主機「透明(transparent)」的意思是?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">內外主機都不知道 NAT 存在,主機無須任何修改<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">封包內容對所有人公開可讀<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">NAT 設備是透明玻璃製的<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>NAT 防火牆做所有轉換工作;但 IPsec、VoIP 等需要真實 IP/埠的協定會有穿越問題。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q47</span><span class="pill">Ch10</span>關於 ADSL 服務,何者正確?</div>
+        <button class="opt" onclick="quizPick(this,false)">上下行對稱等速<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">下行較快、上行較慢,且可同時使用普通電話;電信端由 DSLAM 分流<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">資料與語音不能同時使用<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>「Asymmetric」即上下行不對稱;DSLAM 把資料導向 Data WAN、語音導向 PSTN。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q48</span><span class="pill">Ch11</span>在郵件伺服器與收件客戶端「兩處以上」掃描惡意軟體,稱為?</div>
+        <button class="opt" onclick="quizPick(this,false)">負載平衡<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">縱深防禦(defense in depth)<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">雙重 NAT<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>多層過濾,一層漏掉另一層補。防毒軟體普及但僅部分有效,所以更需要多層。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q49</span><span class="pill">Ch6</span>2.4 GHz 與 5 GHz 的「主要優點」分別是?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">2.4:傳播特性好(遠);5:頻寬大、不重疊頻道多<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">2.4:頻道多;5:傳得遠<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">兩者優點完全相同<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>2.4 GHz 頻率低 → 衰減小繞射好;5 GHz 頻段寬 → 11–24 個不重疊頻道、可開寬頻道。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q50</span><span class="pill">Ch7</span>WPA3 的 SAE 提供「前向保密(Forward Secrecy)」,意思是?</div>
+        <button class="opt" onclick="quizPick(this,false)">密碼永遠不可能外洩<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">即使日後密碼外洩,先前攔截的流量仍無法解密<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">自動每天更換 SSID<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>SAE 是基於密碼的金鑰協商(密碼+MAC 參與產生金鑰),並抵抗離線字典攻擊。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q51</span><span class="pill">Ch8</span>連接「不同網路」與「同一網路內不同子網」的路由器分別叫?</div>
+        <button class="opt" onclick="quizPick(this,false)">內部路由器;邊界路由器<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">邊界路由器(Border);內部路由器(Internal)<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">核心路由器;邊緣路由器<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>Border router 接不同網路(如公司↔ISP);Internal router 接同網路內的子網。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q52</span><span class="pill">Ch9</span>DNS 根伺服器數量與頂級域名(TLD)分類?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">13 個根伺服器;通用 TLD(.com/.edu)與國家 TLD(.tw/.au)<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">1 個根伺服器;付費與免費 TLD<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">100 個根伺服器;新 TLD 與舊 TLD<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>根(所有網域)→ TLD → 第二級域名(公司爭奪)→ 子網域 → 主機。2012 起任何人可申請管理通用 TLD。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q53</span><span class="pill">Ch10</span>Carrier Ethernet 的 E-Line 與 E-LAN 分別是?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">E-Line 像一條專線(點對點);E-LAN 把站點乙太 LAN 延伸到多站點<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">E-Line 是無線服務;E-LAN 是有線服務<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">兩者都是 Layer 3 路由服務<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>Carrier Ethernet 是 Layer 2 PSDN 服務;吸引力:低成本、技術熟悉、高速、速度敏捷、QoS、安全。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q54</span><span class="pill">Ch11</span>VoIP 中負責「全部信令任務」(建立/結束連線、計費)的協定是?</div>
+        <button class="opt" onclick="quizPick(this,false)">RTP<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">SIP(Session Initiation Protocol)<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">POP3<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>Signaling(SIP)≠ Transport(UDP+RTP,直接在通話雙方間)。Media gateway 負責與 PSTN 的轉換。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q55</span><span class="pill">Ch6</span>關於 RTS/CTS,何者正確?</div>
+        <button class="opt" onclick="quizPick(this,false)">是強制機制,效率比 CSMA/CA 高<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">是選用機制;AP 廣播 CTS 讓隱藏節點也聽到禁聲令<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">用來加密管理訊框<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>A、C 互相聽不到(隱藏節點)讓 CSMA 失效;但都聽得到 AP → CTS 廣播解決。代價是握手開銷,故為選用。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q56</span><span class="pill">Ch7</span>dBm 與 dB 的差別是?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">dBm 的 P₁ 固定為 1 mW,用來表示絕對功率以便比較<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">dBm 就是負數的 dB<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">沒有任何差別<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>dB 是相對比值;dBm 以 1 mW 為基準:10 mW=10 dBm、4 mW≈6 dBm、0.5 mW=−3 dBm、10 W=40 dBm。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q57</span><span class="pill">Ch8</span>路由表中的「預設路由」是哪一列?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">目的 0.0.0.0、遮罩 /0 的列<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">Metric = 0 的列<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">Next-Hop = Local 的列<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>/0 匹配任何位址但匹配長度最短 → 優先度最低,「沒有更好的就走它」。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q58</span><span class="pill">Ch9</span>IPsec 與 SSL/TLS VPN 的比較,何者正確?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">SSL/TLS 內建於瀏覽器(幾乎零成本保護 web/email);IPsec 可保護任何應用且可集中管理<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">IPsec 運作在 Layer 4<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">SSL/TLS 支援站對站 VPN<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>IPsec 在 L3、支援三種 VPN、安全「優」;SSL/TLS 在 L4、只支援主機到主機、僅保護 SSL/TLS-aware 應用。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q59</span><span class="pill">Ch10</span>MPLS 標籤放在封包的哪個位置?</div>
+        <button class="opt" onclick="quizPick(this,false)">IP 標頭與 TCP 標頭之間<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">訊框標頭與 IP 封包標頭之間<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">封包最尾端<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>Frame Header | MPLS Label | IP Packet Header。標籤指定封包的標籤交換路徑(如 Label 123 → Interface 1)。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q60</span><span class="pill">Ch11</span>RTP 標頭補足了 UDP 的哪兩個限制?</div>
+        <button class="opt" onclick="quizPick(this,false)">加密與壓縮<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">序號(排序)與時間戳(控制播放時機)<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">路由與定址<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>UDP 沒有序號也沒有時序資訊;RTP 加上兩者讓語音能正確重組播放。Codec 壓縮越多音質越差(G.711=64kbps → G.723≈5.3kbps)。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q61</span><span class="pill">Ch6</span>哪兩個傳播問題會隨「頻率升高」而惡化?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">吸收衰減 與 死區(陰影區)<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">反平方衰減 與 EMI<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">多路徑干擾 與 反平方衰減<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>反平方是純幾何、與頻率無關;高頻被水/空氣吸收更多、繞射差死區更明顯。多路徑是 WLAN 頻段「最嚴重」的問題但教材強調的頻率相關是前兩者。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q62</span><span class="pill">Ch7</span>NFC(近場通訊)的特性是?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">距離 ≤ 4 cm、速度 ≤ 424 kbps、極省電,用於支付/門禁<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">範圍 100 公尺的高速傳輸技術<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">必須實體接觸金屬點才能運作<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>用 13.56 MHz 專用頻段;不需實體接觸(拍近即可),不必拿出卡片刷。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q63</span><span class="pill">Ch8</span>TTL(Time to Live)欄位的運作方式?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">發送者設定(常 64–128);每經一個路由器減 1;減到 0 即丟棄<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">每經過一秒減 1<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">由接收端設定並回傳<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>防止封包永遠繞圈。丟棄時可能回送 ICMP 錯誤訊息。IPv6 改名 Hop Limit,功能完全相同。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q64</span><span class="pill">Ch9</span>IPv6 全球單播位址的 Interface ID(對應 IPv4 主機部分)長度?</div>
+        <button class="opt" onclick="quizPick(this,false)">與 IPv4 一樣可變長度<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">(幾乎)固定 64 位元<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">32 位元<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>Routing Prefix(m)+ Subnet ID(n)= 64,Interface ID 固定 64。「浪費」位元但 IPv6 位元多到用不完。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q65</span><span class="pill">Ch6</span>頻道頻寬與傳輸速度的關係,何者正確?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">頻寬 ×N → 可能速度 ×N;但更寬的頻道意味可用頻道數變少<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">頻寬與速度無關<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">頻道越窄速度越快<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>「Wider channels means fewer channels」:20 MHz 在 5 GHz 約 25 個頻道,160 MHz 只剩 1–2 個——速度與容量的取捨。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q66</span><span class="pill">Ch7</span>被動式 RFID 標籤的特性?</div>
+        <button class="opt" onclick="quizPick(this,false)">內建電池可用十年<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">無電源,靠讀取器掃描的能量回應;資訊量小、無法加密<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">比條碼貴太多所以已淘汰<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>目標是取代條碼;標籤成本約 4 美分。無電源是便宜的關鍵,但也因此無法做加密。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q67</span><span class="pill">Ch8</span>IPv4 Protocol 欄位值 1、6、17 分別代表?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">ICMP、TCP、UDP<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">TCP、UDP、ICMP<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">IP、HTTP、DNS<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>Protocol 欄描述資料欄裡裝的是什麼:1=ICMP、6=TCP、17=UDP。(IPv6 對應 Next Header:TCP=6、UDP=17、ICMPv6=58)</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q68</span><span class="pill">Ch9</span>關於 ICMP,何者正確?</div>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">提供錯誤通知與診斷(ping 測可達性與往返延遲),但不提供可靠性<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">負責重傳遺失的封包<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">是 Layer 5 的應用協定<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>ICMP 處理網路層間的監督通訊,封裝在 IP 封包資料欄中。Echo Request(8)/Echo Reply(0)就是 ping。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q69</span><span class="pill">Ch6</span>OFDM 的做法是?</div>
+        <button class="opt" onclick="quizPick(this,false)">把全部能量集中在單一頻率以增強訊號<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">把寬頻道切成多條子載波、資料冗餘分佈;壞一條子載波不會遺失資料<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">只用於藍牙的跳頻技術<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>正交分頻多工:一個訊框拆散到幾十~幾百條子載波並行傳送,是 802.11a/g/n/ac/ax 與 4G/5G 的主力。</div></div>
+
+      <div class="q"><div class="q-text"><span class="qnum">Q70</span><span class="pill">Ch8</span>TCP 三向交握的正確順序?</div>
+        <button class="opt" onclick="quizPick(this,false)">ACK → SYN → FIN<span class="mark"></span></button>
+        <button class="opt" data-ans="1" onclick="quizPick(this,true)">SYN → SYN/ACK → ACK<span class="mark"></span></button>
+        <button class="opt" onclick="quizPick(this,false)">RST → SYN → ACK<span class="mark"></span></button>
+        <div class="explain"><b>解析:</b>正常開啟三步;正常關閉用 FIN 四步;<b>RST</b> 是突然關閉(立即中斷、對方不回應)。旗標:SYN/ACK/FIN/RST/PSH/URG。</div></div>
+
+    </div>
+  </section>
+</div>
+  </main>
+  <aside class="exam-col" id="examColRef">
+    <div class="col-head"><span class="ico" style="background:var(--blue)">📜</span>考古題<span style="margin-left:auto;font-size:11px;color:var(--muted);font-weight:500">答案已重新驗證</span></div>
+
+    <!-- ===== CH06 考古題 ===== -->
+    <div class="exam-pane" data-for="ch06">
+      <div class="year-block">
+        <div class="year-head">🗓 2025 期末</div>
+        <div class="xq"><span class="xq-no">2025 填充 3 · 3%</span>
+          <div class="xq-text">By inverse square law attenuation in wireless communication, the signal strength at 2 meters is <b>40 mW</b>. The signal strength at 8 meters would be <span class="blank"></span> mW.</div>
+          <div class="xq-ans"><b>驗證答案:2.5 mW</b><br>公式 S₂ = S₁ × (r₁/r₂)² = 40 × (2/8)² = 40 × 1/16 = <b>2.5</b>。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 填充 8 · 3%</span>
+          <div class="xq-text">802.11 Wireless LANs use 2.4 GHz and 5 GHz unlicensed bands. Which provides more bandwidth?</div>
+          <div class="xq-ans"><b>驗證答案:5 GHz</b><br>5 GHz 頻段範圍寬得多 → 不重疊頻道更多、單一頻道可以更寬(40/80/160 MHz)→ 頻寬較大。代價:頻率高 → 衰減快、穿牆繞射差(死區/吸收問題更嚴重)。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 簡答 1 · 9%</span>
+          <div class="xq-text"><b>EMI、Dead(shadow) zones、Inverse square law attenuation、Absorptive attenuation、Multipath Interference</b> are the five wireless propagation problems.<br>(1). Which is the most serious propagation problem?<br>(2). Which two problems get worse as frequency increases?</div>
+          <div class="xq-ans"><b>驗證答案:</b><br>(1) <b>Multipath interference(多路徑干擾)</b>— 教科書明指其為 WLAN 頻率下「最嚴重」的傳播問題。<br>(2) <b>Dead (shadow) zones</b> 與 <b>Absorptive attenuation</b> — 頻率越高越難繞射/穿透障礙物(死區更多),也更容易被水氣等吸收。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 簡答 2 · 8%</span>
+          <div class="xq-text"><b>CSMA/CA+ACK</b> and <b>RTS/CTS</b> are the two MAC schemes used by 802.11 WLANs.<br>(1). In CSMA/CA+ACK, CA means Collision Avoidance. How can collisions be avoided possibly?<br>(2). Suppose a host is to send a frame to access point AP1 via RTS/CTS. How does the RTS/CTS scheme work?</div>
+          <div class="xq-ans"><b>驗證答案:</b><br>(1) 先聽再送:頻道忙就等;頻道由忙轉「閒」後,各站再<b>隨機等待一段退避時間</b>才開始傳,避免大家同時起送而碰撞;傳完靠 ACK 確認,沒收到就重傳。<br>(2) 主機先送 <b>RTS</b>(Request to Send)給 AP1;AP1 廣播 <b>CTS</b>(Clear to Send,指名該主機);其他站台聽到 CTS 後在指定時間內保持靜默,該主機<b>獨佔頻道</b>傳送 → 連「隱藏節點」的碰撞也能避免。</div>
+        </div>
+      </div>
+      <div class="year-block">
+        <div class="year-head">🗓 2023 期末</div>
+        <div class="xq"><span class="xq-no">2023 填充 3</span>
+          <div class="xq-text">By inverse square law attenuation in wireless communication, the signal strength at 5 meters is <b>80 mW</b>. The signal strength at 20 meters would be <span class="blank"></span> mW.</div>
+          <div class="xq-ans"><b>驗證答案:5 mW</b><br>80 × (5/20)² = 80 × 1/16 = <b>5</b>。(原卷附公式:後強度 = 原強度 × (原半徑/後半徑)²,答案正確)</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 簡答 · 名詞解釋</span>
+          <div class="xq-text">Explain the following terms in wireless communication.<br>(1). Service Band and Channels<br>(2). Spread Spectrum Transmission<br>(3). Channel Reuse (for Cellular Telephone Service)</div>
+          <div class="xq-ans"><b>驗證答案:</b><br>(1) <b>Service band(服務頻段)</b>=分配給某種服務的一段頻率範圍;頻段內再細分成多個 <b>channel(頻道)</b>,不同訊號走不同頻道互不干擾(如不同廣播電台)。<br>(2) <b>展頻傳輸</b>=把訊號散布在「比實際需要更寬」的頻帶上傳送(802.11 採 OFDM 等),降低窄頻干擾與頻率相依傳播問題的影響。注意:商用展頻的目的是<b>可靠性</b>,不是保密。<br>(3) <b>頻道重複使用</b>=蜂巢式服務把區域切成許多 cell,距離夠遠的 cell 可重複使用同一頻道,讓有限頻譜服務更多用戶。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 簡答 · 9%</span>
+          <div class="xq-text"><b>EMI, Dead(shadow) zones, Inverse square law attenuation, Absorptive attenuation, and Multipath Interference</b> are the five wireless propagation problems.<br>(1). What is Multipath Interference?<br>(2). Which two problems get worse as frequency increases?</div>
+          <div class="xq-ans"><b>驗證答案:</b><br>(1) 訊號會被牆面、物體<b>反射</b>,同一訊號經「直接 + 反射」多條路徑、在不同時間抵達接收端,彼此相位錯開而互相干擾,可能部分甚至完全抵消 — WLAN 最嚴重的傳播問題。<br>(2) <b>Dead zones(死區/陰影區)</b>、<b>Absorptive attenuation(吸收性衰減)</b>。(原卷答案正確)</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 簡答 · CSMA/CA</span>
+          <div class="xq-text"><b>CSMA/CA+ACK</b> is the MAC scheme used by 802.11 WLANs.<br>(1). What does "Carrier Sense Multiple Access" mean?<br>(2). CA means Collision Avoidance. How can collisions be avoided?</div>
+          <div class="xq-ans"><b>驗證答案:</b><br>(1) 多個站台共用(<b>Multiple Access</b>)同一頻道;每站傳送前先<b>感測載波(Carrier Sense)</b>:聽聽看有沒有人正在傳,有人在傳就先不傳。<br>(2) 頻道由忙轉閒後,各站<b>再隨機等待一段退避時間</b>才傳,把「同時起送」的機率降到最低;搭配 ACK 未確認重傳。(原卷手寫「彼此隨機等待一個秒數來決定順序」方向正確,精確說是隨機退避時間)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CH07 考古題 ===== -->
+    <div class="exam-pane" data-for="ch07">
+      <div class="year-block">
+        <div class="year-head">🗓 2025 期末</div>
+        <div class="xq"><span class="xq-no">2025 填充 9 · 3%</span>
+          <div class="xq-text">802.11i provides two modes of operation. In the <span class="blank"></span> mode, all hosts use the same key (password) to access an access point.</div>
+          <div class="xq-ans"><b>驗證答案:PSK(Pre-Shared Key)</b><br>又稱 personal mode;另一模式為 <b>802.1X</b>(enterprise mode,每人各自帳號認證、用中央認證伺服器)。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 填充 10 · 3%</span>
+          <div class="xq-text">There are <b>Wi-Fi, Bluetooth, NFC, and RFID</b> wireless technologies. Which provides short distance communication within 10 meters?</div>
+          <div class="xq-ans"><b>驗證答案:Bluetooth(藍牙)</b><br>各技術距離等級:Wi-Fi ≈ 30–100 m;<b>藍牙(Classic)≈ 10 m</b>;NFC ≈ 4–10 cm(近場);RFID 依類型從公分級到數公尺以上。「在 10 公尺內(範圍內任意位置)通訊」正是藍牙的設計距離;NFC 在 1 公尺處就無法通訊。</div>
+          <div class="xq-warn">⚠ 原卷手寫答案為「NFC」,疑誤:NFC 的規格距離是 ~4 公分(10 公分內),不是 10 公尺。若課堂上老師把「short distance」解讀為「近場通訊」則可能要 NFC — 建議向老師確認,但依教科書距離規格應答 <b>Bluetooth</b>。</div>
+        </div>
+      </div>
+      <div class="year-block">
+        <div class="year-head">🗓 2023 期末</div>
+        <div class="xq"><span class="xq-no">2023 填充 4</span>
+          <div class="xq-text"><span class="blank"></span> access point impersonates(偽裝) as a legitimate one, e.g. an AP with SSID 'NCNU', usually operating at very high power, to attract wireless clients.</div>
+          <div class="xq-ans"><b>驗證答案:Evil twin</b><br>邪惡雙子 AP:冒充合法 AP(同 SSID)、開大功率吸引用戶連上,進行中間人攻擊。注意它是 802.11i <b>擋不住</b>的威脅,需 VPN 等對策。(原卷答案正確)</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 填充 5</span>
+          <div class="xq-text">In the <span class="blank"></span> mode, one of two 802.11i modes, all wireless clients get the same password to access Wi-Fi.</div>
+          <div class="xq-ans"><b>驗證答案:PSK</b>(= pre-shared key / personal mode)。(原卷答案正確)</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 簡答 · 老師提示「可能會考」</span>
+          <div class="xq-text">Compare <b>Bluetooth</b> and <b>NFC</b> in terms of applications, communication distances, and speeds.</div>
+          <div class="xq-ans"><b>驗證答案:</b><br><b>應用</b>:藍牙=耳機、鍵鼠、喇叭等周邊連接(以 <b>profiles</b> 定義各種應用情境)、個人區域網路;NFC=行動支付、門禁、感應配對等「靠近即用」場景。<br><b>距離</b>:藍牙 ≈ 10 m;NFC ≈ 4–10 cm。<br><b>速度</b>:藍牙 ≈ 1–3 Mbps(2.1 Mbps EDR 等級);NFC ≈ 106–424 kbps。<br>(原卷筆記:「藍牙有 Profiles、傳輸距離遠、速度快;RFID 要取代條碼」— 方向正確)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CH08 考古題 ===== -->
+    <div class="exam-pane" data-for="ch08">
+      <div class="year-block">
+        <div class="year-head">🗓 2025 期末</div>
+        <div class="xq"><span class="xq-no">2025 填充 1 · 3%</span>
+          <div class="xq-text"><b>fe80::1:a3:b40:8</b> is the simplified representation of an IPv6 address. The original IPv6 address is <span class="blank"></span>.</div>
+          <div class="xq-ans"><b>驗證答案:fe80:0000:0000:0000:0001:00a3:0b40:0008</b><br>已有 5 組(fe80 / 1 / a3 / b40 / 8),「::」補滿 3 組 0000;每組再補前導零至 4 位十六進位。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 填充 2 · 3%</span>
+          <div class="xq-text">123.25.174.88 bitwise-AND 255.255.240.0 = <span class="blank"></span>.</div>
+          <div class="xq-ans"><b>驗證答案:123.25.160.0</b><br>只需算第 3 個 byte:174 = 1010<u>1110</u>₂,240 = 1111<u>0000</u>₂,AND = 1010<u>0000</u>₂ = <b>160</b>;88 AND 0 = 0。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 填充 4 · 3%</span>
+          <div class="xq-text">The value of the <b>header length</b> field in an IPv4 header is <span class="blank"></span> if the length of the IPv4 header is 20 octets.</div>
+          <div class="xq-ans"><b>驗證答案:5</b><br>Header Length 欄位的單位是 4-byte(32-bit)字組:20 ÷ 4 = <b>5</b>。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 填充 5 · 3%</span>
+          <div class="xq-text">When an IPv6 packet is forwarded by a router, the <span class="blank"></span> field of the packet will be decreased by one.</div>
+          <div class="xq-ans"><b>驗證答案:Hop Limit</b><br>IPv6 的 Hop Limit = IPv4 的 TTL,每經一台路由器減 1,歸零即丟棄。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 簡答 3 · 8%</span>
+          <div class="xq-text">(1). Describe the three steps of opening a TCP connection.<br>(2). Describe the four steps of closing a TCP connection.</div>
+          <div class="xq-ans"><b>驗證答案:</b><br>(1) 三向交握:① Client→Server:<b>SYN</b> ② Server→Client:<b>SYN/ACK</b> ③ Client→Server:<b>ACK</b>。<br>(2) 正常關閉四步(雙方各關自己方向):① A→B:<b>FIN</b> ② B→A:<b>ACK</b> ③ B→A:<b>FIN</b> ④ A→B:<b>ACK</b>。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 簡答 5 · 12%</span>
+          <div class="xq-text">The following table shows a part of a routing table. Suppose the metric is <b>cost</b>.
+            <table class="xtab"><tr><th>Row</th><th>Destination</th><th>Subnet mask</th><th>Metric (cost)</th><th>Interface</th><th>Next Hop</th></tr>
+            <tr><td>1</td><td>0.0.0.0</td><td>0.0.0.0</td><td>80</td><td>1</td><td>123.1.1.254</td></tr>
+            <tr><td>2</td><td>123.0.0.0</td><td>255.0.0.0</td><td>60</td><td>6</td><td>123.2.1.254</td></tr>
+            <tr><td>3</td><td>123.45.0.0</td><td>255.255.0.0</td><td>40</td><td>5</td><td>123.50.1.253</td></tr>
+            <tr><td>4</td><td>123.45.0.0</td><td>255.255.0.0</td><td>35</td><td>8</td><td>123.50.1.254</td></tr>
+            <tr><td>5</td><td>123.45.1.0</td><td>255.255.255.0</td><td>20</td><td>12</td><td>123.60.5.254</td></tr>
+            <tr><td>6</td><td>123.50.2.0</td><td>255.255.255.0</td><td>10</td><td>2</td><td>local</td></tr>
+            <tr><td>7</td><td>123.60.5.0</td><td>255.255.255.0</td><td>30</td><td>3</td><td>123.22.1.254</td></tr>
+            <tr><td>8</td><td>123.60.5.0</td><td>255.255.255.0</td><td>25</td><td>4</td><td>123.22.1.253</td></tr>
+            <tr><td>9</td><td>123.80.7.0</td><td>255.255.255.0</td><td>10</td><td>7</td><td>local</td></tr>
+            <tr><td>10</td><td>123.80.8.0</td><td>255.255.255.0</td><td>30</td><td>9</td><td>123.22.7.252</td></tr></table>
+            (1). Which row(s) are matched and which row will be selected for destination address = <b>123.45.1.21</b>?<br>
+            (2). Which row(s) are matched and which row will be selected for destination address = <b>123.20.5.11</b>?<br>
+            (3). Which row(s) are matched and which row will be selected for destination address = <b>123.80.12.9</b>?</div>
+          <div class="xq-ans"><b>驗證答案:</b>(規則:Step1 逐列找出所有匹配;Step2 取最長前綴,平手比 cost 取小;Step3 依該列轉送)<br>
+            (1) 匹配 <b>1, 2, 3, 4, 5</b>(Row1 為 default 全匹配;123.45.1.21 符合 /8、兩列 /16 及 123.45.1.0/24)→ 選 <b>Row 5</b>(/24 前綴最長)。<br>
+            (2) 匹配 <b>1, 2</b>(123.20.x 不符任何 123.45/123.50/123.60/123.80 列)→ 選 <b>Row 2</b>(/8 比 /0 長)。<br>
+            (3) 匹配 <b>1, 2</b>(123.80.<b>12</b>.9 ≠ 123.80.7.0/24、123.80.8.0/24)→ 選 <b>Row 2</b>。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 簡答 7(本章相關小題) · 每小題 3%</span>
+          <div class="xq-text">Choose one or more answers from the following pool of protocols. (3% per correct answer)
+            <div class="pool"><span>ARP</span><span>DHCP</span><span>DNS</span><span>HTTP</span><span>ICMP</span><span>IMAP</span><span>IPv4</span><span>IPv6</span><span>IPsec</span><span>OSPF</span><span>RTP</span><span>SIP</span><span>SMTP</span><span>SNMP</span><span>TCP</span><span>UDP</span></div>
+            (2). Protocol, mostly used by routers, to find the data link layer address of a host given its IP address.<br>
+            (6). Protocol in the transport layer.<br>
+            (7). Protocol with a "Flow Label" header field for special handling of packets.<br>
+            (8). Protocol with a "protocol" header field to indicate the upper protocol over the protocol.</div>
+          <div class="xq-ans"><b>驗證答案:</b><br>(2) <b>ARP</b>(IP→MAC 位址解析,路由器在最後一哩用它找目的主機的資料鏈結層位址)。<br>(6) <b>TCP、UDP</b>(可複選)。<br>(7) <b>IPv6</b>(Flow Label 是 IPv6 表頭欄位)。<br>(8) <b>IPv4</b>(IPv4 表頭的 Protocol 欄位標示上層協定,如 6=TCP、17=UDP)。</div>
+          <div class="xq-warn">⚠ 原卷手寫(8)寫 DHCP — 錯,正確是 <b>IPv4</b>;(2) 手寫字跡疑為 UDP/HTTP — 錯,正確是 <b>ARP</b>。其餘小題見 Ch9、Ch11 欄。</div>
+        </div>
+      </div>
+      <div class="year-block">
+        <div class="year-head">🗓 2023 期末</div>
+        <div class="xq"><span class="xq-no">2023 填充 1</span>
+          <div class="xq-text"><b>"fe80::c2f:80a4:d0"</b> is the simplified representation of IPv6 address: <span class="blank"></span></div>
+          <div class="xq-ans"><b>驗證答案:fe80:0000:0000:0000:0000:0c2f:80a4:00d0</b><br>已有 4 組(fe80 / c2f / 80a4 / d0),「::」補滿 4 組 0000。(原卷答案正確)</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 填充 2</span>
+          <div class="xq-text">163.22.120.117 bitwise-AND 255.255.224.0 = <span class="blank"></span></div>
+          <div class="xq-ans"><b>驗證答案:163.22.96.0</b><br>120 = 011<u>11000</u>₂,224 = 111<u>00000</u>₂,AND = 011<u>00000</u>₂ = <b>96</b>。(原卷答案正確)</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 填充 6</span>
+          <div class="xq-text">When an IPv4 packet is forwarded by a router, the <span class="blank"></span> field in the IPv4 header of the packet will be decreased by one.</div>
+          <div class="xq-ans"><b>驗證答案:TTL(Time to Live)</b>。IPv6 對應欄位是 Hop Limit(2025 考過反向版本)。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 填充 9</span>
+          <div class="xq-text">IPv6 has many optional headers. Each header is linked to the next one by the <span class="blank"></span> field in each header.</div>
+          <div class="xq-ans"><b>驗證答案:Next Header</b>(IPv6 主表頭與各延伸表頭都用 Next Header 欄位串起下一個表頭)。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 填充 10</span>
+          <div class="xq-text">SYN, <span class="blank"></span>, and ACK are the three steps in opening a TCP connection. Corresponding flags will be set to 1.</div>
+          <div class="xq-ans"><b>驗證答案:SYN/ACK</b>(三向交握第二步,SYN 與 ACK 旗標同時為 1)。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 簡答 · 欄位解釋</span>
+          <div class="xq-text">Explain the following fields:<br>(1). Sequence Number / Acknowledgment Number (in TCP)<br>(2). Source Port / Destination Port (in TCP)<br>(3). Identification / Flags / Fragment Offset (in IPv4)</div>
+          <div class="xq-ans"><b>驗證答案:</b><br>(1) <b>Sequence Number</b>=本段資料在位元組串流中的位置編號,接收端據以<b>排序/重組</b>、偵測遺漏;<b>Acknowledgment Number</b>=確認編號,告知對方「已收到,期待的下一個序號」(搭配 ACK 旗標)。<br>(2) <b>Source/Destination Port</b>=識別兩端的<b>應用程式(行程)</b>;伺服器端用知名埠(HTTP 80 等),客戶端用暫時埠。<br>(3) 三欄位合作完成 IPv4 封包<b>分段與重組</b>:Identification 標示同一原始封包、Flags 含 DF/MF(可否分段/後面還有分段)、Fragment Offset 標示本分段在原封包的位置。(原卷答案正確但過簡)</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 簡答 · 路由表</span>
+          <div class="xq-text">The following table shows a part of a routing table. Suppose the metric is <b>Cost</b>.
+            <table class="xtab"><tr><th>Row</th><th>Destination</th><th>Subnet mask</th><th>Metric (Cost)</th><th>Interface</th><th>Next Hop</th></tr>
+            <tr><td>1</td><td>140.0.0.0</td><td>255.0.0.0</td><td>10</td><td>11</td><td>140.1.1.254</td></tr>
+            <tr><td>2</td><td>140.22.0.0</td><td>255.255.0.0</td><td>12</td><td>5</td><td>140.22.1.254</td></tr>
+            <tr><td>3</td><td>140.22.0.0</td><td>255.255.0.0</td><td>18</td><td>8</td><td>140.19.1.254</td></tr>
+            <tr><td>4</td><td>140.110.0.0</td><td>255.255.0.0</td><td>12</td><td>9</td><td>140.22.2.1</td></tr>
+            <tr><td>5</td><td>140.110.45.0</td><td>255.255.255.0</td><td>7</td><td>2</td><td>local</td></tr>
+            <tr><td>6</td><td>140.121.0.0</td><td>255.255.0.0</td><td>12</td><td>3</td><td>140.25.1.254</td></tr>
+            <tr><td>7</td><td>140.121.24.0</td><td>255.255.255.0</td><td>21</td><td>7</td><td>local</td></tr>
+            <tr><td>8</td><td>140.121.33.0</td><td>255.255.255.0</td><td>8</td><td>4</td><td>140.121.2.1</td></tr>
+            <tr><td>9</td><td>140.121.33.0</td><td>255.255.255.0</td><td>10</td><td>3</td><td>140.121.3.252</td></tr>
+            <tr><td>10</td><td>140.121.33.12</td><td>255.255.255.255</td><td>1</td><td>2</td><td>local</td></tr>
+            <tr><td>11</td><td>0.0.0.0</td><td>0.0.0.0</td><td>26</td><td>1</td><td>163.22.1.254</td></tr></table>
+            (1). Which row(s) are matched? Which row will be selected for destination address <b>140.121.33.10</b>?<br>
+            (2). Which row(s) are matched? Which row will be selected for destination address <b>140.110.45.21</b>?<br>
+            (3). Which row(s) are matched? Which row will be selected for destination address <b>140.22.1.2</b>?</div>
+          <div class="xq-ans"><b>驗證答案:</b><br>
+            (1) 匹配 <b>1, 6, 8, 9, 11</b>(Row10 是 140.121.33.<b>12</b>/32,不含 .10)→ Row8、Row9 同為 /24 最長前綴,比 cost:8 &lt; 10 → 選 <b>Row 8</b>。<br>
+            (2) 匹配 <b>1, 4, 5, 11</b> → 選 <b>Row 5</b>(/24 最長)。<br>
+            (3) 匹配 <b>1, 2, 3, 11</b> → Row2、Row3 同為 /16,比 cost:12 &lt; 18 → 選 <b>Row 2</b>。<br>(原卷三小題答案皆正確)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CH09 考古題 ===== -->
+    <div class="exam-pane" data-for="ch09">
+      <div class="year-block">
+        <div class="year-head">🗓 2025 期末</div>
+        <div class="xq"><span class="xq-no">2025 填充 6 · 3%</span>
+          <div class="xq-text"><b>Transport mode</b> and <b>Tunnel mode</b> are two modes of operation in IPsec VPN. In the <span class="blank"></span> mode, only the two IPsec gateways need digital certificates.</div>
+          <div class="xq-ans"><b>驗證答案:Tunnel(隧道模式)</b><br>隧道模式只在兩站點的 IPsec gateway 之間加密,主機端不必裝 IPsec、不需憑證 → 便宜;Transport 模式為主機對主機端到端保護,每台主機都要憑證/設定 → 安全但貴。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 填充 13 · 3%</span>
+          <div class="xq-text"><span class="blank"></span> allows a number of hosts with private IP address to access the Internet via the same public IP address.</div>
+          <div class="xq-ans"><b>驗證答案:NAT(Network Address Translation)</b><br>多台私有 IP 主機共用同一公有 IP 上網(靠不同埠號區分,即 NAT/PAT 過載)。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 簡答 4 · 6%</span>
+          <div class="xq-text">Suppose the network part of the IPv4 addresses assigned to company ABC is 16 bits. Company ABC further uses 5 bits as the subnet part of the IP addresses.<br>(1). How many subnets does company ABC have at most?<br>(2). How many hosts does each subnet have at most?</div>
+          <div class="xq-ans"><b>驗證答案:</b>(教科書慣例扣除全 0 與全 1)<br>(1) 2⁵ − 2 = <b>30</b> 個子網。<br>(2) 主機位 = 32 − 16 − 5 = 11 → 2¹¹ − 2 = <b>2046</b> 台主機。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 簡答 7(本章相關小題) · 每小題 3%</span>
+          <div class="xq-text">Choose one or more answers from the following pool of protocols. (3% per correct answer)
+            <div class="pool"><span>ARP</span><span>DHCP</span><span>DNS</span><span>HTTP</span><span>ICMP</span><span>IMAP</span><span>IPv4</span><span>IPv6</span><span>IPsec</span><span>OSPF</span><span>RTP</span><span>SIP</span><span>SMTP</span><span>SNMP</span><span>TCP</span><span>UDP</span></div>
+            (1). Protocol, usually used by routers, to report possible errors during routing.<br>
+            (5). Dynamic routing protocol.<br>
+            (9). Protocol used by ping for measuring round-trip time.</div>
+          <div class="xq-ans"><b>驗證答案:</b><br>(1) <b>ICMP</b>(路由器以 ICMP 回報錯誤,如 host unreachable)。<br>(5) <b>OSPF</b>(池中唯一的動態路由協定)。<br>(9) <b>ICMP</b>(ping = ICMP echo request / echo reply 量測 RTT)。</div>
+          <div class="xq-warn">⚠ 原卷(9)手寫疑為 UDP/HTTP — 錯,ping 用的是 <b>ICMP</b>。其餘小題見 Ch8、Ch11 欄。</div>
+        </div>
+      </div>
+      <div class="year-block">
+        <div class="year-head">🗓 2023 期末</div>
+        <div class="xq"><span class="xq-no">2023 填充 7</span>
+          <div class="xq-text">If 4 bits are used as the subnet part of an IPv4 address, there can be <span class="blank"></span> subnets allocated at most.</div>
+          <div class="xq-ans"><b>驗證答案:2⁴ − 2 = 14</b>(原卷「24-2」是 2⁴−2 的排版跑掉,意思正確)。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 填充 8</span>
+          <div class="xq-text"><span class="blank"></span> is a protocol usually used by routers to send error messages to hosts, e.g. host unreachable.</div>
+          <div class="xq-ans"><b>驗證答案:ICMP</b>(Internet Control Message Protocol)。(原卷答案正確)</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 簡答 · IPsec 兩模式</span>
+          <div class="xq-text"><b>Transport mode</b> and <b>Tunnel mode</b> are the operating modes of IPsec. Using the following figures to explain the two modes.<br><span style="font-size:12px;color:var(--muted)">(原卷附兩張圖:上圖=兩端主機之間一條全程保護通道;下圖=兩個 gateway 之間一段保護通道)</span></div>
+          <div class="xq-ans"><b>驗證答案:</b><br><b>Transport mode</b>:主機對主機<b>端到端</b>全程加密保護(圖上:保護涵蓋 Site 內外全路徑);安全最完整,但每台主機都要安裝/設定 IPsec 與數位憑證 → 建置成本高。<br><b>Tunnel mode</b>:只在兩站點的 <b>IPsec gateway 之間</b>建立加密隧道(圖下:保護只涵蓋兩 gateway 間的網際網路段);主機不需改變、只有 gateway 需要憑證 → 便宜省事,但站內路段無 IPsec 保護。<br>(原卷手寫「Transport=完整端到端保護但較貴;Tunnel=僅兩 gateway 間保護、較便宜」概念正確)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CH10 考古題 ===== -->
+    <div class="exam-pane" data-for="ch10">
+      <div class="year-block">
+        <div class="year-head">🗓 2025 期末</div>
+        <div class="xq"><span class="xq-no">2025 填充 7 · 3%</span>
+          <div class="xq-text"><span class="blank"></span> provides residential Internet access over one-pair voice-grade UTPs and offers high downstream speeds but limited upstream speed.</div>
+          <div class="xq-ans"><b>驗證答案:ADSL</b><br>關鍵字:一對語音級 UTP(既有電話線)、下行快上行慢(Asymmetric)。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 填充 11 · 3%</span>
+          <div class="xq-text"><span class="blank"></span> is a routing mechanism in WANs. A label is inserted in front of the IP header. Routing is performed via the label.</div>
+          <div class="xq-ans"><b>驗證答案:MPLS</b>(Multiprotocol Label Switching)— 在 IP 表頭前插入標籤,沿預設標籤路徑轉送,比逐封包查路由表更快、可做流量工程/QoS。</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 填充 12 · 3%</span>
+          <div class="xq-text">Assume there are three solutions of leased lines: <b>T1</b>, <b>five bonded T1</b>, and <b>T3</b>. Which is the fastest?</div>
+          <div class="xq-ans"><b>驗證答案:T3</b><br>T1 = 1.544 Mbps;5 條捆綁 T1 ≈ 7.72 Mbps;<b>T3 = 44.736 Mbps</b> 最快。</div>
+        </div>
+      </div>
+      <div class="year-block">
+        <div class="year-head">🗓 2023 期末</div>
+        <div class="xq"><span class="xq-no">2023 填充 12</span>
+          <div class="xq-text"><span class="blank"></span> is a routing mechanism in PSDN. It inserts a label in front of the IP header. Routing is based on the label.</div>
+          <div class="xq-ans"><b>驗證答案:MPLS</b>。(原卷答案正確;2025 換句重考)</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 填充 13</span>
+          <div class="xq-text"><span class="blank"></span> provides residential Internet access over one-pair voice-grade UTPs and offers high downstream speeds but limited upstream speed.</div>
+          <div class="xq-ans"><b>驗證答案:ADSL</b>。(原卷答案正確;2025 原題重考)</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 填充 14</span>
+          <div class="xq-text">Give an example of leased lines. <span class="blank"></span>(原卷註:那 4 個挑一個)
+            <table class="xtab"><tr><th>專線</th><th>速度</th><th>傳輸媒介</th></tr>
+            <tr><td>T1</td><td>1.544 Mbps</td><td>2 對數據級 UTP</td></tr>
+            <tr><td>T3</td><td>44.736 Mbps</td><td>光纖</td></tr>
+            <tr><td>E1(歐規)</td><td>2.048 Mbps</td><td>2 對數據級 UTP</td></tr>
+            <tr><td>E3(歐規)</td><td>34.368 Mbps</td><td>光纖</td></tr>
+            <tr><td>SONET/SDH OC3/STM1</td><td>155.52 Mbps</td><td>光纖</td></tr></table></div>
+          <div class="xq-ans"><b>驗證答案:T1</b>(或 E1 / T3 / E3 任一;高速另有 SONET/SDH)。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CH11 考古題 ===== -->
+    <div class="exam-pane" data-for="ch11">
+      <div class="year-block">
+        <div class="year-head">🗓 2025 期末</div>
+        <div class="xq"><span class="xq-no">2025 簡答 6 · 8%</span>
+          <div class="xq-text">Use the following SMTP commands to explain how a mail is sent via SMTP.
+            <div class="pool" style="grid-template-columns:repeat(3,1fr)"><span>. (dot)</span><span>DATA</span><span>HELO</span><span>MAIL FROM</span><span>QUIT</span><span>RCPT TO</span></div></div>
+          <div class="xq-ans"><b>驗證答案(正確順序與意義):</b><br>① <b>HELO</b>:寄件端自我介紹、開啟 SMTP 會話<br>② <b>MAIL FROM</b>:宣告寄件者位址<br>③ <b>RCPT TO</b>:宣告收件者位址(可多次)<br>④ <b>DATA</b>:開始傳送訊息內容(標頭+本文)<br>⑤ <b>. (dot)</b>:單獨一行的句點表示訊息結束<br>⑥ <b>QUIT</b>:結束會話、關閉連線</div>
+        </div>
+        <div class="xq"><span class="xq-no">2025 簡答 7(本章相關小題) · 每小題 3%</span>
+          <div class="xq-text">Choose one or more answers from the following pool of protocols. (3% per correct answer)
+            <div class="pool"><span>ARP</span><span>DHCP</span><span>DNS</span><span>HTTP</span><span>ICMP</span><span>IMAP</span><span>IPv4</span><span>IPv6</span><span>IPsec</span><span>OSPF</span><span>RTP</span><span>SIP</span><span>SMTP</span><span>SNMP</span><span>TCP</span><span>UDP</span></div>
+            (3). Signaling protocol for voice over IP.<br>
+            (4). Protocol with a blank line (CRLF) between header and content (entity).</div>
+          <div class="xq-ans"><b>驗證答案:</b><br>(3) <b>SIP</b>(VoIP 的信令協定;傳輸用 RTP)。<br>(4) <b>HTTP</b>(HTTP 訊息 = 起始列 + 標頭 + <b>空行(CRLF)</b> + entity body;「entity」正是 HTTP 用語)。</div>
+          <div class="xq-warn">⚠ 原卷(4)手寫 SMTP 疑誤:RFC 822 郵件「格式」確實也有空行分隔標頭與本文,但有「entity」字眼的是 <b>HTTP</b>。其餘小題見 Ch8、Ch9 欄。</div>
+        </div>
+      </div>
+      <div class="year-block">
+        <div class="year-head">🗓 2023 期末</div>
+        <div class="xq"><span class="xq-no">2023 填充 11</span>
+          <div class="xq-text"><span class="blank"></span> and RTP are the signaling and transport protocols of VoIP respectively.</div>
+          <div class="xq-ans"><b>驗證答案:SIP</b>(Session Initiation Protocol 負責建立/掛斷通話;RTP 載運語音封包)。(原卷 "Vole" 為 VoIP 之誤植)</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 簡答 · E-mail 標準三部分</span>
+          <div class="xq-text"><b>SMTP, POP/IMAP, and RFC 822/2822</b> are three parts of an E-mail standard. Please explain them shortly.</div>
+          <div class="xq-ans"><b>驗證答案:</b><br><b>SMTP</b>:寄信用的傳遞協定(寄件端→寄件伺服器、伺服器之間)。<br><b>POP/IMAP</b>:收件端從收件伺服器取信的協定;POP 把信下載到本機管理,IMAP 在伺服器上管理、可多裝置同步。<br><b>RFC 822/2822</b>:純文字郵件的<b>訊息格式</b>標準(標頭欄位+空行+本文)。(原卷答案正確)</div>
+        </div>
+        <div class="xq"><span class="xq-no">2023 簡答 · HTTP 請求訊息</span>
+          <div class="xq-text">What are (a) and (b) in the HTTP request message to get web page <b>"http://abc.com/news/a.html"</b>?<br>
+            <code>GET (a)______ HTTP/1.1</code><br><code>Host: (b)______</code><br><code>Connection: keep-alive</code></div>
+          <div class="xq-ans"><b>驗證答案:</b>(a) <b>/news/a.html</b>(路徑) (b) <b>abc.com</b>(主機名)。(原卷答案正確)</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <aside class="exam-col" id="examColQuiz">
+    <div class="col-head"><span class="ico" style="background:var(--accent)">✎</span>考古題測驗<span style="margin-left:auto;font-size:11px;color:var(--muted);font-weight:500">先作答再點「顯示答案」</span></div>
+
+    <!-- ===== CH06 測驗 ===== -->
+    <div class="exam-pane" data-for="ch06">
+      <div class="year-block">
+        <div class="year-head">🗓 2025 期末</div>
+        <div class="pq"><span class="xq-no">2025 填充 3</span>
+          <div class="xq-text">反平方衰減:2 公尺處訊號強度 40 mW,8 公尺處 = <span class="blank"></span> mW?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>2.5 mW</b> — 40 × (2/8)² = 40/16 = 2.5。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 填充 8</span>
+          <div class="xq-text">2.4 GHz vs 5 GHz 無照頻段,哪個提供較大頻寬?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>5 GHz</b> — 頻段寬、不重疊頻道多、頻道可更寬;但距離短、穿透差。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 簡答 1</span>
+          <div class="xq-text">五大電波傳播問題(EMI / Dead zones / 反平方衰減 / 吸收衰減 / 多路徑干擾):<br>(1) 哪個「最嚴重」?<br>(2) 哪兩個隨頻率升高而惡化?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans">(1) <b>Multipath interference 多路徑干擾</b>。<br>(2) <b>Dead (shadow) zones + Absorptive attenuation</b>(高頻難繞射穿透、易被吸收)。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 簡答 2</span>
+          <div class="xq-text">(1) CSMA/CA+ACK 如何「避免」碰撞?<br>(2) 主機要經 RTS/CTS 傳訊框給 AP1,流程怎麼運作?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans">(1) 先聽後送;頻道轉閒後<b>再隨機退避</b>一段時間才傳;ACK 未到就重傳。<br>(2) 主機送 <b>RTS</b> → AP1 廣播 <b>CTS</b>(指名+時限)→ 其他站靜默,該主機獨佔頻道傳送。</div>
+        </div>
+      </div>
+      <div class="year-block">
+        <div class="year-head">🗓 2023 期末</div>
+        <div class="pq"><span class="xq-no">2023 填充 3</span>
+          <div class="xq-text">反平方衰減:5 公尺處 80 mW,20 公尺處 = <span class="blank"></span> mW?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>5 mW</b> — 80 × (5/20)² = 80/16 = 5。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 名詞解釋</span>
+          <div class="xq-text">解釋:(1) Service Band and Channels (2) Spread Spectrum Transmission (3) Channel Reuse(蜂巢式行動服務)</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans">(1) 頻段=分配給某服務的頻率範圍;頻段內再切成多個頻道,各走各的互不干擾。<br>(2) 把訊號散布到比需要更寬的頻帶傳送(OFDM 等),抗窄頻干擾 → 為了<b>可靠</b>不是保密。<br>(3) 距離夠遠的 cell 重複使用相同頻道,有限頻譜服務更多用戶。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 簡答</span>
+          <div class="xq-text">(1) 什麼是 Multipath Interference?<br>(2) 哪兩個傳播問題隨頻率升高而惡化?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans">(1) 直接波與反射波經<b>多條路徑</b>不同時間抵達、相位錯開互相干擾(可能完全抵消)— WLAN 最嚴重的問題。<br>(2) <b>死區 + 吸收性衰減</b>。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 簡答</span>
+          <div class="xq-text">(1) "Carrier Sense Multiple Access" 是什麼意思?<br>(2) CA(Collision Avoidance)如何避免碰撞?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans">(1) 多站共用頻道(MA);傳前先<b>聽載波</b>(CS),有人在傳就不傳。<br>(2) 頻道轉閒後各站<b>隨機退避</b>再傳,降低同時起送機率;搭配 ACK 重傳。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CH07 測驗 ===== -->
+    <div class="exam-pane" data-for="ch07">
+      <div class="year-block">
+        <div class="year-head">🗓 2025 期末</div>
+        <div class="pq"><span class="xq-no">2025 填充 9</span>
+          <div class="xq-text">802.11i 兩種模式中,所有主機用<b>同一把金鑰(密碼)</b>連 AP 的是 <span class="blank"></span> 模式?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>PSK</b>(pre-shared key / personal mode);另一模式 = 802.1X(enterprise)。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 填充 10</span>
+          <div class="xq-text">Wi-Fi / Bluetooth / NFC / RFID 中,提供「10 公尺內」短距離通訊的是?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>Bluetooth</b>(設計距離 ≈ 10 m)。⚠ 原卷手寫 NFC 疑誤:NFC 僅 ~4–10 <b>公分</b>;Wi-Fi 數十公尺。各距離等級要會比較。</div>
+        </div>
+      </div>
+      <div class="year-block">
+        <div class="year-head">🗓 2023 期末</div>
+        <div class="pq"><span class="xq-no">2023 填充 4</span>
+          <div class="xq-text"><span class="blank"></span> AP 偽裝成合法 AP(如 SSID 'NCNU'),常以高功率吸引無線用戶連線?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>Evil twin</b>(邪惡雙子)— 802.11i 擋不住,需 VPN 對策。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 填充 5</span>
+          <div class="xq-text">802.11i 兩模式之一,所有無線用戶拿<b>同一組密碼</b>上網的是 <span class="blank"></span> 模式?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>PSK</b>。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 比較題(可能會考)</span>
+          <div class="xq-text">比較 <b>Bluetooth</b> 與 <b>NFC</b>:應用、通訊距離、速度。</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>應用</b>:BT=耳機/鍵鼠等周邊(有 profiles)、PAN;NFC=行動支付/門禁「靠近即用」。<br><b>距離</b>:BT ≈ 10 m;NFC ≈ 4–10 cm。<br><b>速度</b>:BT ≈ 1–3 Mbps;NFC ≈ 106–424 kbps。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CH08 測驗 ===== -->
+    <div class="exam-pane" data-for="ch08">
+      <div class="year-block">
+        <div class="year-head">🗓 2025 期末</div>
+        <div class="pq"><span class="xq-no">2025 填充 1</span>
+          <div class="xq-text"><b>fe80::1:a3:b40:8</b> 的完整(原始)IPv6 位址 = ?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>fe80:0000:0000:0000:0001:00a3:0b40:0008</b> — :: 補 3 組 0,每組補滿 4 位。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 填充 2</span>
+          <div class="xq-text">123.25.174.88 bitwise-AND 255.255.240.0 = ?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>123.25.160.0</b> — 174(10101110)AND 240(11110000)= 160(10100000)。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 填充 4</span>
+          <div class="xq-text">IPv4 表頭長 20 octets 時,header length 欄位的值 = ?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>5</b> — 單位是 4-byte 字組:20 ÷ 4 = 5。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 填充 5</span>
+          <div class="xq-text">IPv6 封包經路由器轉送時,哪個欄位會減 1?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>Hop Limit</b>(IPv4 是 TTL)。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 簡答 3</span>
+          <div class="xq-text">(1) TCP 連線「開啟」三步驟?<br>(2) TCP 連線「正常關閉」四步驟?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans">(1) <b>SYN → SYN/ACK → ACK</b>。<br>(2) <b>FIN → ACK → FIN → ACK</b>(雙方各關自己方向)。突然關閉才是 RST。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 簡答 5(路由表)</span>
+          <div class="xq-text">用左欄 2025 路由表判斷:<br>(1) 123.45.1.21 匹配哪些列?選哪列?<br>(2) 123.20.5.11?<br>(3) 123.80.12.9?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans">(1) 匹配 <b>1,2,3,4,5</b> → 選 <b>5</b>(/24 最長前綴)。<br>(2) 匹配 <b>1,2</b> → 選 <b>2</b>。<br>(3) 匹配 <b>1,2</b> → 選 <b>2</b>。<br>口訣:全表掃描找匹配 → 最長前綴 → 平手比 metric(cost 取小)。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 簡答 7(2)(6)(7)(8)</span>
+          <div class="xq-text">從 16 個協定池中選答:<br>(2) 路由器用來「由 IP 查資料鏈結層位址」?<br>(6) 傳輸層協定(可複選)?<br>(7) 表頭有 "Flow Label" 欄位?<br>(8) 表頭有 "Protocol" 欄位標示上層協定?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans">(2) <b>ARP</b> (6) <b>TCP、UDP</b> (7) <b>IPv6</b> (8) <b>IPv4</b>。⚠ 原卷(8)手寫 DHCP 是錯的。</div>
+        </div>
+      </div>
+      <div class="year-block">
+        <div class="year-head">🗓 2023 期末</div>
+        <div class="pq"><span class="xq-no">2023 填充 1</span>
+          <div class="xq-text"><b>fe80::c2f:80a4:d0</b> 的完整 IPv6 位址 = ?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>fe80:0000:0000:0000:0000:0c2f:80a4:00d0</b> — :: 補 4 組 0。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 填充 2</span>
+          <div class="xq-text">163.22.120.117 bitwise-AND 255.255.224.0 = ?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>163.22.96.0</b> — 120(01111000)AND 224(11100000)= 96。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 填充 6</span>
+          <div class="xq-text">IPv4 封包經路由器轉送時,表頭哪個欄位減 1?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>TTL</b>。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 填充 9</span>
+          <div class="xq-text">IPv6 各個 optional header 之間靠哪個欄位串接?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>Next Header</b> 欄位。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 填充 10</span>
+          <div class="xq-text">SYN、<span class="blank"></span>、ACK 是開啟 TCP 連線的三步驟?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>SYN/ACK</b>。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 欄位解釋</span>
+          <div class="xq-text">解釋:(1) TCP 的 Sequence/Acknowledgment Number (2) TCP 的 Source/Destination Port (3) IPv4 的 Identification/Flags/Fragment Offset</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans">(1) Seq=資料在位元組串流的位置(排序/重組);Ack=已收到、期待的下一序號。<br>(2) 識別兩端<b>應用程式</b>(伺服器用知名埠)。<br>(3) 三欄位合作做封包<b>分段與重組</b>。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 路由表</span>
+          <div class="xq-text">用左欄 2023 路由表(140.x,11 列)判斷:<br>(1) 140.121.33.10 匹配?選哪列?<br>(2) 140.110.45.21?<br>(3) 140.22.1.2?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans">(1) 匹配 <b>1,6,8,9,11</b> → Row8/9 同 /24,比 cost 8&lt;10 → 選 <b>8</b>。<br>(2) 匹配 <b>1,4,5,11</b> → 選 <b>5</b>。<br>(3) 匹配 <b>1,2,3,11</b> → 同 /16 比 cost 12&lt;18 → 選 <b>2</b>。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CH09 測驗 ===== -->
+    <div class="exam-pane" data-for="ch09">
+      <div class="year-block">
+        <div class="year-head">🗓 2025 期末</div>
+        <div class="pq"><span class="xq-no">2025 填充 6</span>
+          <div class="xq-text">IPsec VPN 的 Transport / Tunnel 兩模式中,<b>只有兩台 IPsec gateway 需要數位憑證</b>的是?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>Tunnel mode(隧道模式)</b>— 主機免設定,便宜;Transport 端到端,各主機都要憑證。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 填充 13</span>
+          <div class="xq-text"><span class="blank"></span> 讓多台「私有 IP」主機經<b>同一個公有 IP</b> 上網?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>NAT</b>(網路位址轉換,以埠號區分各內部主機)。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 簡答 4</span>
+          <div class="xq-text">公司網路部分 16 bits、再取 5 bits 當子網部分:<br>(1) 最多幾個子網?<br>(2) 每子網最多幾台主機?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans">(1) 2⁵−2 = <b>30</b>。<br>(2) 主機位 32−16−5 = 11 → 2¹¹−2 = <b>2046</b>。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 簡答 7(1)(5)(9)</span>
+          <div class="xq-text">從 16 個協定池中選答:<br>(1) 路由器用來回報路由錯誤?<br>(5) 動態路由協定?<br>(9) ping 量 RTT 用的協定?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans">(1) <b>ICMP</b> (5) <b>OSPF</b> (9) <b>ICMP</b>(echo request/reply)。</div>
+        </div>
+      </div>
+      <div class="year-block">
+        <div class="year-head">🗓 2023 期末</div>
+        <div class="pq"><span class="xq-no">2023 填充 7</span>
+          <div class="xq-text">子網部分用 4 bits,最多可切出幾個子網?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>2⁴−2 = 14</b>。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 填充 8</span>
+          <div class="xq-text">路由器用哪個協定向主機回報錯誤訊息(如 host unreachable)?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>ICMP</b>。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 IPsec</span>
+          <div class="xq-text">用圖說明 IPsec 的 Transport mode 與 Tunnel mode 差異(保護範圍、成本)。</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>Transport</b>:主機↔主機<b>端到端</b>全程保護;最安全,但每台主機要 IPsec+憑證,貴。<br><b>Tunnel</b>:只保護兩 <b>gateway</b> 之間;主機免改、只有 gateway 要憑證,便宜;站內路段無保護。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CH10 測驗 ===== -->
+    <div class="exam-pane" data-for="ch10">
+      <div class="year-block">
+        <div class="year-head">🗓 2025 期末</div>
+        <div class="pq"><span class="xq-no">2025 填充 7</span>
+          <div class="xq-text">用<b>一對語音級 UTP</b> 提供住宅上網、下行快上行慢的是?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>ADSL</b>。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 填充 11</span>
+          <div class="xq-text">WAN 中在 IP 表頭<b>前插入標籤</b>、依標籤轉送的路由機制是?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>MPLS</b>。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 填充 12</span>
+          <div class="xq-text">T1、five bonded T1、T3 三種專線方案,哪個最快?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>T3</b>(44.736 Mbps)&gt; 5×T1(≈7.72)&gt; T1(1.544)。</div>
+        </div>
+      </div>
+      <div class="year-block">
+        <div class="year-head">🗓 2023 期末</div>
+        <div class="pq"><span class="xq-no">2023 填充 12</span>
+          <div class="xq-text">PSDN 中在 IP 表頭前插入標籤、依標籤路由的機制是?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>MPLS</b>。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 填充 13</span>
+          <div class="xq-text">一對語音級 UTP、下行快上行慢的住宅上網技術?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>ADSL</b>。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 填充 14</span>
+          <div class="xq-text">舉一個 leased line(專線)的例子?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>T1</b>(1.544 Mbps)— 或 E1(2.048)/ T3(44.736)/ E3(34.368)任一。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CH11 測驗 ===== -->
+    <div class="exam-pane" data-for="ch11">
+      <div class="year-block">
+        <div class="year-head">🗓 2025 期末</div>
+        <div class="pq"><span class="xq-no">2025 簡答 6</span>
+          <div class="xq-text">把 SMTP 指令排成寄信流程:<b>. (dot) / DATA / HELO / MAIL FROM / QUIT / RCPT TO</b></div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>HELO → MAIL FROM → RCPT TO → DATA → (內容) → . → QUIT</b><br>自我介紹→寄件者→收件者→開始內容→句點結束→離線。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2025 簡答 7(3)(4)</span>
+          <div class="xq-text">從 16 個協定池中選答:<br>(3) VoIP 的<b>信令</b>協定?<br>(4) 表頭與內容(entity)之間有<b>空行(CRLF)</b>的協定?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans">(3) <b>SIP</b> (4) <b>HTTP</b>。⚠ 原卷(4)手寫 SMTP 疑誤 — 「entity」是 HTTP 用語。</div>
+        </div>
+      </div>
+      <div class="year-block">
+        <div class="year-head">🗓 2023 期末</div>
+        <div class="pq"><span class="xq-no">2023 填充 11</span>
+          <div class="xq-text"><span class="blank"></span> 與 RTP 分別是 VoIP 的信令協定與傳輸協定?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>SIP</b>。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 E-mail 三部分</span>
+          <div class="xq-text">簡述 E-mail 標準的三部分:SMTP / POP &amp; IMAP / RFC 822(2822)。</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans"><b>SMTP</b>=寄信(寄件端→伺服器、伺服器間);<b>POP/IMAP</b>=收信(POP 下載到本機;IMAP 伺服器上管理、多裝置同步);<b>RFC 822/2822</b>=訊息格式(標頭+空行+本文)。</div>
+        </div>
+        <div class="pq"><span class="xq-no">2023 HTTP 請求</span>
+          <div class="xq-text">取得 <b>http://abc.com/news/a.html</b> 的 HTTP 請求:<br><code>GET (a)___ HTTP/1.1</code> / <code>Host: (b)___</code>,(a)(b) 各是什麼?</div>
+          <button class="reveal" onclick="revealAns(this)">顯示答案</button>
+          <div class="pq-ans">(a) <b>/news/a.html</b> (b) <b>abc.com</b>。</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<button id="toTop" aria-label="回到頂部">↑</button>
+
+<script>
+// ---- tab switching ----
+const tabs=document.querySelectorAll('.tab');
+const chapters=()=>document.querySelectorAll('.chapter');
+function buildNav(chId){
+  const chap=document.getElementById(chId);
+  const links=document.getElementById('navLinks');
+  links.innerHTML='<div class="nav-title">本章目錄</div>';
+  chap.querySelectorAll('section.sec').forEach(s=>{
+    const h=s.querySelector('h3'); if(!h)return;
+    const title=h.getAttribute('data-nav')||h.textContent.replace(/p\..*$/,'').trim();
+    const a=document.createElement('a');
+    a.href='#'+s.id; a.textContent=title; a.dataset.target=s.id;
+    a.onclick=e=>{e.preventDefault();document.getElementById(s.id).scrollIntoView();history.replaceState(null,'','#'+s.id);};
+    links.appendChild(a);
+  });
+}
+function switchCh(chId){
+  tabs.forEach(t=>t.classList.toggle('active',t.dataset.ch===chId));
+  chapters().forEach(c=>c.classList.toggle('active',c.id===chId));
+  let hasExam=false;
+  document.querySelectorAll('.exam-pane').forEach(p=>{const on=p.dataset.for===chId;p.classList.toggle('active',on);if(on)hasExam=true;});
+  document.querySelector('.layout').classList.toggle('exam-on',hasExam);
+  document.querySelectorAll('aside.exam-col').forEach(a=>a.scrollTop=0);
+  buildNav(chId);
+  window.scrollTo({top:0});
+  setTimeout(spy,50);
+}
+tabs.forEach(t=>t.onclick=()=>switchCh(t.dataset.ch));
+
+// ---- scrollspy ----
+function spy(){
+  const active=document.querySelector('.chapter.active'); if(!active)return;
+  const secs=[...active.querySelectorAll('section.sec')];
+  let cur=secs[0];
+  const y=window.scrollY+120;
+  for(const s of secs){ if(s.offsetTop<=y) cur=s; }
+  document.querySelectorAll('#navLinks a').forEach(a=>a.classList.toggle('active',a.dataset.target===(cur&&cur.id)));
+}
+window.addEventListener('scroll',()=>{spy();toTopBtn();},{passive:true});
+
+// ---- quiz ----
+function quizPick(btn,correct,qId){
+  const q=btn.closest('.q'); if(q.dataset.done)return;
+  q.dataset.done='1';
+  const opts=q.querySelectorAll('.opt');
+  opts.forEach(o=>{o.classList.add('locked');
+    if(o.dataset.ans==='1'){o.classList.add('correct');o.querySelector('.mark')&&(o.querySelector('.mark').textContent='✓');}
+  });
+  if(correct){btn.querySelector('.mark')&&(btn.querySelector('.mark').textContent='✓');}
+  else{btn.classList.add('wrong');btn.querySelector('.mark')&&(btn.querySelector('.mark').textContent='✗');}
+  q.querySelector('.explain').classList.add('show');
+  // score
+  const quiz=q.closest('.quiz');
+  let done=quiz.querySelectorAll('.q[data-done]').length;
+  let right=[...quiz.querySelectorAll('.q[data-done]')].filter(x=>x.dataset.right==='1').length;
+  if(correct)q.dataset.right='1';
+  right=[...quiz.querySelectorAll('.q[data-done]')].filter(x=>x.dataset.right==='1').length;
+  const total=quiz.querySelectorAll('.q').length;
+  quiz.querySelector('.qz-score').textContent=`答對 ${right} / 已答 ${done} (共 ${total})`;
+}
+// ---- 考古題測驗:顯示/隱藏答案 ----
+function revealAns(btn){
+  const a=btn.nextElementSibling;
+  const on=a.classList.toggle('show');
+  btn.classList.toggle('on',on);
+  btn.textContent=on?'隱藏答案':'顯示答案';
+}
+// ---- back to top ----
+const toTop=document.getElementById('toTop');
+function toTopBtn(){toTop.classList.toggle('show',window.scrollY>500);}
+toTop.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+// ---- init ----
+switchCh('ch06');
+</script>
+</body>
+</html>
